@@ -1,83 +1,84 @@
-const generateBtn = document.getElementById('generate');
-const clearBtn = document.getElementById('clear');
-const themeToggle = document.getElementById('theme-toggle');
-const numbersContainer = document.getElementById('numbers');
-const bonusSection = document.getElementById('bonus-section');
-const bonusNumberDiv = document.getElementById('bonus-number');
-const historyList = document.getElementById('history-list');
+const URL = "https://teachablemachine.withgoogle.com/models/WdkmPA56A/";
 
-// Theme Logic
+let model, webcam, labelContainer, maxPredictions;
+
+// Theme Toggle
+const themeToggle = document.getElementById('theme-toggle');
 const currentTheme = localStorage.getItem('theme');
-if (currentTheme === 'light') {
-    document.body.classList.add('light-mode');
-}
+if (currentTheme === 'light') document.body.classList.add('light-mode');
 
 themeToggle.addEventListener('click', () => {
     document.body.classList.toggle('light-mode');
-    const theme = document.body.classList.contains('light-mode') ? 'light' : 'dark';
-    localStorage.setItem('theme', theme);
+    localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
 });
 
-const getLottoColor = (num) => {
-    if (num <= 10) return '#fbc400'; // Yellow
-    if (num <= 20) return '#69c8f2'; // Blue
-    if (num <= 30) return '#ff7272'; // Red
-    if (num <= 40) return '#aaaaaa'; // Gray
-    return '#b0d840'; // Green
-};
+// Load the image model and setup the webcam
+async function init() {
+    const modelURL = URL + "model.json";
+    const metadataURL = URL + "metadata.json";
 
-const generateNumbers = () => {
-    const numbers = new Set();
-    while (numbers.size < 7) {
-        numbers.add(Math.floor(Math.random() * 45) + 1);
+    const loadingOverlay = document.getElementById('loading-overlay');
+    const startBtn = document.getElementById('start-btn');
+    startBtn.disabled = true;
+    startBtn.textContent = "Initializing...";
+
+    try {
+        model = await tmImage.load(modelURL, metadataURL);
+        maxPredictions = model.getTotalClasses();
+
+        // Convenience function to setup a webcam
+        const flip = true; // whether to flip the webcam
+        webcam = new tmImage.Webcam(300, 300, flip); // width, height, flip
+        await webcam.setup(); // request access to the webcam
+        await webcam.play();
+        window.requestAnimationFrame(loop);
+
+        // append elements to the DOM
+        document.getElementById("webcam-container").appendChild(webcam.canvas);
+        labelContainer = document.getElementById("label-container");
+        for (let i = 0; i < maxPredictions; i++) { // and class labels
+            const predictionBar = document.createElement("div");
+            predictionBar.className = "prediction-bar";
+            predictionBar.innerHTML = `
+                <div class="label-text">
+                    <span class="class-label"></span>
+                    <span class="probability-text">0%</span>
+                </div>
+                <div class="bar-bg">
+                    <div class="bar-fill"></div>
+                </div>
+            `;
+            labelContainer.appendChild(predictionBar);
+        }
+
+        loadingOverlay.style.display = "none";
+        startBtn.style.display = "none";
+    } catch (error) {
+        console.error(error);
+        alert("Webcam access denied or error loading model.");
+        startBtn.disabled = false;
+        startBtn.textContent = "Start Camera";
     }
-    
-    const numbersArray = Array.from(numbers);
-    const mainNumbers = numbersArray.slice(0, 6).sort((a, b) => a - b);
-    const bonusNumber = numbersArray[6];
+}
 
-    renderNumbers(mainNumbers, bonusNumber);
-    addToHistory(mainNumbers, bonusNumber);
-};
+async function loop() {
+    webcam.update(); // update the webcam frame
+    await predict();
+    window.requestAnimationFrame(loop);
+}
 
-const renderNumbers = (mainNumbers, bonusNumber) => {
-    numbersContainer.innerHTML = '';
-    bonusSection.style.display = 'flex';
-
-    mainNumbers.forEach((num, index) => {
-        setTimeout(() => {
-            const numDiv = document.createElement('div');
-            numDiv.className = 'number';
-            numDiv.textContent = num;
-            numDiv.style.backgroundColor = getLottoColor(num);
-            numbersContainer.appendChild(numDiv);
-        }, index * 100);
-    });
-
-    setTimeout(() => {
-        bonusNumberDiv.textContent = bonusNumber;
-        bonusNumberDiv.style.backgroundColor = getLottoColor(bonusNumber);
-    }, 700);
-};
-
-const addToHistory = (mainNumbers, bonusNumber) => {
-    const li = document.createElement('li');
-    li.className = 'history-item';
-    li.innerHTML = `
-        <span style="color: var(--secondary-color)">${mainNumbers.join(', ')} <small>(+${bonusNumber})</small></span>
-        <span style="color: var(--text-muted); font-size: 0.7rem;">${new Date().toLocaleTimeString()}</span>
-    `;
-    historyList.prepend(li);
-    
-    if (historyList.children.length > 5) {
-        historyList.removeChild(historyList.lastChild);
+// run the webcam image through the image model
+async function predict() {
+    const prediction = await model.predict(webcam.canvas);
+    for (let i = 0; i < maxPredictions; i++) {
+        const classLabel = prediction[i].className;
+        const probability = (prediction[i].probability * 100).toFixed(0);
+        
+        const bar = labelContainer.childNodes[i];
+        bar.querySelector('.class-label').textContent = classLabel;
+        bar.querySelector('.probability-text').textContent = probability + "%";
+        bar.querySelector('.bar-fill').style.width = probability + "%";
     }
-};
+}
 
-const clearDisplay = () => {
-    numbersContainer.innerHTML = '<div class="placeholder">Ready to generate?</div>';
-    bonusSection.style.display = 'none';
-};
-
-generateBtn.addEventListener('click', generateNumbers);
-clearBtn.addEventListener('click', clearDisplay);
+document.getElementById('start-btn').addEventListener('click', init);
