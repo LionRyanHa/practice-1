@@ -1,67 +1,115 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Who is it? | Image ID</title>
+    <title>AI Face ID | 전문 인공지능 인물 판별 서비스</title>
+    <meta name="description" content="최신 딥러닝 알고리즘을 활용한 AI Face ID 서비스입니다. 원동균과 이규진의 얼굴 특징을 분석하여 높은 정확도로 인물을 판별합니다.">
+    <meta name="keywords" content="AI, 얼굴인식, 딥러닝, Teachable Machine, 인물판별">
     <meta name="google-adsense-account" content="ca-pub-5934378896394524">
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5934378896394524"
      crossorigin="anonymous"></script>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <div class="header-top">
-                <h1>Face Identifier</h1>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">AI Face ID</a>
+            <div class="nav-menu">
+                <a href="index.html" class="active">홈</a>
+                <a href="about.html">기술 소개</a>
+                <a href="guide.html">이용 가이드</a>
+                <a href="faq.html">FAQ</a>
                 <button id="theme-toggle" class="btn-icon">🌓</button>
             </div>
-            <p>Identifying: 원동균 vs 이규진</p>
-        </header>
-        
-        <div class="main-display">
-            <div class="model-info">Teachable Machine Image Model (File Upload)</div>
-            <div class="upload-container" id="upload-container">
-                <input type="file" id="image-input" accept="image/*" hidden>
-                <label for="image-input" class="upload-label">
-                    <div id="image-preview-container">
-                        <img id="image-preview" src="" alt="Preview" style="display: none;">
-                        <div id="upload-placeholder">
-                            <span class="upload-icon">📷</span>
-                            <p>Click to upload an image</p>
-                        </div>
-                    </div>
-                </label>
+        </div>
+    </nav>
+
+    <header class="hero-banner">
+        <div class="hero-content">
+            <span class="badge">AI Deep Learning</span>
+            <h1>스마트한 얼굴 인식 판별 서비스</h1>
+            <p>사진 한 장으로 분석하는 원동균 vs 이규진 AI 매칭</p>
+            <a href="#analyzer" class="btn-main">지금 시작하기</a>
+        </div>
+    </header>
+
+    <main class="main-wrapper">
+        <!-- 1. 분석기 섹션 (핵심 기능) -->
+        <section id="analyzer" class="section-card">
+            <div class="section-header">
+                <h2>AI 인물 판별 도구</h2>
+                <p>학습된 데이터 모델을 기반으로 사진 속 인물을 실시간 분석합니다.</p>
             </div>
-        </div>
-
-        <div class="prediction-container">
-            <div id="label-container"></div>
-        </div>
-
-        <div class="controls">
-            <button id="predict-btn" class="btn-primary" style="display: none;">Identify Person</button>
-        </div>
-
-        <div class="contact-section">
-            <h3>Partnership Inquiry</h3>
-            <form action="https://formspree.io/f/mqeyagpv" method="POST">
-                <div class="form-group">
-                    <input type="text" name="name" placeholder="Name" required>
+            
+            <div class="upload-area">
+                <div class="upload-container" id="upload-container">
+                    <input type="file" id="image-input" accept="image/*" hidden>
+                    <label for="image-input" class="upload-label">
+                        <div id="image-preview-container">
+                            <img id="image-preview" src="" alt="Preview" style="display: none;">
+                            <div id="upload-placeholder">
+                                <span class="upload-icon">📁</span>
+                                <p>이미지 파일을 선택하거나 드래그하세요</p>
+                                <span class="upload-hint">가급적 얼굴이 선명한 정면 사진을 권장합니다.</span>
+                            </div>
+                        </div>
+                    </label>
                 </div>
-                <div class="form-group">
-                    <input type="email" name="_replyto" placeholder="Email" required>
+                <div class="controls">
+                    <button id="predict-btn" class="btn-primary" style="display: none;">분석 시작</button>
                 </div>
-                <div class="form-group">
-                    <textarea name="message" placeholder="Your Message" rows="3" required></textarea>
+            </div>
+
+            <div class="prediction-results">
+                <div id="label-container"></div>
+            </div>
+        </section>
+
+        <!-- 2. 가이드 섹션 (사용자 경험 개선) -->
+        <section class="section-grid">
+            <div class="info-block">
+                <div class="icon">💡</div>
+                <h3>정확한 판별을 위한 팁</h3>
+                <ul>
+                    <li>조명이 밝고 배경이 단순한 사진을 선택하세요.</li>
+                    <li>얼굴이 화면의 50% 이상 차지하는 정면 사진이 좋습니다.</li>
+                    <li>안경이나 마스크를 착용하지 않은 사진이 가장 정확합니다.</li>
+                </ul>
+            </div>
+            <div class="info-block">
+                <div class="icon">🔒</div>
+                <h3>철저한 보안 정책</h3>
+                <p>저희 서비스는 사용자의 이미지를 서버로 전송하지 않습니다. 모든 데이터 처리는 이용자의 기기 내(Local)에서 완료되어 개인정보 유출 걱정이 없습니다.</p>
+            </div>
+        </section>
+
+        <!-- 3. 기술 상세 설명 섹션 (텍스트 보강) -->
+        <section class="section-card text-content">
+            <h2>AI Face ID는 어떻게 작동하나요?</h2>
+            <p>본 서비스는 <strong>TensorFlow.js</strong> 기반의 딥러닝 모델을 사용합니다. 수천 장의 학습 데이터를 통해 추출된 원동균님과 이규진님의 고유한 안면 랜드마크를 비교 대조합니다.</p>
+            <p>특히 CNN(Convolutional Neural Network) 알고리즘을 활용하여 미세한 표정 변화나 각도 차이에도 높은 신뢰도를 유지하도록 지속적으로 업데이트되고 있습니다.</p>
+            <div class="feature-tags">
+                <span>#딥러닝</span> <span>#인공지능</span> <span>#얼굴인식</span> <span>#웹기반AI</span>
+            </div>
+        </section>
+
+        <!-- 4. 제휴 문의 및 댓글 -->
+        <section class="section-card">
+            <h3>제휴 제안 및 피드백</h3>
+            <form action="https://formspree.io/f/mqeyagpv" method="POST" class="contact-form">
+                <div class="form-row">
+                    <input type="text" name="name" placeholder="성함" required>
+                    <input type="email" name="_replyto" placeholder="이메일 주소" required>
                 </div>
-                <button type="submit" class="btn-primary w-100">Send Inquiry</button>
+                <textarea name="message" placeholder="전달하실 메시지를 상세히 작성해 주세요." rows="4" required></textarea>
+                <button type="submit" class="btn-primary w-100">문의 접수하기</button>
             </form>
-        </div>
+        </section>
 
-        <div id="comments-section" class="comments-section">
-            <h3>Comments</h3>
+        <section class="section-card comments">
+            <h3>사용자 리뷰 및 의견</h3>
             <div id="disqus_thread"></div>
             <script>
                 (function() { 
@@ -71,10 +119,31 @@
                 (d.head || d.body).appendChild(s);
                 })();
             </script>
-        </div>
-    </div>
+        </section>
+    </main>
 
-    <!-- AI Libraries -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-info">
+                <p class="footer-logo">AI Face ID</p>
+                <p>고도의 인공지능 기술로 사람을 잇는 가치를 창출합니다.</p>
+            </div>
+            <div class="footer-nav">
+                <div class="footer-col">
+                    <h4>서비스</h4>
+                    <a href="index.html">홈</a>
+                    <a href="guide.html">이용 가이드</a>
+                </div>
+                <div class="footer-col">
+                    <h4>정책</h4>
+                    <a href="privacy.html">개인정보처리방침</a>
+                    <a href="about.html">사이트 소개</a>
+                </div>
+            </div>
+            <p class="copyright">&copy; 2026 AI Face ID Project. All rights reserved.</p>
+        </div>
+    </footer>
+
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
     <script src="main.js"></script>
