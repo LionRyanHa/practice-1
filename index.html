@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Who is it? | Face ID</title>
+    <title>Who is it? | Image ID</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
@@ -18,11 +18,18 @@
         </header>
         
         <div class="main-display">
-            <div class="model-info">Teachable Machine Image Model</div>
-            <div id="webcam-container" class="webcam-container">
-                <div id="loading-overlay" class="loading-overlay">
-                    <p>Loading AI Model...</p>
-                </div>
+            <div class="model-info">Teachable Machine Image Model (File Upload)</div>
+            <div class="upload-container" id="upload-container">
+                <input type="file" id="image-input" accept="image/*" hidden>
+                <label for="image-input" class="upload-label">
+                    <div id="image-preview-container">
+                        <img id="image-preview" src="" alt="Preview" style="display: none;">
+                        <div id="upload-placeholder">
+                            <span class="upload-icon">📷</span>
+                            <p>Click to upload an image</p>
+                        </div>
+                    </div>
+                </label>
             </div>
         </div>
 
@@ -31,7 +38,7 @@
         </div>
 
         <div class="controls">
-            <button id="start-btn" class="btn-primary">Start Camera</button>
+            <button id="predict-btn" class="btn-primary" style="display: none;">Identify Person</button>
         </div>
 
         <div class="contact-section">
