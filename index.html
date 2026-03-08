@@ -1,17 +1,38 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lotto Number Generator</title>
+    <title>Premium Lotto Generator</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="container">
-        <h1>Lotto Number Generator</h1>
-        <div id="numbers" class="numbers-container"></div>
-        <button id="generate">Generate Numbers</button>
+        <header>
+            <h1>Lotto 6/45</h1>
+            <p>Your lucky numbers are just a click away</p>
+        </header>
+        
+        <div class="main-display">
+            <div id="numbers" class="numbers-container">
+                <div class="placeholder">Ready to generate?</div>
+            </div>
+            <div id="bonus-section" class="bonus-container" style="display: none;">
+                <span class="plus-sign">+</span>
+                <div id="bonus-number" class="number bonus"></div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button id="generate" class="btn-primary">Generate Numbers</button>
+            <button id="clear" class="btn-secondary">Clear</button>
+        </div>
+
+        <div class="history-section">
+            <h3>Recent History</h3>
+            <ul id="history-list"></ul>
+        </div>
     </div>
     <script src="main.js"></script>
 </body>
