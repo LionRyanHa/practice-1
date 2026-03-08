@@ -1,9 +1,22 @@
 const generateBtn = document.getElementById('generate');
 const clearBtn = document.getElementById('clear');
+const themeToggle = document.getElementById('theme-toggle');
 const numbersContainer = document.getElementById('numbers');
 const bonusSection = document.getElementById('bonus-section');
 const bonusNumberDiv = document.getElementById('bonus-number');
 const historyList = document.getElementById('history-list');
+
+// Theme Logic
+const currentTheme = localStorage.getItem('theme');
+if (currentTheme === 'light') {
+    document.body.classList.add('light-mode');
+}
+
+themeToggle.addEventListener('click', () => {
+    document.body.classList.toggle('light-mode');
+    const theme = document.body.classList.contains('light-mode') ? 'light' : 'dark';
+    localStorage.setItem('theme', theme);
+});
 
 const getLottoColor = (num) => {
     if (num <= 10) return '#fbc400'; // Yellow
@@ -51,8 +64,8 @@ const addToHistory = (mainNumbers, bonusNumber) => {
     const li = document.createElement('li');
     li.className = 'history-item';
     li.innerHTML = `
-        <span>${mainNumbers.join(', ')} <small>(+${bonusNumber})</small></span>
-        <span style="color: #95a5a6; font-size: 0.7rem;">${new Date().toLocaleTimeString()}</span>
+        <span style="color: var(--secondary-color)">${mainNumbers.join(', ')} <small>(+${bonusNumber})</small></span>
+        <span style="color: var(--text-muted); font-size: 0.7rem;">${new Date().toLocaleTimeString()}</span>
     `;
     historyList.prepend(li);
     
