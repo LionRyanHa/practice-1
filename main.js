@@ -4,13 +4,16 @@ let model, labelContainer, maxPredictions;
 
 // Theme Toggle
 const themeToggle = document.getElementById('theme-toggle');
-const currentTheme = localStorage.getItem('theme');
-if (currentTheme === 'light') document.body.classList.add('light-mode');
+if (themeToggle) {
+    const currentTheme = localStorage.getItem('theme');
+    if (currentTheme === 'light') document.body.classList.add('light-mode');
 
-themeToggle.addEventListener('click', () => {
-    document.body.classList.toggle('light-mode');
-    localStorage.setItem('theme', document.body.classList.contains('light-mode') ? 'light' : 'dark');
-});
+    themeToggle.addEventListener('click', () => {
+        document.body.classList.toggle('light-mode');
+        const theme = document.body.classList.contains('light-mode') ? 'light' : 'dark';
+        localStorage.setItem('theme', theme);
+    });
+}
 
 // Load the model
 async function loadModel() {

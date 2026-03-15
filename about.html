@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>사이트 소개 | AI Face ID</title>
+    <title>기술 소개 | AI Face ID</title>
+    <meta name="description" content="AI Face ID 서비스에 적용된 딥러닝 기술과 개발 배경을 소개합니다. Google Teachable Machine과 TensorFlow.js를 활용했습니다.">
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <nav class="navbar">
@@ -13,30 +14,83 @@
             <a href="index.html" class="nav-logo">AI Face ID</a>
             <div class="nav-menu">
                 <a href="index.html">홈</a>
-                <a href="about.html">소개</a>
+                <a href="about.html" class="active">기술 소개</a>
+                <a href="guide.html">이용 가이드</a>
+                <a href="faq.html">FAQ</a>
                 <a href="privacy.html">개인정보처리방침</a>
             </div>
         </div>
     </nav>
 
-    <main class="container page-content">
-        <h1>사이트 소개</h1>
-        <p>AI Face ID는 최신 인공지능 기술을 통해 인물을 판별하는 재미있는 서비스를 제공합니다.</p>
+    <main class="main-wrapper container page-content">
+        <header class="page-header">
+            <span class="badge">About Project</span>
+            <h1>AI Face ID 프로젝트 소개</h1>
+            <p>인공지능이 보는 시각적 특징을 분석하여 인물을 판별하는 기술 프로젝트입니다.</p>
+        </header>
+
+        <section class="content-section">
+            <h2>1. 프로젝트 개요</h2>
+            <p><strong>AI Face ID</strong>는 최신 웹 기반 딥러닝 기술을 활용하여, 사용자가 업로드한 사진 속 인물이 '원동균'님과 '이규진'님 중 누구와 더 닮았는지 분석해주는 AI 판별 서비스입니다. 별도의 프로그램 설치 없이 웹 브라우저에서 즉시 실행되며, 높은 접근성과 재미를 동시에 제공하는 것을 목표로 합니다.</p>
+        </section>
         
-        <h2>서비스 목적</h2>
-        <p>원동균님과 이규진님의 얼굴 데이터를 학습한 모델을 통해, 사진 속 인물이 누구인지 확률적으로 분석해 드립니다. 친구들과 함께 즐거운 시간을 보내는 용도로 활용해 보세요!</p>
-        
-        <h2>기술 스택</h2>
-        <ul>
-            <li>Google Teachable Machine (Deep Learning)</li>
-            <li>TensorFlow.js</li>
-            <li>HTML5 / CSS3 / JavaScript</li>
-        </ul>
+        <section class="content-section">
+            <h2>2. 핵심 기술 (Technology Stack)</h2>
+            <div class="tech-grid">
+                <div class="tech-card">
+                    <h3>Google Teachable Machine</h3>
+                    <p>구글의 머신러닝 모델 학습 도구를 사용하여 수천 장의 인물 이미지를 학습시켰습니다. 전이 학습(Transfer Learning) 기법을 통해 적은 데이터로도 높은 정확도를 확보했습니다.</p>
+                </div>
+                <div class="tech-card">
+                    <h3>TensorFlow.js</h3>
+                    <p>학습된 모델을 웹 브라우저에서 직접 구동하기 위해 TensorFlow.js 라이브러리를 사용했습니다. 이를 통해 서버 비용을 절감하고 사용자의 프라이버시를 보호합니다.</p>
+                </div>
+                <div class="tech-card">
+                    <h3>MobileNet</h3>
+                    <p>이미지 분류를 위한 경량화된 CNN 모델인 MobileNet을 백본(Backbone)으로 사용하여, 모바일 기기에서도 빠르고 효율적인 추론이 가능합니다.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>3. 개발 과정 및 데이터셋</h2>
+            <p>정확한 판별을 위해 각 인물의 다양한 각도, 조명, 표정이 담긴 사진 데이터를 수집했습니다. 데이터 전처리 과정을 통해 얼굴 영역을 크롭(Crop)하고 정규화(Normalization)하여 모델 학습의 효율을 높였습니다.</p>
+            <ul>
+                <li><strong>Class 1 (원동균):</strong> 정면, 측면, 웃는 표정 등 데이터셋 500+장</li>
+                <li><strong>Class 2 (이규진):</strong> 안경 착용 유무, 다양한 조명 환경 데이터셋 500+장</li>
+            </ul>
+        </section>
+
+        <section class="content-section">
+            <h2>4. 향후 로드맵</h2>
+            <p>현재는 특정 두 인물의 판별에 집중하고 있지만, 향후에는 사용자 피드백을 반영하여 다음과 같은 기능을 추가할 예정입니다.</p>
+            <ul class="roadmap-list">
+                <li>✅ 더 많은 인물 클래스 추가 및 다중 분류 지원</li>
+                <li>✅ 실시간 웹캠 분석 기능 도입</li>
+                <li>✅ 모바일 앱(Android/iOS) 출시</li>
+            </ul>
+        </section>
     </main>
 
     <footer class="footer">
         <div class="footer-container">
-            <p>&copy; 2026 AI Face ID. All rights reserved.</p>
+            <div class="footer-info">
+                <p class="footer-logo">AI Face ID</p>
+                <p>고도의 인공지능 기술로 사람을 잇는 가치를 창출합니다.</p>
+            </div>
+            <div class="footer-nav">
+                <div class="footer-col">
+                    <h4>서비스</h4>
+                    <a href="index.html">홈</a>
+                    <a href="guide.html">이용 가이드</a>
+                </div>
+                <div class="footer-col">
+                    <h4>정책</h4>
+                    <a href="privacy.html">개인정보처리방침</a>
+                    <a href="about.html">사이트 소개</a>
+                </div>
+            </div>
+            <p class="copyright">&copy; 2026 AI Face ID Project. All rights reserved.</p>
         </div>
     </footer>
 </body>
