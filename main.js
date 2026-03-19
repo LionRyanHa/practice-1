@@ -1,34 +1,46 @@
-const URL = "https://teachablemachine.withgoogle.com/models/WdkmPA56A/";
+const MODEL_URL = "https://teachablemachine.withgoogle.com/models/WdkmPA56A/";
 
-let model, labelContainer, maxPredictions;
+let model;
+let labelContainer;
+let maxPredictions = 0;
 
-// Theme Toggle
-const themeToggle = document.getElementById('theme-toggle');
-if (themeToggle) {
-    const currentTheme = localStorage.getItem('theme');
-    if (currentTheme === 'light') document.body.classList.add('light-mode');
+const imageInput = document.getElementById("image-input");
+const imagePreview = document.getElementById("image-preview");
+const uploadPlaceholder = document.getElementById("upload-placeholder");
+const predictBtn = document.getElementById("predict-btn");
+const statusMessage = document.getElementById("status-message");
 
-    themeToggle.addEventListener('click', () => {
-        document.body.classList.toggle('light-mode');
-        const theme = document.body.classList.contains('light-mode') ? 'light' : 'dark';
-        localStorage.setItem('theme', theme);
-    });
+function updateStatus(message, type = "info") {
+    if (!statusMessage) {
+        return;
+    }
+
+    statusMessage.textContent = message;
+    statusMessage.dataset.state = type;
 }
 
-// Load the model
+function getSafeLabel(index) {
+    const labels = ["예시 인물 A", "예시 인물 B"];
+    return labels[index] || `예시 인물 ${index + 1}`;
+}
+
 async function loadModel() {
-    const modelURL = URL + "model.json";
-    const metadataURL = URL + "metadata.json";
+    updateStatus("모델을 준비하는 중입니다.");
+
+    const modelURL = MODEL_URL + "model.json";
+    const metadataURL = MODEL_URL + "metadata.json";
+
     model = await tmImage.load(modelURL, metadataURL);
     maxPredictions = model.getTotalClasses();
-    
     labelContainer = document.getElementById("label-container");
-    for (let i = 0; i < maxPredictions; i++) {
+    labelContainer.innerHTML = "";
+
+    for (let i = 0; i < maxPredictions; i += 1) {
         const predictionBar = document.createElement("div");
         predictionBar.className = "prediction-bar";
         predictionBar.innerHTML = `
             <div class="label-text">
-                <span class="class-label"></span>
+                <span class="class-label">${getSafeLabel(i)}</span>
                 <span class="probability-text">0%</span>
             </div>
             <div class="bar-bg">
@@ -37,65 +49,78 @@ async function loadModel() {
         `;
         labelContainer.appendChild(predictionBar);
     }
+
+    updateStatus("모델 준비가 완료되었습니다. 사진을 올리고 분석을 시작해 주세요.", "success");
 }
-
-// Handle File Selection
-const imageInput = document.getElementById('image-input');
-const imagePreview = document.getElementById('image-preview');
-const uploadPlaceholder = document.getElementById('upload-placeholder');
-const predictBtn = document.getElementById('predict-btn');
-
-imageInput.addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-            imagePreview.src = event.target.result;
-            imagePreview.style.display = 'block';
-            uploadPlaceholder.style.display = 'none';
-            predictBtn.style.display = 'inline-block';
-            resetPredictions();
-        };
-        reader.readAsDataURL(file);
-    }
-});
 
 function resetPredictions() {
-    if (labelContainer) {
-        for (let i = 0; i < maxPredictions; i++) {
-            const bar = labelContainer.childNodes[i];
-            if (bar.querySelector) {
-                bar.querySelector('.class-label').textContent = "-";
-                bar.querySelector('.probability-text').textContent = "0%";
-                bar.querySelector('.bar-fill').style.width = "0%";
-            }
-        }
+    if (!labelContainer) {
+        return;
     }
+
+    Array.from(labelContainer.children).forEach((bar, index) => {
+        bar.querySelector(".class-label").textContent = getSafeLabel(index);
+        bar.querySelector(".probability-text").textContent = "0%";
+        bar.querySelector(".bar-fill").style.width = "0%";
+    });
 }
 
-// Run Prediction
+imageInput.addEventListener("change", (event) => {
+    const file = event.target.files[0];
+
+    if (!file) {
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (loadEvent) => {
+        imagePreview.src = loadEvent.target.result;
+        imagePreview.style.display = "block";
+        uploadPlaceholder.style.display = "none";
+        predictBtn.style.display = "inline-block";
+        resetPredictions();
+        updateStatus("이미지가 준비되었습니다. 분석 시작 버튼을 눌러 주세요.", "info");
+    };
+    reader.readAsDataURL(file);
+});
+
 async function predict() {
-    if (!model) await loadModel();
-    
-    predictBtn.disabled = true;
-    predictBtn.textContent = "Analyzing...";
-    
-    const prediction = await model.predict(imagePreview);
-    for (let i = 0; i < maxPredictions; i++) {
-        const classLabel = prediction[i].className;
-        const probability = (prediction[i].probability * 100).toFixed(0);
-        
-        const bar = labelContainer.childNodes[i];
-        bar.querySelector('.class-label').textContent = classLabel;
-        bar.querySelector('.probability-text').textContent = probability + "%";
-        bar.querySelector('.bar-fill').style.width = probability + "%";
+    if (!imagePreview.src) {
+        updateStatus("먼저 분석할 이미지를 선택해 주세요.", "error");
+        return;
     }
-    
-    predictBtn.disabled = false;
-    predictBtn.textContent = "Identify Person";
+
+    try {
+        if (!model) {
+            await loadModel();
+        }
+
+        predictBtn.disabled = true;
+        predictBtn.textContent = "분석 중...";
+        updateStatus("브라우저에서 이미지를 분석하고 있습니다.", "info");
+
+        const prediction = await model.predict(imagePreview);
+        prediction.forEach((item, index) => {
+            const probability = Math.round(item.probability * 100);
+            const bar = labelContainer.children[index];
+            bar.querySelector(".class-label").textContent = getSafeLabel(index);
+            bar.querySelector(".probability-text").textContent = `${probability}%`;
+            bar.querySelector(".bar-fill").style.width = `${probability}%`;
+        });
+
+        updateStatus("분석이 완료되었습니다. 결과는 참고용 상대 점수입니다.", "success");
+    } catch (error) {
+        console.error(error);
+        updateStatus("모델을 불러오거나 분석하는 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.", "error");
+    } finally {
+        predictBtn.disabled = false;
+        predictBtn.textContent = "분석 시작";
+    }
 }
 
-predictBtn.addEventListener('click', predict);
+predictBtn.addEventListener("click", predict);
 
-// Initial model load (background)
-loadModel();
+loadModel().catch((error) => {
+    console.error(error);
+    updateStatus("모델 준비에 실패했습니다. 네트워크 상태를 확인한 뒤 다시 열어 주세요.", "error");
+});
