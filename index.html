@@ -3,166 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Face ID Demo | 브라우저 기반 얼굴 유사도 체험</title>
-    <meta name="description" content="브라우저에서만 동작하는 AI 얼굴 유사도 체험 페이지입니다. 사전 동의를 받은 예시 인물 2명을 기준으로 결과를 참고용으로 안내합니다.">
-    <meta name="keywords" content="AI 얼굴 유사도, 브라우저 AI, TensorFlow.js, Teachable Machine, 데모">
-    <meta name="google-adsense-account" content="ca-pub-5934378896394524">
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5934378896394524"
-        crossorigin="anonymous"></script>
+    <title>Puzzle Steps | 레벨 퍼즐 게임</title>
+    <meta name="description" content="단계별로 퍼즐을 풀며 다음 레벨을 여는 브라우저 퍼즐 게임입니다.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=SUIT:wght@400;500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <nav class="navbar">
-        <div class="nav-container">
-            <a href="index.html" class="nav-logo">AI Face ID Demo</a>
-            <div class="nav-menu">
-                <a href="index.html" class="active">홈</a>
-                <a href="about.html">프로젝트 소개</a>
-                <a href="guide.html">이용 가이드</a>
-                <a href="faq.html">FAQ</a>
-                <a href="contact.html">문의</a>
-                <a href="privacy.html">개인정보처리방침</a>
+    <main class="game-shell">
+        <section class="hero-panel">
+            <p class="eyebrow">Puzzle Steps</p>
+            <h1>레벨을 하나씩 열어가며 퍼즐을 푸는 게임</h1>
+            <p class="hero-copy">정답을 맞히면 다음 스테이지가 열립니다. 막히면 힌트를 보고, 끝까지 클리어하면 처음부터 다시 도전할 수 있습니다.</p>
+
+            <div class="hero-stats">
+                <article class="stat-card">
+                    <span class="stat-label">진행률</span>
+                    <strong id="progress-text">0 / 5 완료</strong>
+                </article>
+                <article class="stat-card">
+                    <span class="stat-label">현재 레벨</span>
+                    <strong id="current-level-text">Level 1</strong>
+                </article>
+                <article class="stat-card">
+                    <span class="stat-label">상태</span>
+                    <strong id="status-chip">도전 시작</strong>
+                </article>
             </div>
-        </div>
-    </nav>
 
-    <header class="hero-banner">
-        <div class="hero-content">
-            <span class="badge">Browser AI Demo</span>
-            <h1>브라우저에서만 실행되는 얼굴 유사도 체험</h1>
-            <p>사전 동의를 받은 예시 인물 2명을 기준으로 결과를 참고용으로 보여주는 교육용 데모입니다.</p>
-            <a href="#analyzer" class="btn-main">체험 시작</a>
-        </div>
-    </header>
-
-    <main class="main-wrapper">
-        <section class="section-card notice-card">
-            <h2>이 사이트의 목적</h2>
-            <p>AI Face ID Demo는 웹 브라우저에서 작동하는 이미지 분류 모델의 동작 방식을 설명하기 위해 제작한 실험형 프로젝트입니다. 본 결과는 재미와 학습을 위한 참고 정보이며, 실명 확인이나 본인 인증 도구로 사용할 수 없습니다.</p>
-            <ul class="plain-list">
-                <li>분석 대상은 사전 동의를 받은 예시 인물 2명입니다.</li>
-                <li>업로드 이미지는 브라우저 내부에서만 처리되며 서버에 저장하지 않습니다.</li>
-                <li>민감한 얼굴 정보의 자동 식별, 감시, 채용 판단, 신원 확인 용도로 사용해서는 안 됩니다.</li>
-            </ul>
+            <div class="progress-track" aria-hidden="true">
+                <div id="progress-bar" class="progress-bar"></div>
+            </div>
         </section>
 
-        <section id="analyzer" class="section-card">
-            <div class="section-header">
-                <h2>AI 얼굴 유사도 체험</h2>
-                <p>사진을 올리면 예시 모델과의 상대적 유사도를 참고용 막대 그래프로 보여줍니다.</p>
-            </div>
+        <section class="board-layout">
+            <aside class="level-panel">
+                <div class="panel-head">
+                    <h2>레벨 선택</h2>
+                    <button id="reset-button" class="ghost-button" type="button">처음부터</button>
+                </div>
+                <div id="level-list" class="level-list" aria-label="퍼즐 레벨 목록"></div>
+            </aside>
 
-            <div class="upload-area">
-                <div class="upload-container" id="upload-container">
-                    <input type="file" id="image-input" accept="image/*" hidden>
-                    <label for="image-input" class="upload-label">
-                        <div id="image-preview-container">
-                            <img id="image-preview" src="" alt="업로드한 이미지 미리보기" style="display: none;">
-                            <div id="upload-placeholder">
-                                <span class="upload-icon">📁</span>
-                                <p>이미지 파일을 선택해 주세요</p>
-                                <span class="upload-hint">정면 얼굴이 선명한 사진일수록 결과 해석이 쉽습니다.</span>
-                            </div>
+            <section class="puzzle-panel">
+                <div class="panel-head">
+                    <div>
+                        <p id="puzzle-tag" class="panel-tag">LEVEL 1</p>
+                        <h2 id="puzzle-title">숫자 패턴</h2>
+                    </div>
+                    <span id="difficulty-badge" class="difficulty-badge">쉬움</span>
+                </div>
+
+                <div class="puzzle-card">
+                    <p class="card-label">문제</p>
+                    <p id="puzzle-question" class="puzzle-question"></p>
+                </div>
+
+                <div class="puzzle-grid">
+                    <div class="puzzle-card accent-card">
+                        <p class="card-label">힌트</p>
+                        <p id="puzzle-hint" class="puzzle-hint"></p>
+                    </div>
+                    <div class="puzzle-card">
+                        <p class="card-label">입력</p>
+                        <label class="answer-box" for="answer-input">
+                            <input id="answer-input" type="text" autocomplete="off" placeholder="정답 입력">
+                        </label>
+                        <div class="button-row">
+                            <button id="submit-button" class="primary-button" type="button">정답 확인</button>
+                            <button id="hint-button" class="ghost-button" type="button">힌트 보기</button>
                         </div>
-                    </label>
+                    </div>
                 </div>
-                <div class="controls">
-                    <button id="predict-btn" class="btn-primary" style="display: none;">분석 시작</button>
-                    <p class="helper-text">업로드 전, 사진 사용 권한과 당사자 동의를 직접 확인해 주세요.</p>
+
+                <div id="feedback-box" class="feedback-box" aria-live="polite">
+                    첫 번째 퍼즐부터 시작해 보세요.
                 </div>
-            </div>
-
-            <div class="prediction-results">
-                <div id="status-message" class="status-message" aria-live="polite">모델을 준비하는 중입니다.</div>
-                <div id="label-container"></div>
-            </div>
-        </section>
-
-        <section class="section-grid">
-            <div class="info-block">
-                <div class="icon">💡</div>
-                <h3>결과를 읽는 방법</h3>
-                <ul>
-                    <li>막대 값은 참고용 상대 점수이며 신원 판정 결과가 아닙니다.</li>
-                    <li>조명, 거리, 표정, 해상도에 따라 점수가 크게 달라질 수 있습니다.</li>
-                    <li>한 번의 결과보다 여러 장의 사진을 비교해 보는 편이 낫습니다.</li>
-                </ul>
-            </div>
-            <div class="info-block">
-                <div class="icon">🔒</div>
-                <h3>데이터 처리 방식</h3>
-                <p>업로드 이미지는 서버에 저장하지 않으며 사용자의 브라우저에서만 분석합니다. 다만 애드센스, 폰트 등 외부 서비스가 페이지 로드 시 일반적인 접속 정보를 처리할 수 있으므로 세부 내용은 개인정보처리방침에서 확인할 수 있습니다.</p>
-            </div>
-        </section>
-
-        <section class="section-card text-content">
-            <h2>왜 광고 심사에서 문제가 될 수 있었나</h2>
-            <p>광고 심사에서는 얇은 도구형 페이지, 과장된 성능 표현, 운영 주체 정보가 부족한 사이트, 실존 인물 얼굴을 가볍게 다루는 페이지를 불리하게 볼 수 있습니다. 그래서 이 사이트는 목적, 한계, 동의 요건, 데이터 처리 방식을 더 명확하게 설명하도록 개편했습니다.</p>
-            <p>현재 구성은 기능만 보여주는 한 페이지형 도구에서 벗어나 프로젝트 설명, 이용 가이드, 책임 있는 사용 원칙, 문의 경로, 정책 문서를 함께 제공하는 형태를 목표로 합니다.</p>
-            <div class="feature-tags">
-                <span>#교육용데모</span>
-                <span>#브라우저추론</span>
-                <span>#책임있는AI</span>
-                <span>#개인정보안내</span>
-            </div>
-        </section>
-
-        <section class="section-card">
-            <h2>책임 있는 사용 원칙</h2>
-            <div class="policy-grid">
-                <div class="policy-item">
-                    <h3>동의 우선</h3>
-                    <p>본인 사진 또는 업로드 허락을 받은 사진만 사용해 주세요.</p>
-                </div>
-                <div class="policy-item">
-                    <h3>참고용 결과</h3>
-                    <p>모델 출력은 분류 점수일 뿐, 사실 판단이나 법적 판단 근거가 아닙니다.</p>
-                </div>
-                <div class="policy-item">
-                    <h3>민감한 용도 금지</h3>
-                    <p>채용, 감시, 출입 통제, 신원 조회, 괴롭힘 목적으로 사용하면 안 됩니다.</p>
-                </div>
-            </div>
-        </section>
-
-        <section class="section-card">
-            <h2>운영 및 문의</h2>
-            <p>사이트 내용 오류, 권리 침해 우려, 광고 관련 문의는 문의 페이지를 통해 접수해 주세요. 정책 문서와 함께 검토 후 필요한 수정 또는 비노출 조치를 진행합니다.</p>
-            <div class="cta-row">
-                <a href="contact.html" class="btn-main small">문의하기</a>
-                <a href="terms.html" class="btn-secondary">이용약관 보기</a>
-            </div>
+            </section>
         </section>
     </main>
 
-    <footer class="footer">
-        <div class="footer-container">
-            <div class="footer-info">
-                <p class="footer-logo">AI Face ID Demo</p>
-                <p>브라우저 기반 AI 데모와 책임 있는 사용 가이드를 함께 제공하는 실험형 프로젝트입니다.</p>
-            </div>
-            <div class="footer-nav">
-                <div class="footer-col">
-                    <h4>프로젝트</h4>
-                    <a href="index.html">홈</a>
-                    <a href="about.html">프로젝트 소개</a>
-                    <a href="guide.html">이용 가이드</a>
-                    <a href="faq.html">FAQ</a>
-                </div>
-                <div class="footer-col">
-                    <h4>정책</h4>
-                    <a href="privacy.html">개인정보처리방침</a>
-                    <a href="terms.html">이용약관</a>
-                    <a href="contact.html">문의</a>
-                </div>
-            </div>
-            <p class="copyright">&copy; 2026 AI Face ID Demo. All rights reserved.</p>
-        </div>
-    </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
     <script src="main.js"></script>
 </body>
 </html>

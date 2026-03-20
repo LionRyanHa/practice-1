@@ -1,126 +1,206 @@
-const MODEL_URL = "https://teachablemachine.withgoogle.com/models/WdkmPA56A/";
-
-let model;
-let labelContainer;
-let maxPredictions = 0;
-
-const imageInput = document.getElementById("image-input");
-const imagePreview = document.getElementById("image-preview");
-const uploadPlaceholder = document.getElementById("upload-placeholder");
-const predictBtn = document.getElementById("predict-btn");
-const statusMessage = document.getElementById("status-message");
-
-function updateStatus(message, type = "info") {
-    if (!statusMessage) {
-        return;
+const puzzles = [
+    {
+        id: 1,
+        title: "숫자 패턴",
+        difficulty: "쉬움",
+        question: "다음 숫자 배열의 빈칸에 들어갈 수를 맞혀 보세요. 2, 4, 8, 16, ?",
+        hint: "앞 숫자에 같은 연산을 반복하고 있습니다.",
+        answer: "32",
+        success: "2배씩 커지는 패턴입니다. 다음 레벨이 열렸습니다."
+    },
+    {
+        id: 2,
+        title: "단어 추리",
+        difficulty: "쉬움",
+        question: "바다에도 있고 하늘에도 있습니다. 낮에는 잘 안 보이고 밤에는 빛납니다. 무엇일까요?",
+        hint: "밤하늘을 올려다보면 많이 보입니다.",
+        answer: "별",
+        success: "정답입니다. 짧은 수수께끼를 통과했습니다."
+    },
+    {
+        id: 3,
+        title: "방향 퍼즐",
+        difficulty: "보통",
+        question: "동쪽을 보고 서 있다가 오른쪽으로 한 번, 다시 오른쪽으로 한 번 돌았습니다. 지금 바라보는 방향은?",
+        hint: "오른쪽 회전은 시계 방향 90도입니다.",
+        answer: "서쪽",
+        success: "정확합니다. 회전 방향을 잘 계산했습니다."
+    },
+    {
+        id: 4,
+        title: "문자 규칙",
+        difficulty: "보통",
+        question: "A, C, F, J 다음에 올 알파벳은 무엇일까요?",
+        hint: "간격이 2, 3, 4로 늘어나고 있습니다.",
+        answer: "O",
+        success: "간격이 하나씩 증가하는 규칙을 찾았습니다."
+    },
+    {
+        id: 5,
+        title: "최종 관문",
+        difficulty: "어려움",
+        question: "세 자리 수 중 각 자리 숫자의 합이 6이고, 백의 자리는 십의 자리보다 1 크며, 일의 자리는 2입니다. 이 수는?",
+        hint: "백의 자리를 x라고 하면 십의 자리는 x-1, 일의 자리는 2입니다.",
+        answer: "312",
+        success: "마지막 퍼즐까지 클리어했습니다. 전체 레벨 완료입니다."
     }
+];
 
-    statusMessage.textContent = message;
-    statusMessage.dataset.state = type;
+const state = {
+    currentLevel: 1,
+    unlockedLevel: 1,
+    completedLevels: new Set(),
+    hintVisible: false
+};
+
+const levelList = document.getElementById("level-list");
+const puzzleTag = document.getElementById("puzzle-tag");
+const puzzleTitle = document.getElementById("puzzle-title");
+const difficultyBadge = document.getElementById("difficulty-badge");
+const puzzleQuestion = document.getElementById("puzzle-question");
+const puzzleHint = document.getElementById("puzzle-hint");
+const answerInput = document.getElementById("answer-input");
+const feedbackBox = document.getElementById("feedback-box");
+const submitButton = document.getElementById("submit-button");
+const hintButton = document.getElementById("hint-button");
+const resetButton = document.getElementById("reset-button");
+const progressText = document.getElementById("progress-text");
+const currentLevelText = document.getElementById("current-level-text");
+const statusChip = document.getElementById("status-chip");
+const progressBar = document.getElementById("progress-bar");
+
+function normalizeAnswer(value) {
+    return value.trim().toLowerCase().replace(/\s+/g, "");
 }
 
-function getSafeLabel(index) {
-    const labels = ["예시 인물 A", "예시 인물 B"];
-    return labels[index] || `예시 인물 ${index + 1}`;
+function getPuzzle(level) {
+    return puzzles.find((puzzle) => puzzle.id === level);
 }
 
-async function loadModel() {
-    updateStatus("모델을 준비하는 중입니다.");
+function setFeedback(message, type = "info") {
+    feedbackBox.textContent = message;
+    feedbackBox.className = `feedback-box ${type}`;
+}
 
-    const modelURL = MODEL_URL + "model.json";
-    const metadataURL = MODEL_URL + "metadata.json";
+function renderLevels() {
+    levelList.innerHTML = "";
 
-    model = await tmImage.load(modelURL, metadataURL);
-    maxPredictions = model.getTotalClasses();
-    labelContainer = document.getElementById("label-container");
-    labelContainer.innerHTML = "";
+    puzzles.forEach((puzzle) => {
+        const button = document.createElement("button");
+        const locked = puzzle.id > state.unlockedLevel;
+        const completed = state.completedLevels.has(puzzle.id);
 
-    for (let i = 0; i < maxPredictions; i += 1) {
-        const predictionBar = document.createElement("div");
-        predictionBar.className = "prediction-bar";
-        predictionBar.innerHTML = `
-            <div class="label-text">
-                <span class="class-label">${getSafeLabel(i)}</span>
-                <span class="probability-text">0%</span>
-            </div>
-            <div class="bar-bg">
-                <div class="bar-fill"></div>
-            </div>
+        button.type = "button";
+        button.className = "level-button";
+        if (puzzle.id === state.currentLevel) {
+            button.classList.add("current");
+        }
+        if (completed) {
+            button.classList.add("completed");
+        }
+        button.disabled = locked;
+        button.innerHTML = `
+            <strong>Level ${puzzle.id}. ${puzzle.title}</strong>
+            <span>${locked ? "잠김" : completed ? "클리어 완료" : puzzle.difficulty}</span>
         `;
-        labelContainer.appendChild(predictionBar);
-    }
 
-    updateStatus("모델 준비가 완료되었습니다. 사진을 올리고 분석을 시작해 주세요.", "success");
-}
+        if (!locked) {
+            button.addEventListener("click", () => {
+                state.currentLevel = puzzle.id;
+                state.hintVisible = false;
+                render();
+            });
+        }
 
-function resetPredictions() {
-    if (!labelContainer) {
-        return;
-    }
-
-    Array.from(labelContainer.children).forEach((bar, index) => {
-        bar.querySelector(".class-label").textContent = getSafeLabel(index);
-        bar.querySelector(".probability-text").textContent = "0%";
-        bar.querySelector(".bar-fill").style.width = "0%";
+        levelList.appendChild(button);
     });
 }
 
-imageInput.addEventListener("change", (event) => {
-    const file = event.target.files[0];
+function renderPuzzle() {
+    const puzzle = getPuzzle(state.currentLevel);
 
-    if (!file) {
-        return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = (loadEvent) => {
-        imagePreview.src = loadEvent.target.result;
-        imagePreview.style.display = "block";
-        uploadPlaceholder.style.display = "none";
-        predictBtn.style.display = "inline-block";
-        resetPredictions();
-        updateStatus("이미지가 준비되었습니다. 분석 시작 버튼을 눌러 주세요.", "info");
-    };
-    reader.readAsDataURL(file);
-});
-
-async function predict() {
-    if (!imagePreview.src) {
-        updateStatus("먼저 분석할 이미지를 선택해 주세요.", "error");
-        return;
-    }
-
-    try {
-        if (!model) {
-            await loadModel();
-        }
-
-        predictBtn.disabled = true;
-        predictBtn.textContent = "분석 중...";
-        updateStatus("브라우저에서 이미지를 분석하고 있습니다.", "info");
-
-        const prediction = await model.predict(imagePreview);
-        prediction.forEach((item, index) => {
-            const probability = Math.round(item.probability * 100);
-            const bar = labelContainer.children[index];
-            bar.querySelector(".class-label").textContent = getSafeLabel(index);
-            bar.querySelector(".probability-text").textContent = `${probability}%`;
-            bar.querySelector(".bar-fill").style.width = `${probability}%`;
-        });
-
-        updateStatus("분석이 완료되었습니다. 결과는 참고용 상대 점수입니다.", "success");
-    } catch (error) {
-        console.error(error);
-        updateStatus("모델을 불러오거나 분석하는 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.", "error");
-    } finally {
-        predictBtn.disabled = false;
-        predictBtn.textContent = "분석 시작";
-    }
+    puzzleTag.textContent = `LEVEL ${puzzle.id}`;
+    puzzleTitle.textContent = puzzle.title;
+    difficultyBadge.textContent = puzzle.difficulty;
+    puzzleQuestion.textContent = puzzle.question;
+    puzzleHint.textContent = state.hintVisible ? puzzle.hint : "힌트 버튼을 눌러 필요할 때만 확인하세요.";
+    answerInput.value = "";
+    answerInput.focus();
 }
 
-predictBtn.addEventListener("click", predict);
+function renderProgress() {
+    const completedCount = state.completedLevels.size;
+    const totalCount = puzzles.length;
+    const progress = (completedCount / totalCount) * 100;
 
-loadModel().catch((error) => {
-    console.error(error);
-    updateStatus("모델 준비에 실패했습니다. 네트워크 상태를 확인한 뒤 다시 열어 주세요.", "error");
+    progressText.textContent = `${completedCount} / ${totalCount} 완료`;
+    currentLevelText.textContent = `Level ${state.currentLevel}`;
+    statusChip.textContent = completedCount === totalCount ? "전체 클리어" : state.completedLevels.has(state.currentLevel) ? "클리어" : "진행 중";
+    progressBar.style.width = `${progress}%`;
+}
+
+function render() {
+    renderLevels();
+    renderPuzzle();
+    renderProgress();
+}
+
+function unlockNextLevel(level) {
+    state.completedLevels.add(level);
+    state.unlockedLevel = Math.max(state.unlockedLevel, Math.min(level + 1, puzzles.length));
+}
+
+function submitAnswer() {
+    const puzzle = getPuzzle(state.currentLevel);
+    const userAnswer = normalizeAnswer(answerInput.value);
+    const correctAnswer = normalizeAnswer(puzzle.answer);
+
+    if (!userAnswer) {
+        setFeedback("정답을 입력한 뒤 확인해 주세요.", "error");
+        return;
+    }
+
+    if (userAnswer !== correctAnswer) {
+        setFeedback("정답이 아닙니다. 힌트를 보거나 다시 생각해 보세요.", "error");
+        return;
+    }
+
+    unlockNextLevel(puzzle.id);
+
+    if (puzzle.id < puzzles.length) {
+        state.currentLevel = puzzle.id + 1;
+        state.hintVisible = false;
+        setFeedback(`${puzzle.success} Level ${state.currentLevel}로 이동합니다.`, "success");
+    } else {
+        setFeedback(`${puzzle.success} 처음부터 다시 도전해 보세요.`, "success");
+    }
+
+    render();
+}
+
+function showHint() {
+    state.hintVisible = true;
+    const puzzle = getPuzzle(state.currentLevel);
+    puzzleHint.textContent = puzzle.hint;
+    setFeedback("힌트를 열었습니다. 답을 다시 조합해 보세요.", "info");
+}
+
+function resetGame() {
+    state.currentLevel = 1;
+    state.unlockedLevel = 1;
+    state.completedLevels = new Set();
+    state.hintVisible = false;
+    setFeedback("진행 상황을 초기화했습니다. Level 1부터 다시 시작합니다.", "info");
+    render();
+}
+
+submitButton.addEventListener("click", submitAnswer);
+hintButton.addEventListener("click", showHint);
+resetButton.addEventListener("click", resetGame);
+answerInput.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+        submitAnswer();
+    }
 });
+
+render();
