@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daily Utility Lab | 날짜 계산, 더치페이, 텍스트 정리</title>
-    <meta name="description" content="날짜 차이 계산, 더치페이 정산, 텍스트 정리를 한 번에 처리할 수 있는 일상형 브라우저 도구 모음입니다.">
+    <title>Daily Utility Lab | 날짜 계산, 더치페이, 나이 계산, 퍼센트 계산, 텍스트 정리</title>
+    <meta name="description" content="날짜 차이 계산, 더치페이 정산, 나이 계산, 퍼센트 계산, 텍스트 정리를 한 번에 처리할 수 있는 일상형 브라우저 도구 모음입니다.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -32,7 +32,7 @@
                 <div>
                     <p class="eyebrow">Everyday Web Tools</p>
                     <h1>매일 자주 쓰는 계산과 정리를 한 화면에서 끝내는 생활 도구 사이트</h1>
-                    <p class="hero-copy">복잡한 가입 절차 없이 날짜 계산, 인원별 금액 정산, 텍스트 정리를 바로 처리할 수 있도록 구성했습니다. 모든 계산은 브라우저 안에서만 실행됩니다.</p>
+                    <p class="hero-copy">복잡한 가입 절차 없이 날짜 계산, 인원별 금액 정산, 나이 확인, 퍼센트 계산, 텍스트 정리를 바로 처리할 수 있도록 구성했습니다. 모든 계산은 브라우저 안에서만 실행됩니다.</p>
                     <div class="hero-actions">
                         <a class="primary-link" href="#tools">도구 바로 사용하기</a>
                         <a class="secondary-link" href="guide.html">어떻게 쓰는지 보기</a>
@@ -49,6 +49,14 @@
                         <strong>총액, 인원 수, 추가 비율 자동 분배</strong>
                     </article>
                     <article class="mini-card">
+                        <p class="mini-label">나이 계산</p>
+                        <strong>만 나이, 개월 수, 다음 생일까지 확인</strong>
+                    </article>
+                    <article class="mini-card">
+                        <p class="mini-label">퍼센트 계산</p>
+                        <strong>비율 값, 증가율, 할인 결과 빠른 계산</strong>
+                    </article>
+                    <article class="mini-card">
                         <p class="mini-label">텍스트 정리</p>
                         <strong>공백 제거, 중복 줄 정리, 문자 수 확인</strong>
                     </article>
@@ -59,7 +67,7 @@
         <section class="summary-strip">
             <div class="wrap summary-grid">
                 <article>
-                    <p class="stat">3</p>
+                    <p class="stat">5</p>
                     <p class="stat-label">즉시 사용 가능한 핵심 도구</p>
                 </article>
                 <article>
@@ -137,10 +145,64 @@
                     </div>
                 </article>
 
-                <article class="tool-card tool-card-wide">
+                <article class="tool-card">
                     <div class="card-head">
                         <div>
                             <p class="card-tag">Tool 03</p>
+                            <h3>나이 계산기</h3>
+                        </div>
+                        <span class="badge">생활 계산</span>
+                    </div>
+                    <p class="card-copy">생년월일 기준으로 만 나이, 살아온 일수, 다음 생일까지 남은 기간을 확인합니다.</p>
+                    <div class="field-grid two-col">
+                        <label class="field">
+                            <span>생년월일</span>
+                            <input id="birth-date" type="date">
+                        </label>
+                        <label class="field">
+                            <span>기준일</span>
+                            <input id="age-base-date" type="date">
+                        </label>
+                    </div>
+                    <button id="age-calc-button" class="action-button" type="button">나이 계산</button>
+                    <div id="age-result" class="result-box" aria-live="polite">
+                        생년월일과 기준일을 입력하면 나이 정보가 표시됩니다.
+                    </div>
+                </article>
+
+                <article class="tool-card">
+                    <div class="card-head">
+                        <div>
+                            <p class="card-tag">Tool 04</p>
+                            <h3>퍼센트 계산기</h3>
+                        </div>
+                        <span class="badge">비율 계산</span>
+                    </div>
+                    <p class="card-copy">전체 값에서 비율 값을 구하고, 증가율과 할인 적용 결과를 함께 계산합니다.</p>
+                    <div class="field-grid three-col">
+                        <label class="field">
+                            <span>기준 값</span>
+                            <input id="percent-base" type="number" step="any" placeholder="120000">
+                        </label>
+                        <label class="field">
+                            <span>비율(%)</span>
+                            <input id="percent-rate" type="number" step="any" placeholder="15">
+                        </label>
+                        <label class="field">
+                            <span>변경 후 값</span>
+                            <input id="percent-target" type="number" step="any" placeholder="138000">
+                        </label>
+                    </div>
+                    <button id="percent-calc-button" class="action-button" type="button">퍼센트 계산</button>
+                    <div id="percent-result" class="result-box" aria-live="polite">
+                        기준 값과 비율 또는 변경 후 값을 입력하면 계산 결과가 표시됩니다.
+                    </div>
+                </article>
+
+                <article class="tool-card tool-card-wide">
+                    <div class="card-head">
+                        <div>
+                            <p class="card-tag">Tool 05</p>
                             <h3>텍스트 정리 도구</h3>
                         </div>
                         <span class="badge">문서 정돈</span>
@@ -212,7 +274,7 @@
         <div class="wrap footer-grid">
             <div>
                 <strong>Daily Utility Lab</strong>
-                <p>날짜 계산, 비용 정산, 텍스트 정리를 빠르게 처리하는 정적 웹 도구 모음입니다.</p>
+                <p>날짜 계산, 비용 정산, 나이 확인, 퍼센트 계산, 텍스트 정리를 빠르게 처리하는 정적 웹 도구 모음입니다.</p>
             </div>
             <nav class="footer-nav" aria-label="하단 메뉴">
                 <a href="about.html">소개</a>

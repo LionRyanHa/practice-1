@@ -9,6 +9,17 @@ const billExtraInput = document.getElementById("bill-extra");
 const billCalcButton = document.getElementById("bill-calc-button");
 const billResult = document.getElementById("bill-result");
 
+const birthDateInput = document.getElementById("birth-date");
+const ageBaseDateInput = document.getElementById("age-base-date");
+const ageCalcButton = document.getElementById("age-calc-button");
+const ageResult = document.getElementById("age-result");
+
+const percentBaseInput = document.getElementById("percent-base");
+const percentRateInput = document.getElementById("percent-rate");
+const percentTargetInput = document.getElementById("percent-target");
+const percentCalcButton = document.getElementById("percent-calc-button");
+const percentResult = document.getElementById("percent-result");
+
 const textInput = document.getElementById("text-input");
 const textOutput = document.getElementById("text-output");
 const trimSpacesInput = document.getElementById("trim-spaces");
@@ -44,8 +55,8 @@ function calculateDateDifference() {
         return;
     }
 
-    const start = new Date(`${startDateInput.value}T00:00:00`);
-    const end = new Date(`${endDateInput.value}T00:00:00`);
+    const start = new Date(startDateInput.value + "T00:00:00");
+    const end = new Date(endDateInput.value + "T00:00:00");
     const milliseconds = end.getTime() - start.getTime();
     const days = Math.round(milliseconds / 86400000);
     const absoluteDays = Math.abs(days);
@@ -54,16 +65,12 @@ function calculateDateDifference() {
 
     let relationText = "같은 날짜입니다.";
     if (days > 0) {
-        relationText = `종료일까지 ${days}일 남았습니다.`;
+        relationText = "종료일까지 " + days + "일 남았습니다.";
     } else if (days < 0) {
-        relationText = `종료일이 ${absoluteDays}일 지났습니다.`;
+        relationText = "종료일이 " + absoluteDays + "일 지났습니다.";
     }
 
-    dateResult.innerHTML = `
-        <strong>${relationText}</strong><br>
-        전체 차이: ${absoluteDays}일<br>
-        주 단위 환산: ${weeks}주 ${remainDays}일
-    `;
+    dateResult.innerHTML = "<strong>" + relationText + "</strong><br>전체 차이: " + absoluteDays + "일<br>주 단위 환산: " + weeks + "주 " + remainDays + "일";
 }
 
 function calculateBillSplit() {
@@ -88,11 +95,90 @@ function calculateBillSplit() {
     const total = amount * (1 + extra / 100);
     const perPerson = total / people;
 
-    billResult.innerHTML = `
-        <strong>1인당 ${formatNumber(perPerson)}원</strong><br>
-        추가 비율 적용 총액: ${formatNumber(total)}원<br>
-        원금 기준 총액: ${formatNumber(amount)}원
-    `;
+    billResult.innerHTML = "<strong>1인당 " + formatNumber(perPerson) + "원</strong><br>추가 비율 적용 총액: " + formatNumber(total) + "원<br>원금 기준 총액: " + formatNumber(amount) + "원";
+}
+
+function calculateAge() {
+    if (!birthDateInput || !ageBaseDateInput || !ageResult) {
+        return;
+    }
+
+    if (!birthDateInput.value || !ageBaseDateInput.value) {
+        ageResult.textContent = "생년월일과 기준일을 모두 선택해 주세요.";
+        return;
+    }
+
+    const birthDate = new Date(birthDateInput.value + "T00:00:00");
+    const baseDate = new Date(ageBaseDateInput.value + "T00:00:00");
+
+    if (birthDate.getTime() > baseDate.getTime()) {
+        ageResult.textContent = "기준일은 생년월일보다 같거나 이후여야 합니다.";
+        return;
+    }
+
+    let age = baseDate.getFullYear() - birthDate.getFullYear();
+    const hasBirthdayPassed =
+        baseDate.getMonth() > birthDate.getMonth() ||
+        (baseDate.getMonth() === birthDate.getMonth() && baseDate.getDate() >= birthDate.getDate());
+
+    if (!hasBirthdayPassed) {
+        age -= 1;
+    }
+
+    let monthDiff = (baseDate.getFullYear() - birthDate.getFullYear()) * 12;
+    monthDiff += baseDate.getMonth() - birthDate.getMonth();
+    if (baseDate.getDate() < birthDate.getDate()) {
+        monthDiff -= 1;
+    }
+
+    const livedDays = Math.floor((baseDate.getTime() - birthDate.getTime()) / 86400000);
+    const nextBirthday = new Date(baseDate.getFullYear(), birthDate.getMonth(), birthDate.getDate());
+    if (nextBirthday.getTime() < baseDate.getTime()) {
+        nextBirthday.setFullYear(baseDate.getFullYear() + 1);
+    }
+    const daysUntilBirthday = Math.ceil((nextBirthday.getTime() - baseDate.getTime()) / 86400000);
+
+    ageResult.innerHTML = "<strong>만 " + age + "세</strong><br>누적 개월 수: " + formatNumber(monthDiff) + "개월<br>살아온 일수: " + formatNumber(livedDays) + "일<br>다음 생일까지: " + formatNumber(daysUntilBirthday) + "일";
+}
+
+function calculatePercent() {
+    if (!percentBaseInput || !percentRateInput || !percentTargetInput || !percentResult) {
+        return;
+    }
+
+    const base = Number(percentBaseInput.value);
+    const rate = Number(percentRateInput.value);
+    const target = Number(percentTargetInput.value);
+    const hasBase = percentBaseInput.value !== "" && Number.isFinite(base) && base !== 0;
+    const hasRate = percentRateInput.value !== "" && Number.isFinite(rate);
+    const hasTarget = percentTargetInput.value !== "" && Number.isFinite(target);
+
+    if (!hasBase) {
+        percentResult.textContent = "기준 값을 0이 아닌 숫자로 입력해 주세요.";
+        return;
+    }
+
+    if (!hasRate && !hasTarget) {
+        percentResult.textContent = "비율 또는 변경 후 값 중 하나 이상을 입력해 주세요.";
+        return;
+    }
+
+    const lines = [];
+
+    if (hasRate) {
+        const percentValue = base * (rate / 100);
+        lines.push("<strong>기준 값의 " + rate + "%는 " + formatNumber(percentValue) + "</strong>");
+        lines.push("비율 적용 증가값: " + formatNumber(base + percentValue));
+        lines.push("비율 적용 감소값: " + formatNumber(base - percentValue));
+    }
+
+    if (hasTarget) {
+        const changeRate = ((target - base) / base) * 100;
+        lines.push("변경 후 값 기준 증감률: " + changeRate.toFixed(2) + "%");
+        lines.push("기준 값 대비 차이: " + formatNumber(target - base));
+    }
+
+    percentResult.innerHTML = lines.join("<br>");
 }
 
 function updateTextMetrics(value) {
@@ -184,12 +270,45 @@ function initializeDateTool() {
     calculateDateDifference();
 }
 
+function initializeAgeTool() {
+    if (!birthDateInput || !ageBaseDateInput) {
+        return;
+    }
+
+    const today = new Date();
+    const defaultBirthDate = new Date(today);
+    defaultBirthDate.setFullYear(today.getFullYear() - 30);
+
+    birthDateInput.value = formatDate(defaultBirthDate);
+    ageBaseDateInput.value = formatDate(today);
+    calculateAge();
+}
+
+function initializePercentTool() {
+    if (!percentBaseInput || !percentRateInput || !percentTargetInput) {
+        return;
+    }
+
+    percentBaseInput.value = "120000";
+    percentRateInput.value = "15";
+    percentTargetInput.value = "138000";
+    calculatePercent();
+}
+
 if (dateCalcButton) {
     dateCalcButton.addEventListener("click", calculateDateDifference);
 }
 
 if (billCalcButton) {
     billCalcButton.addEventListener("click", calculateBillSplit);
+}
+
+if (ageCalcButton) {
+    ageCalcButton.addEventListener("click", calculateAge);
+}
+
+if (percentCalcButton) {
+    percentCalcButton.addEventListener("click", calculatePercent);
 }
 
 if (textCleanButton) {
@@ -209,6 +328,8 @@ if (textInput) {
 }
 
 initializeDateTool();
+initializeAgeTool();
+initializePercentTool();
 
 if (charCount && lineCount && wordCount) {
     updateTextMetrics("");
