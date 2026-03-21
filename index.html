@@ -3,86 +3,227 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Puzzle Steps | 레벨 퍼즐 게임</title>
-    <meta name="description" content="단계별로 퍼즐을 풀며 다음 레벨을 여는 브라우저 퍼즐 게임입니다.">
+    <title>Daily Utility Lab | 날짜 계산, 더치페이, 텍스트 정리</title>
+    <meta name="description" content="날짜 차이 계산, 더치페이 정산, 텍스트 정리를 한 번에 처리할 수 있는 일상형 브라우저 도구 모음입니다.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=SUIT:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <main class="game-shell">
-        <section class="hero-panel">
-            <p class="eyebrow">Puzzle Steps</p>
-            <h1>레벨을 하나씩 열어가며 퍼즐을 푸는 게임</h1>
-            <p class="hero-copy">정답을 맞히면 다음 스테이지가 열립니다. 막히면 힌트를 보고, 끝까지 클리어하면 처음부터 다시 도전할 수 있습니다.</p>
+    <header class="site-header">
+        <div class="wrap header-row">
+            <a class="brand" href="index.html">
+                <span class="brand-mark">D</span>
+                <span>Daily Utility Lab</span>
+            </a>
+            <nav class="site-nav" aria-label="주요 메뉴">
+                <a href="guide.html">이용안내</a>
+                <a href="faq.html">FAQ</a>
+                <a href="about.html">소개</a>
+                <a href="contact.html">문의</a>
+            </nav>
+        </div>
+    </header>
 
-            <div class="hero-stats">
-                <article class="stat-card">
-                    <span class="stat-label">진행률</span>
-                    <strong id="progress-text">0 / 5 완료</strong>
-                </article>
-                <article class="stat-card">
-                    <span class="stat-label">현재 레벨</span>
-                    <strong id="current-level-text">Level 1</strong>
-                </article>
-                <article class="stat-card">
-                    <span class="stat-label">상태</span>
-                    <strong id="status-chip">도전 시작</strong>
-                </article>
-            </div>
+    <main>
+        <section class="hero-section">
+            <div class="wrap hero-grid">
+                <div>
+                    <p class="eyebrow">Everyday Web Tools</p>
+                    <h1>매일 자주 쓰는 계산과 정리를 한 화면에서 끝내는 생활 도구 사이트</h1>
+                    <p class="hero-copy">복잡한 가입 절차 없이 날짜 계산, 인원별 금액 정산, 텍스트 정리를 바로 처리할 수 있도록 구성했습니다. 모든 계산은 브라우저 안에서만 실행됩니다.</p>
+                    <div class="hero-actions">
+                        <a class="primary-link" href="#tools">도구 바로 사용하기</a>
+                        <a class="secondary-link" href="guide.html">어떻게 쓰는지 보기</a>
+                    </div>
+                </div>
 
-            <div class="progress-track" aria-hidden="true">
-                <div id="progress-bar" class="progress-bar"></div>
+                <div class="hero-panel">
+                    <article class="mini-card">
+                        <p class="mini-label">날짜 계산</p>
+                        <strong>디데이, 기간 차이, 주 수 환산</strong>
+                    </article>
+                    <article class="mini-card">
+                        <p class="mini-label">더치페이</p>
+                        <strong>총액, 인원 수, 추가 비율 자동 분배</strong>
+                    </article>
+                    <article class="mini-card">
+                        <p class="mini-label">텍스트 정리</p>
+                        <strong>공백 제거, 중복 줄 정리, 문자 수 확인</strong>
+                    </article>
+                </div>
             </div>
         </section>
 
-        <section class="board-layout">
-            <aside class="level-panel">
-                <div class="panel-head">
-                    <h2>레벨 선택</h2>
-                    <button id="reset-button" class="ghost-button" type="button">처음부터</button>
-                </div>
-                <div id="level-list" class="level-list" aria-label="퍼즐 레벨 목록"></div>
-            </aside>
+        <section class="summary-strip">
+            <div class="wrap summary-grid">
+                <article>
+                    <p class="stat">3</p>
+                    <p class="stat-label">즉시 사용 가능한 핵심 도구</p>
+                </article>
+                <article>
+                    <p class="stat">0</p>
+                    <p class="stat-label">회원가입과 앱 설치 없이 사용</p>
+                </article>
+                <article>
+                    <p class="stat">100%</p>
+                    <p class="stat-label">브라우저 내부 계산 처리</p>
+                </article>
+            </div>
+        </section>
 
-            <section class="puzzle-panel">
-                <div class="panel-head">
-                    <div>
-                        <p id="puzzle-tag" class="panel-tag">LEVEL 1</p>
-                        <h2 id="puzzle-title">숫자 패턴</h2>
-                    </div>
-                    <span id="difficulty-badge" class="difficulty-badge">쉬움</span>
+        <section id="tools" class="tools-section">
+            <div class="wrap section-head">
+                <div>
+                    <p class="eyebrow">Useful Tools</p>
+                    <h2>일상에서 가장 자주 찾는 기능만 골랐습니다</h2>
                 </div>
+                <p class="section-copy">광고를 붙이기 위한 억지형 페이지가 아니라, 실제로 바로 써먹을 수 있는 기능 중심으로 구성했습니다.</p>
+            </div>
 
-                <div class="puzzle-card">
-                    <p class="card-label">문제</p>
-                    <p id="puzzle-question" class="puzzle-question"></p>
-                </div>
-
-                <div class="puzzle-grid">
-                    <div class="puzzle-card accent-card">
-                        <p class="card-label">힌트</p>
-                        <p id="puzzle-hint" class="puzzle-hint"></p>
-                    </div>
-                    <div class="puzzle-card">
-                        <p class="card-label">입력</p>
-                        <label class="answer-box" for="answer-input">
-                            <input id="answer-input" type="text" autocomplete="off" placeholder="정답 입력">
-                        </label>
-                        <div class="button-row">
-                            <button id="submit-button" class="primary-button" type="button">정답 확인</button>
-                            <button id="hint-button" class="ghost-button" type="button">힌트 보기</button>
+            <div class="wrap tool-grid">
+                <article class="tool-card">
+                    <div class="card-head">
+                        <div>
+                            <p class="card-tag">Tool 01</p>
+                            <h3>날짜 차이 계산기</h3>
                         </div>
+                        <span class="badge">일정 관리</span>
                     </div>
-                </div>
+                    <p class="card-copy">두 날짜 사이의 남은 일수, 지난 일수, 주 단위 환산을 빠르게 확인합니다.</p>
+                    <div class="field-grid two-col">
+                        <label class="field">
+                            <span>시작일</span>
+                            <input id="start-date" type="date">
+                        </label>
+                        <label class="field">
+                            <span>종료일</span>
+                            <input id="end-date" type="date">
+                        </label>
+                    </div>
+                    <button id="date-calc-button" class="action-button" type="button">날짜 계산</button>
+                    <div id="date-result" class="result-box" aria-live="polite">
+                        날짜를 선택하면 차이가 표시됩니다.
+                    </div>
+                </article>
 
-                <div id="feedback-box" class="feedback-box" aria-live="polite">
-                    첫 번째 퍼즐부터 시작해 보세요.
-                </div>
-            </section>
+                <article class="tool-card">
+                    <div class="card-head">
+                        <div>
+                            <p class="card-tag">Tool 02</p>
+                            <h3>더치페이 계산기</h3>
+                        </div>
+                        <span class="badge">모임 정산</span>
+                    </div>
+                    <p class="card-copy">식사비, 배달비, 회비처럼 인원별로 나눠야 하는 금액을 쉽게 계산합니다.</p>
+                    <div class="field-grid three-col">
+                        <label class="field">
+                            <span>총 금액</span>
+                            <input id="bill-amount" type="number" min="0" step="100" placeholder="45000">
+                        </label>
+                        <label class="field">
+                            <span>인원 수</span>
+                            <input id="bill-people" type="number" min="1" step="1" placeholder="3">
+                        </label>
+                        <label class="field">
+                            <span>추가 비율(%)</span>
+                            <input id="bill-extra" type="number" min="0" step="1" placeholder="10">
+                        </label>
+                    </div>
+                    <button id="bill-calc-button" class="action-button" type="button">금액 나누기</button>
+                    <div id="bill-result" class="result-box" aria-live="polite">
+                        총액과 인원을 입력하면 1인당 금액이 표시됩니다.
+                    </div>
+                </article>
+
+                <article class="tool-card tool-card-wide">
+                    <div class="card-head">
+                        <div>
+                            <p class="card-tag">Tool 03</p>
+                            <h3>텍스트 정리 도구</h3>
+                        </div>
+                        <span class="badge">문서 정돈</span>
+                    </div>
+                    <p class="card-copy">메모, 키워드 목록, 복사한 문장을 빠르게 다듬고 문자 수까지 확인합니다.</p>
+                    <label class="field">
+                        <span>원본 텍스트</span>
+                        <textarea id="text-input" rows="10" placeholder="여기에 정리할 텍스트를 붙여 넣으세요."></textarea>
+                    </label>
+                    <div class="toggle-row">
+                        <label><input id="trim-spaces" type="checkbox" checked> 줄 앞뒤 공백 제거</label>
+                        <label><input id="remove-empty" type="checkbox" checked> 빈 줄 제거</label>
+                        <label><input id="dedupe-lines" type="checkbox"> 중복 줄 제거</label>
+                    </div>
+                    <div class="button-row">
+                        <button id="text-clean-button" class="action-button" type="button">텍스트 정리</button>
+                        <button id="text-copy-button" class="ghost-button" type="button">결과 복사</button>
+                        <button id="text-reset-button" class="ghost-button" type="button">초기화</button>
+                    </div>
+                    <div class="metrics-grid">
+                        <article class="metric-card">
+                            <span>문자 수</span>
+                            <strong id="char-count">0</strong>
+                        </article>
+                        <article class="metric-card">
+                            <span>줄 수</span>
+                            <strong id="line-count">0</strong>
+                        </article>
+                        <article class="metric-card">
+                            <span>단어 수</span>
+                            <strong id="word-count">0</strong>
+                        </article>
+                    </div>
+                    <label class="field">
+                        <span>정리된 결과</span>
+                        <textarea id="text-output" rows="10" readonly placeholder="정리 결과가 여기에 표시됩니다."></textarea>
+                    </label>
+                    <div id="text-feedback" class="result-box muted" aria-live="polite">
+                        옵션을 선택한 뒤 텍스트 정리 버튼을 눌러 주세요.
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section class="trust-section">
+            <div class="wrap trust-grid">
+                <article class="info-card">
+                    <h2>이 사이트가 실사용 중심인 이유</h2>
+                    <ul class="plain-list">
+                        <li>광고 클릭 유도 문구나 보상형 요소 없이 바로 기능을 제공합니다.</li>
+                        <li>회원가입과 개인정보 입력 없이 핵심 도구를 사용할 수 있습니다.</li>
+                        <li>사이트 소개, 이용안내, 개인정보 처리방침, 문의 페이지를 분리해 운영 정보를 명확히 공개합니다.</li>
+                    </ul>
+                </article>
+                <article class="info-card accent-card">
+                    <h2>빠른 이동</h2>
+                    <div class="link-stack">
+                        <a href="guide.html">도구별 사용 방법 보기</a>
+                        <a href="faq.html">자주 묻는 질문 확인</a>
+                        <a href="privacy.html">개인정보 처리방침 보기</a>
+                        <a href="terms.html">이용약관 보기</a>
+                    </div>
+                </article>
+            </div>
         </section>
     </main>
+
+    <footer class="site-footer">
+        <div class="wrap footer-grid">
+            <div>
+                <strong>Daily Utility Lab</strong>
+                <p>날짜 계산, 비용 정산, 텍스트 정리를 빠르게 처리하는 정적 웹 도구 모음입니다.</p>
+            </div>
+            <nav class="footer-nav" aria-label="하단 메뉴">
+                <a href="about.html">소개</a>
+                <a href="guide.html">이용안내</a>
+                <a href="faq.html">FAQ</a>
+                <a href="privacy.html">개인정보 처리방침</a>
+                <a href="terms.html">이용약관</a>
+                <a href="contact.html">문의</a>
+            </nav>
+        </div>
+    </footer>
 
     <script src="main.js"></script>
 </body>

@@ -2,14 +2,73 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="refresh" content="0; url=index.html">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Puzzle Steps</title>
-    <script>
-        window.location.replace("index.html");
-    </script>
+    <title>사이트 소개 | Daily Utility Lab</title>
+    <meta name="description" content="Daily Utility Lab의 운영 목적과 제공 기능을 안내합니다.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <p><a href="index.html">게임으로 이동</a></p>
+    <header class="site-header">
+        <div class="wrap header-row">
+            <a class="brand" href="index.html"><span class="brand-mark">D</span><span>Daily Utility Lab</span></a>
+            <nav class="site-nav" aria-label="주요 메뉴">
+                <a href="index.html">홈</a>
+                <a href="guide.html">이용안내</a>
+                <a href="faq.html">FAQ</a>
+                <a href="contact.html">문의</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="page-hero">
+            <div class="wrap">
+                <article class="content-card">
+                    <p class="page-kicker">About</p>
+                    <h1>실제 사용 빈도가 높은 브라우저 도구만 모았습니다</h1>
+                    <p class="page-lead">Daily Utility Lab은 날짜 계산, 비용 정산, 텍스트 정리처럼 일상에서 자주 반복되는 작업을 빠르게 처리할 수 있도록 만든 정적 웹사이트입니다.</p>
+                </article>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <div class="wrap content-body">
+                <article class="content-card">
+                    <h2>운영 목적</h2>
+                    <p>이 사이트는 클릭 유도형 콘텐츠보다 실사용 도구 자체에 집중합니다. 사용자가 방문 즉시 기능을 사용할 수 있어야 하며, 로그인이나 앱 설치 없이 목적을 달성할 수 있도록 설계했습니다.</p>
+                </article>
+                <article class="content-card">
+                    <h2>현재 제공 기능</h2>
+                    <ul>
+                        <li>두 날짜 사이의 차이를 계산하는 날짜 계산기</li>
+                        <li>총액을 인원별로 나누는 더치페이 계산기</li>
+                        <li>공백 제거와 줄 정리를 돕는 텍스트 정리 도구</li>
+                    </ul>
+                </article>
+                <article class="content-card">
+                    <h2>운영 원칙</h2>
+                    <ul>
+                        <li>도구 사용에 필수적이지 않은 개인정보를 요구하지 않습니다.</li>
+                        <li>각 페이지에서 사이트 목적과 정책을 명확히 공개합니다.</li>
+                        <li>오해를 부를 수 있는 과장 표현이나 허위 보상 문구를 사용하지 않습니다.</li>
+                    </ul>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="wrap footer-grid">
+            <div><strong>Daily Utility Lab</strong><p>일상 작업을 빠르게 끝내는 브라우저 기반 생활 도구 사이트</p></div>
+            <nav class="footer-nav" aria-label="하단 메뉴">
+                <a href="privacy.html">개인정보 처리방침</a>
+                <a href="terms.html">이용약관</a>
+                <a href="contact.html">문의</a>
+            </nav>
+        </div>
+    </footer>
 </body>
 </html>
