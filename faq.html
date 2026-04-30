@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FAQ | Daily Utility Lab</title>
-    <meta name="description" content="Daily Utility Lab 사용 중 자주 묻는 질문과 운영 기준을 자세히 정리했습니다.">
+    <title>FAQ | Frame Atelier</title>
+    <meta name="description" content="Frame Atelier 사용 중 자주 묻는 질문과 카메라 권한, 저장 방식, 모바일 지원 기준을 안내합니다.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -13,10 +13,10 @@
 <body>
     <header class="site-header">
         <div class="wrap header-row">
-            <a class="brand" href="index.html"><span class="brand-mark">D</span><span>Daily Utility Lab</span></a>
+            <a class="brand" href="index.html"><span class="brand-mark">F</span><span>Frame Atelier</span></a>
             <nav class="site-nav" aria-label="주요 메뉴">
                 <a href="index.html">홈</a>
-                <a href="guide.html">이용안내</a>
+                <a href="guide.html">촬영가이드</a>
                 <a href="about.html">소개</a>
                 <a href="contact.html">문의</a>
             </nav>
@@ -28,8 +28,8 @@
             <div class="wrap">
                 <article class="content-card">
                     <p class="page-kicker">FAQ</p>
-                    <h1>사용 전후에 자주 확인하는 질문을 실제 운영 기준으로 정리했습니다</h1>
-                    <p class="page-lead">도구 사용 방식, 저장 여부, 모바일 지원, 광고 노출 기준, 문의 방법을 한 페이지에서 확인할 수 있습니다.</p>
+                    <h1>촬영 전후에 자주 확인하는 질문을 실제 사용 흐름 기준으로 정리했습니다</h1>
+                    <p class="page-lead">카메라 권한, 저장 방식, 모바일 사용성, 4컷 연속 촬영, 업로드 대체 흐름을 한 페이지에서 확인할 수 있습니다.</p>
                 </article>
             </div>
         </section>
@@ -37,36 +37,36 @@
         <section class="content-section">
             <div class="wrap content-body">
                 <article class="content-card">
-                    <h2>계산 결과나 입력한 텍스트가 서버에 저장되나요?</h2>
-                    <p>현재 공개된 도구는 브라우저 안에서 실행되는 정적 기능을 기준으로 운영합니다. 날짜 계산값, 더치페이 입력값, 텍스트 정리 원본과 결과는 회원 계정에 저장하지 않으며, 별도 사용자 데이터베이스를 운영하지 않습니다.</p>
+                    <h2>촬영한 사진이 서버에 저장되나요?</h2>
+                    <p>기본 촬영과 합성 흐름은 브라우저 내부 처리 기준으로 구성했습니다. 사용자가 촬영한 프레임 이미지는 세션 안에서만 확인하고 다운로드할 수 있게 설계했으며, 사이트가 회원 계정에 자동 저장하는 구조는 기본 동작에 포함하지 않습니다.</p>
                 </article>
                 <article class="content-card">
-                    <h2>모바일에서도 같은 기능을 사용할 수 있나요?</h2>
-                    <p>가능합니다. 입력창, 버튼, 결과 영역은 모바일 화면에서도 순서가 무너지지 않도록 반응형 레이아웃으로 구성했습니다. 다만 브라우저 종류에 따라 복사 기능이나 날짜 입력 UI는 다르게 보일 수 있습니다.</p>
+                    <h2>모바일에서도 사용할 수 있나요?</h2>
+                    <p>가능합니다. 전면 또는 후면 카메라를 선택할 수 있고, 레이아웃은 모바일 화면에서도 세로 흐름으로 자연스럽게 재배치됩니다. 다만 브라우저별 권한 UI와 카메라 전환 방식은 조금씩 다를 수 있습니다.</p>
                 </article>
                 <article class="content-card">
-                    <h2>계산 결과는 어느 정도까지 신뢰해도 되나요?</h2>
-                    <p>사이트는 일반적인 생활 계산 편의를 제공하지만, 법률, 세무, 의료, 투자처럼 전문 판단이 필요한 영역을 대체하지는 않습니다. 더치페이 정산이나 일정 계산도 최종 제출 전에는 사용자가 직접 다시 확인하는 것을 권장합니다.</p>
+                    <h2>카메라 버튼을 눌렀는데 작동하지 않는 이유는 무엇인가요?</h2>
+                    <p>브라우저 권한이 거부되었거나, HTTPS가 아닌 환경에서 카메라 접근이 제한되었을 가능성이 큽니다. 이 경우 권한 설정을 확인하거나 사진 업로드 입력으로 프레임만 먼저 테스트해 볼 수 있습니다.</p>
                 </article>
                 <article class="content-card">
-                    <h2>광고가 표시되면 기능 사용에 제한이 생기나요?</h2>
-                    <p>기능 사용 자체를 광고 시청이나 클릭과 묶을 계획은 없습니다. 광고가 도입되더라도 도구 접근을 막지 않는 범위에서 운영하며, 정책상 필요한 고지는 개인정보처리방침과 약관에 함께 반영합니다.</p>
+                    <h2>Film Strip은 어떻게 촬영되나요?</h2>
+                    <p>Film Strip 모드는 선택한 타이머를 기준으로 4장을 순서대로 촬영합니다. 촬영이 끝나면 세로형 포토부스 레이아웃으로 자동 합성되어 한 장의 PNG로 저장할 수 있습니다.</p>
                 </article>
                 <article class="content-card">
-                    <h2>이 사이트가 수집할 수 있는 자동 정보는 무엇인가요?</h2>
-                    <p>호스팅이나 광고 서비스 제공 과정에서 쿠키, 접속 로그, 브라우저 종류, 대략적인 지역 정보, IP 기반 통계 정보가 자동 수집될 수 있습니다. 자세한 내용은 <a href="privacy.html">개인정보 처리방침</a>에 정리해 두었습니다.</p>
+                    <h2>필터와 캡션을 나중에 다시 바꿀 수 있나요?</h2>
+                    <p>현재 세션에서 결과가 남아 있는 동안에는 필터, 캡션, 포인트 컬러를 바꾸면 같은 원본 프레임으로 다시 렌더링됩니다. 완전히 다른 구도가 필요하면 다시 촬영하면 됩니다.</p>
                 </article>
                 <article class="content-card">
-                    <h2>오류나 오타를 발견하면 어디에 알려야 하나요?</h2>
-                    <p><a href="contact.html">문의 페이지</a>에 정리한 운영 채널을 통해 제보할 수 있습니다. 어떤 기능에서 어떤 입력값으로 문제가 발생했는지 함께 남기면 확인 속도가 빨라집니다.</p>
+                    <h2>업로드한 사진도 똑같이 저장할 수 있나요?</h2>
+                    <p>가능합니다. 업로드한 이미지는 현재 선택한 프레임과 필터 기준으로 결과 캔버스에 반영되며, PNG 저장 버튼으로 내려받을 수 있습니다.</p>
                 </article>
                 <article class="content-card">
-                    <h2>이 사이트는 회원가입이나 유료 결제를 요구하나요?</h2>
-                    <p>현재 공개 기능은 회원가입 없이 사용할 수 있으며, 일반 사용자용 결제 기능도 제공하지 않습니다. 서비스 구조가 달라질 경우 관련 안내를 사이트 문서에 먼저 반영합니다.</p>
+                    <h2>세션 갤러리는 어디에 저장되나요?</h2>
+                    <p>세션 갤러리는 현재 페이지가 열려 있는 동안만 최근 결과를 보여주는 보조 영역입니다. 페이지를 새로고침하면 목록은 초기화될 수 있으므로 필요한 이미지는 바로 저장하는 것이 좋습니다.</p>
                 </article>
                 <article class="content-card">
-                    <h2>콘텐츠와 정책 페이지는 얼마나 자주 갱신되나요?</h2>
-                    <p>도구 로직 수정, 운영 채널 변경, 광고 정책 반영, 개인정보 처리 내용 변경이 있으면 관련 페이지를 같이 업데이트합니다. 중요한 문서에는 최종 업데이트 날짜를 표시해 최신 상태를 구분할 수 있게 유지합니다.</p>
+                    <h2>오류나 스타일 제안은 어디에 남기면 되나요?</h2>
+                    <p><a href="contact.html">문의 페이지</a>에 정리한 운영 채널을 통해 제보할 수 있습니다. 어떤 브라우저와 기기에서 어떤 모드가 문제였는지 함께 남기면 확인이 더 빠릅니다.</p>
                 </article>
             </div>
         </section>
@@ -74,7 +74,7 @@
 
     <footer class="site-footer">
         <div class="wrap footer-grid">
-            <div><strong>Daily Utility Lab</strong><p>생활형 도구 사이트 운영 관련 자주 묻는 질문 정리</p></div>
+            <div><strong>Frame Atelier</strong><p>카메라 권한과 저장 흐름 관련 자주 묻는 질문 정리</p></div>
             <nav class="footer-nav" aria-label="하단 메뉴">
                 <a href="privacy.html">개인정보 처리방침</a>
                 <a href="terms.html">이용약관</a>
