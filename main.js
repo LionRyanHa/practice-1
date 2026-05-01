@@ -1468,24 +1468,24 @@ function renderEditorial(context, options) {
 }
 
 function refreshStudioConfig() {
-    MODE_CONFIG.polaroid.summary = "Polaroid · 1장 촬영";
+    MODE_CONFIG.polaroid.summary = "Polaroid · 1장";
     MODE_CONFIG.polaroid.guide = "넓은 종이 여백이 있는 폴라로이드 레이아웃으로 저장됩니다.";
-    MODE_CONFIG.polaroid.buttonLabel = "Polaroid 촬영";
+    MODE_CONFIG.polaroid.buttonLabel = "한 장 촬영";
     MODE_CONFIG.polaroid.defaultCaption = "today's mood";
 
-    MODE_CONFIG.film.summary = "Film Strip · 4장 촬영";
+    MODE_CONFIG.film.summary = "Film Strip · 4컷";
     MODE_CONFIG.film.guide = "네 컷을 순서대로 찍어 세로 필름 시트로 정리합니다.";
-    MODE_CONFIG.film.buttonLabel = "Film Strip 촬영";
+    MODE_CONFIG.film.buttonLabel = "4컷 촬영";
     MODE_CONFIG.film.defaultCaption = "contact sheet";
 
-    MODE_CONFIG.postcard.summary = "Postcard · 1장 촬영";
+    MODE_CONFIG.postcard.summary = "Postcard · 1장";
     MODE_CONFIG.postcard.guide = "사진과 메모가 함께 놓인 포스트카드 레이아웃으로 저장됩니다.";
-    MODE_CONFIG.postcard.buttonLabel = "Postcard 촬영";
+    MODE_CONFIG.postcard.buttonLabel = "엽서 촬영";
     MODE_CONFIG.postcard.defaultCaption = "wish you were here";
 
-    MODE_CONFIG.editorial.summary = "Editorial · 1장 촬영";
+    MODE_CONFIG.editorial.summary = "Editorial · 1장";
     MODE_CONFIG.editorial.guide = "큰 제목과 커버 무드가 들어가는 에디토리얼 프레임으로 저장됩니다.";
-    MODE_CONFIG.editorial.buttonLabel = "Editorial 촬영";
+    MODE_CONFIG.editorial.buttonLabel = "커버 촬영";
     MODE_CONFIG.editorial.defaultCaption = "cover line";
 
     Object.keys(FILTER_CONFIG).forEach((key) => {
@@ -1498,19 +1498,19 @@ function refreshStudioConfig() {
             css: "none"
         },
         paper: {
-            label: "Paper Warm",
+            label: "Soft Warm",
             css: "saturate(1.02) sepia(0.08) brightness(1.04)"
         },
         mono: {
-            label: "Mono Grain",
+            label: "Mono",
             css: "grayscale(1) contrast(1.08) brightness(1.02)"
         },
         sepia: {
-            label: "Sepia Fade",
+            label: "Sepia",
             css: "sepia(0.3) saturate(0.95) contrast(1.06) brightness(1.03)"
         },
         noir: {
-            label: "Studio Noir",
+            label: "Noir",
             css: "grayscale(0.4) sepia(0.18) contrast(1.16) brightness(0.94)"
         }
     });
@@ -1571,7 +1571,7 @@ function initRevealObserver() {
             }
         });
     }, {
-        threshold: 0.6
+        threshold: 0.25
     });
 
     targets.forEach((target) => observer.observe(target));
@@ -1655,6 +1655,16 @@ function initSharedUI() {
         });
     });
 
+    document.querySelectorAll('input[name="capture-filter"], input[name="capture-mode"]').forEach((input) => {
+        input.addEventListener("change", () => {
+            if (window.matchMedia("(max-width: 767px)").matches) {
+                window.setTimeout(() => {
+                    setSettingsOpen(false);
+                }, 120);
+            }
+        });
+    });
+
     window.addEventListener("scroll", updateHeaderState, { passive: true });
     window.addEventListener("resize", () => {
         if (!window.matchMedia("(max-width: 767px)").matches) {
@@ -1682,3 +1692,4 @@ initSharedUI();
 updatePresentation();
 renderSessionGallery();
 syncProxyButtons();
+setStatus("카메라를 시작하면 바로 찍을 수 있습니다.", "neutral");
