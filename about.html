@@ -4,78 +4,125 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>소개 | Frame Atelier</title>
-    <meta name="description" content="Frame Atelier의 운영 목적, 제공 프레임 스타일, 설계 원칙을 안내합니다.">
+    <meta name="description" content="Frame Atelier의 운영 목적, 프레임 구성, 설계 기준을 안내합니다.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400;1,500&family=DM+Mono&family=DM+Sans:wght@300;400&family=Noto+Sans+KR:wght@300;400&family=Noto+Serif+KR:wght@300;400&display=swap" rel="stylesheet">
+    <script>document.documentElement.classList.add("js");</script>
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
-    <header class="site-header">
-        <div class="wrap header-row">
-            <a class="brand" href="index.html"><span class="brand-mark">F</span><span>Frame Atelier</span></a>
+<body class="page-template">
+    <header class="site-header" data-header>
+        <div class="site-shell site-header__row">
+            <a class="brand" href="index.html" aria-label="Frame Atelier 홈">Frame Atelier</a>
             <nav class="site-nav" aria-label="주요 메뉴">
-                <a href="index.html">홈</a>
-                <a href="guide.html">촬영가이드</a>
+                <a href="index.html#studio">Studio</a>
+                <a href="guide.html">Guide</a>
                 <a href="faq.html">FAQ</a>
-                <a href="contact.html">문의</a>
+                <a href="about.html" aria-current="page">About</a>
+                <a href="contact.html">Contact</a>
+            </nav>
+            <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-drawer">
+                <span class="menu-toggle__label">Menu</span>
+                <span class="menu-toggle__mark" aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div id="mobile-drawer" class="mobile-drawer" hidden>
+            <nav class="mobile-nav" aria-label="모바일 메뉴">
+                <a href="index.html#studio">Studio</a>
+                <a href="guide.html">Guide</a>
+                <a href="faq.html">FAQ</a>
+                <a href="about.html" aria-current="page">About</a>
+                <a href="contact.html">Contact</a>
             </nav>
         </div>
     </header>
 
-    <main>
+    <main class="page-main">
         <section class="page-hero">
-            <div class="wrap">
-                <article class="content-card">
-                    <p class="page-kicker">About</p>
-                    <h1>Frame Atelier는 카메라 촬영을 가볍고 감각적으로 바꾸기 위한 브라우저 포토부스입니다</h1>
-                    <p class="page-lead">앱 설치 없이 브라우저에서 카메라를 켜고, 다양한 프레임 스타일로 결과를 바로 저장할 수 있도록 설계했습니다.</p>
-                </article>
+            <div class="site-shell page-hero__grid">
+                <div>
+                    <p class="eyebrow">About</p>
+                    <h1>Frame Atelier는 빠른 캡처를 차분한 인쇄물 감각으로 정리하는 브라우저 스튜디오입니다</h1>
+                </div>
+                <p class="page-lead">앱 설치 없이 카메라를 열고, 프레임과 필터를 조정한 뒤, 한 장의 시트처럼 정돈된 PNG를 남기는 흐름을 기준으로 설계했습니다.</p>
             </div>
         </section>
 
-        <section class="content-section">
-            <div class="wrap content-body">
-                <article class="content-card">
-                    <h2>운영 목적</h2>
-                    <p>이 사이트의 목적은 무거운 편집 툴 대신, 빠르게 구도를 맞추고 감성 프레임이 적용된 결과를 바로 내려받을 수 있는 웹 포토부스를 제공하는 것입니다. 사용자는 별도 계정 없이 브라우저에서 촬영을 시작하고, 결과를 즉시 확인할 수 있습니다.</p>
-                    <p>서비스는 데스크톱과 모바일 브라우저 모두에서 작동하는 것을 목표로 하며, 카메라 권한이 어려운 환경에서는 업로드 방식으로 프레임 테스트도 가능하게 구성했습니다.</p>
+        <section class="page-section">
+            <div class="site-shell editorial-stack">
+                <article class="editorial-block" data-reveal>
+                    <div class="editorial-block__head">
+                        <p class="page-index">01</p>
+                        <h2>운영 목적</h2>
+                    </div>
+                    <div class="editorial-block__body">
+                        <p>Frame Atelier의 목적은 무거운 편집 툴 없이도 촬영부터 저장까지 한 흐름 안에서 끝낼 수 있는 브라우저 포토부스를 제공하는 것입니다. 사용자는 바로 카메라를 열고, 프레임 레이아웃과 필터를 조정한 뒤 결과를 PNG로 저장할 수 있습니다.</p>
+                        <p>기본 동선은 빠르되 결과는 가볍지 않도록, 인터페이스와 출력 레이아웃 모두 종이, 인쇄물, 에디토리얼 페이지의 질서를 참고해 정리했습니다.</p>
+                    </div>
                 </article>
-                <article class="content-card">
-                    <h2>현재 제공 스타일</h2>
-                    <ul>
-                        <li>Polaroid: 넓은 흰 여백과 캡션이 들어가는 클래식 한 장 프레임</li>
-                        <li>Film Strip: 4장을 연속으로 촬영해 세로형 포토부스 결과로 저장하는 모드</li>
-                        <li>Postcard: 넓은 사진과 메모, 날짜가 함께 배치되는 여행 엽서 스타일</li>
-                        <li>Editorial: 강한 타이틀과 분위기 있는 배경이 들어가는 매거진 커버 스타일</li>
-                    </ul>
-                    <p>스타일 외에도 필터, 타이머, 프레임 포인트 컬러, 캡션을 함께 조합할 수 있어 같은 사진도 다른 톤으로 저장할 수 있습니다.</p>
+
+                <article class="editorial-block" data-reveal>
+                    <div class="editorial-block__head">
+                        <p class="page-index">02</p>
+                        <h2>현재 제공 스타일</h2>
+                    </div>
+                    <div class="editorial-block__body">
+                        <ul class="editorial-list">
+                            <li>Polaroid는 넓은 하단 여백과 짧은 캡션으로 한 장의 여운을 남깁니다.</li>
+                            <li>Film Strip은 네 컷을 세로 시트로 배치해 포토부스 특유의 반복 리듬을 살립니다.</li>
+                            <li>Postcard는 사진과 메모 공간을 함께 두어 장면과 문장을 동시에 기록합니다.</li>
+                            <li>Editorial은 강한 제목과 커버형 타이포그래피로 매거진 무드를 만듭니다.</li>
+                        </ul>
+                        <p>각 모드는 같은 원본 사진이라도 완전히 다른 결과 인상을 만들 수 있도록 레이아웃과 타이포그래피를 다르게 설계했습니다.</p>
+                    </div>
                 </article>
-                <article class="content-card">
-                    <h2>설계 원칙</h2>
-                    <ul>
-                        <li>복잡한 회원가입 없이 바로 카메라를 열 수 있게 구성합니다.</li>
-                        <li>기본 촬영과 합성 흐름은 브라우저 내부 처리 기준으로 설계합니다.</li>
-                        <li>프레임 스타일 설명, 개인정보 처리방침, 이용약관, 문의 페이지를 분리해 서비스 성격을 명확히 안내합니다.</li>
-                    </ul>
+
+                <article class="editorial-block" data-reveal>
+                    <div class="editorial-block__head">
+                        <p class="page-index">03</p>
+                        <h2>설계 원칙</h2>
+                    </div>
+                    <div class="editorial-block__body">
+                        <ul class="editorial-list">
+                            <li>화면은 조용하게 유지하고, 자주 쓰는 컨트롤만 전면에 둡니다.</li>
+                            <li>촬영과 합성은 브라우저 내부 처리 기준으로 구성해 빠르게 결과를 확인합니다.</li>
+                            <li>프레임, 가이드, 정책 문서, 문의 채널을 각각 분리해 서비스 성격을 명확히 안내합니다.</li>
+                        </ul>
+                    </div>
                 </article>
-                <article class="content-card">
-                    <h2>업데이트 기준</h2>
-                    <p>프레임 종류, 카메라 접근 흐름, 저장 방식, 운영 정책이 달라지면 관련 페이지를 함께 수정합니다. 기능 변화가 큰 경우에는 가이드와 FAQ, 정책 문서에 같은 날짜 기준으로 반영합니다.</p>
+
+                <article class="editorial-block" data-reveal>
+                    <div class="editorial-block__head">
+                        <p class="page-index">04</p>
+                        <h2>업데이트 기준</h2>
+                    </div>
+                    <div class="editorial-block__body">
+                        <p>프레임 종류, 카메라 접근 흐름, 저장 방식, 운영 정책이 달라지면 관련 문서를 함께 갱신합니다. 기능 변화가 큰 경우에는 가이드, FAQ, 정책 문서가 같은 날짜 기준으로 함께 수정되어야 합니다.</p>
+                    </div>
                 </article>
             </div>
         </section>
     </main>
 
     <footer class="site-footer">
-        <div class="wrap footer-grid">
-            <div><strong>Frame Atelier</strong><p>브라우저에서 감성 프레임 사진을 빠르게 만드는 웹 포토부스</p></div>
-            <nav class="footer-nav" aria-label="하단 메뉴">
-                <a href="privacy.html">개인정보 처리방침</a>
-                <a href="terms.html">이용약관</a>
-                <a href="contact.html">문의</a>
+        <div class="site-shell footer-grid">
+            <div class="footer-brand">
+                <a class="brand brand--footer" href="index.html">Frame Atelier</a>
+                <p>Quietly composed browser photo booth for polished frames, tactile filters, and printable PNG sheets.</p>
+            </div>
+            <nav class="footer-links" aria-label="하단 메뉴">
+                <a href="index.html#studio">Studio</a>
+                <a href="guide.html">Guide</a>
+                <a href="faq.html">FAQ</a>
+                <a href="about.html" aria-current="page">About</a>
+                <a href="privacy.html">Privacy</a>
+                <a href="terms.html">Terms</a>
+                <a href="contact.html">Contact</a>
             </nav>
         </div>
     </footer>
+
+    <script src="main.js" defer></script>
 </body>
 </html>

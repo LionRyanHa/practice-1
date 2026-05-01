@@ -4,289 +4,374 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Frame Atelier | 브라우저 포토부스, 폴라로이드, 4컷, 매거진 프레임</title>
-    <meta name="description" content="브라우저에서 바로 카메라를 켜고 폴라로이드, 4컷 필름, 포스트카드, 매거진 커버 스타일로 사진을 촬영하고 PNG로 저장할 수 있는 웹 포토부스입니다.">
+    <meta name="description" content="브라우저에서 바로 카메라를 켜고 폴라로이드, 4컷 필름, 포스트카드, 에디토리얼 프레임으로 촬영한 뒤 PNG로 저장하는 크리에이티브 스튜디오형 웹 포토부스입니다.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400;1,500&family=DM+Mono&family=DM+Sans:wght@300;400&family=Noto+Sans+KR:wght@300;400&family=Noto+Serif+KR:wght@300;400&display=swap" rel="stylesheet">
+    <script>document.documentElement.classList.add("js");</script>
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
-    <header class="site-header">
-        <div class="wrap header-row">
-            <a class="brand" href="index.html">
-                <span class="brand-mark">F</span>
-                <span>Frame Atelier</span>
-            </a>
+<body class="home-page">
+    <header class="site-header" data-header>
+        <div class="site-shell site-header__row">
+            <a class="brand" href="index.html" aria-label="Frame Atelier 홈">Frame Atelier</a>
             <nav class="site-nav" aria-label="주요 메뉴">
-                <a href="guide.html">촬영가이드</a>
+                <a href="#studio">Studio</a>
+                <a href="guide.html">Guide</a>
                 <a href="faq.html">FAQ</a>
-                <a href="about.html">소개</a>
-                <a href="contact.html">문의</a>
+                <a href="about.html">About</a>
+                <a href="contact.html">Contact</a>
+            </nav>
+            <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-drawer">
+                <span class="menu-toggle__label">Menu</span>
+                <span class="menu-toggle__mark" aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div id="mobile-drawer" class="mobile-drawer" hidden>
+            <nav class="mobile-nav" aria-label="모바일 메뉴">
+                <a href="#studio">Studio</a>
+                <a href="guide.html">Guide</a>
+                <a href="faq.html">FAQ</a>
+                <a href="about.html">About</a>
+                <a href="contact.html">Contact</a>
             </nav>
         </div>
     </header>
 
     <main>
         <section class="hero-section">
-            <div class="wrap hero-grid">
-                <div class="hero-copy-block">
-                    <p class="eyebrow">Browser Photo Booth</p>
-                    <h1>카메라를 켜고 원하는 무드로 바로 찍는 웹 포토부스</h1>
-                    <p class="hero-copy">폴라로이드, 4컷 필름, 포스트카드, 매거진 커버까지 브라우저 안에서 바로 촬영하고 PNG로 저장할 수 있습니다. 기본 흐름은 브라우저 내부에서 처리되도록 구성해 빠르게 결과를 확인하기 좋습니다.</p>
+            <div class="site-shell hero-grid">
+                <div class="hero-copy">
+                    <div class="hero-kicker">
+                        <span class="hero-rule" aria-hidden="true"></span>
+                        <p class="eyebrow">Browser Photo Booth</p>
+                    </div>
+                    <h1>
+                        <span>카메라를 켜고 원하는 무드로</span>
+                        <span>바로 찍는 웹 포토부스</span>
+                    </h1>
+                    <p class="hero-copy__body">프레임과 필터를 브라우저 안에서 바로 고르고, 인쇄물처럼 정리된 결과를 조용한 톤으로 저장합니다. Polaroid, Film Strip, Postcard, Editorial 네 가지 구성을 한 세션 안에서 다뤄볼 수 있습니다.</p>
                     <div class="hero-actions">
-                        <a class="primary-link" href="#studio">촬영 시작하기</a>
-                        <a class="secondary-link" href="guide.html">스타일 사용법 보기</a>
+                        <a class="text-link text-link--primary" href="#studio">촬영 시작하기 <span aria-hidden="true">→</span></a>
+                        <a class="text-link" href="guide.html">스타일 사용법 보기</a>
                     </div>
                 </div>
 
-                <div class="hero-panel mode-showcase">
-                    <article class="mini-card">
-                        <p class="mini-label">Mode 01</p>
-                        <strong>Polaroid</strong>
-                        <span>넓은 여백과 손글씨 같은 캡션이 들어가는 한 장 프레임</span>
-                    </article>
-                    <article class="mini-card">
-                        <p class="mini-label">Mode 02</p>
-                        <strong>Film Strip</strong>
-                        <span>4장을 연속으로 찍어 세로 포토부스 스타일로 저장</span>
-                    </article>
-                    <article class="mini-card">
-                        <p class="mini-label">Mode 03</p>
-                        <strong>Postcard</strong>
-                        <span>여행 엽서처럼 넓은 사진과 메모 영역을 함께 구성</span>
-                    </article>
-                    <article class="mini-card">
-                        <p class="mini-label">Mode 04</p>
-                        <strong>Editorial</strong>
-                        <span>강한 타이틀과 커버 무드가 들어가는 매거진 스타일</span>
-                    </article>
+                <div class="hero-art" aria-hidden="true">
+                    <div class="hero-art__wash"></div>
+                    <div class="hero-collage">
+                        <figure class="hero-frame hero-frame--a">
+                            <span class="hero-frame__meta">POLAROID</span>
+                        </figure>
+                        <figure class="hero-frame hero-frame--b">
+                            <span class="hero-frame__meta">EDITORIAL</span>
+                        </figure>
+                        <figure class="hero-frame hero-frame--c">
+                            <span class="hero-frame__meta">POSTCARD</span>
+                        </figure>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <section class="summary-strip">
-            <div class="wrap summary-grid">
-                <article>
-                    <p class="stat">4</p>
-                    <p class="stat-label">기본 촬영 프레임</p>
-                </article>
-                <article>
-                    <p class="stat">5</p>
-                    <p class="stat-label">라이브 필터 프리셋</p>
-                </article>
-                <article>
-                    <p class="stat">PNG</p>
-                    <p class="stat-label">즉시 저장 가능한 결과물</p>
-                </article>
-                <article>
-                    <p class="stat">Local</p>
-                    <p class="stat-label">브라우저 중심 촬영 흐름</p>
-                </article>
-            </div>
-        </section>
-
-        <section id="studio" class="studio-section">
-            <div class="wrap section-head">
-                <div>
-                    <p class="eyebrow">Live Studio</p>
-                    <h2>실시간 프리뷰로 구도를 맞추고 바로 결과를 저장하세요</h2>
+        <section class="section-spacing" data-reveal>
+            <div class="site-shell">
+                <div class="section-intro">
+                    <p class="eyebrow">Frame Library</p>
+                    <h2>인쇄물의 문법을 닮은 네 가지 프레임</h2>
                 </div>
-                <p class="section-copy">모드마다 컷 수와 레이아웃이 다르게 적용됩니다. 4컷 필름은 연속 촬영으로, 나머지 프레임은 한 장 촬영으로 동작합니다.</p>
-            </div>
-
-            <div class="wrap studio-layout">
-                <article class="studio-card live-card">
-                    <div class="preview-topbar">
-                        <span id="camera-status" class="status-pill" data-state="neutral">카메라를 시작하면 상태가 여기에 표시됩니다.</span>
-                        <span id="mode-summary" class="mode-pill">Polaroid · 1장 촬영</span>
-                    </div>
-
-                    <div id="preview-shell" class="preview-shell" data-mode="polaroid">
-                        <video id="camera-video" autoplay playsinline muted></video>
-                        <div class="preview-overlay">
-                            <span id="countdown-badge" class="countdown-pill" hidden>3</span>
-                            <span id="preview-guide" class="preview-guide">흰 여백이 넓은 폴라로이드 프레임으로 저장됩니다.</span>
+                <div class="mode-rail">
+                    <a class="mode-item" href="#studio" data-mode-target="polaroid">
+                        <span class="mode-number">01</span>
+                        <div class="mode-content">
+                            <h3>Polaroid</h3>
+                            <p>넓은 종이 여백과 짧은 캡션으로 한 장의 분위기를 조용하게 남깁니다.</p>
                         </div>
-                    </div>
-
-                    <div class="button-row studio-buttons">
-                        <button id="start-camera-button" class="action-button" type="button">카메라 시작</button>
-                        <button id="capture-button" class="action-button accent-button" type="button" disabled>폴라로이드 촬영</button>
-                        <button id="stop-camera-button" class="ghost-button" type="button" disabled>카메라 종료</button>
-                    </div>
-
-                    <p class="helper-copy">카메라 권한이 막혀 있거나 HTTPS가 아닌 환경에서는 아래 업로드 입력으로 같은 프레임을 미리 확인할 수 있습니다.</p>
-                </article>
-
-                <article class="studio-card control-card">
-                    <div class="control-stack">
-                        <section>
-                            <h3>촬영 모드</h3>
-                            <div class="option-grid">
-                                <label class="style-option">
-                                    <input type="radio" name="capture-mode" value="polaroid" checked>
-                                    <span class="style-card">
-                                        <strong>Polaroid</strong>
-                                        <small>한 장 사진과 넓은 하단 캡션 공간</small>
-                                    </span>
-                                </label>
-                                <label class="style-option">
-                                    <input type="radio" name="capture-mode" value="film">
-                                    <span class="style-card">
-                                        <strong>Film Strip</strong>
-                                        <small>4장을 연속으로 찍는 세로 포토부스</small>
-                                    </span>
-                                </label>
-                                <label class="style-option">
-                                    <input type="radio" name="capture-mode" value="postcard">
-                                    <span class="style-card">
-                                        <strong>Postcard</strong>
-                                        <small>풍경과 메모를 함께 담는 가로 카드</small>
-                                    </span>
-                                </label>
-                                <label class="style-option">
-                                    <input type="radio" name="capture-mode" value="editorial">
-                                    <span class="style-card">
-                                        <strong>Editorial</strong>
-                                        <small>제목이 강하게 들어가는 커버 이미지</small>
-                                    </span>
-                                </label>
-                            </div>
-                        </section>
-
-                        <section class="control-grid">
-                            <label class="field">
-                                <span>카메라 방향</span>
-                                <select id="camera-facing" class="field-control">
-                                    <option value="front">전면 카메라</option>
-                                    <option value="rear">후면 카메라</option>
-                                </select>
-                            </label>
-                            <label class="field">
-                                <span>타이머</span>
-                                <select id="capture-timer" class="field-control">
-                                    <option value="0">바로 촬영</option>
-                                    <option value="3" selected>3초</option>
-                                    <option value="5">5초</option>
-                                    <option value="10">10초</option>
-                                </select>
-                            </label>
-                        </section>
-
-                        <section>
-                            <h3>필터</h3>
-                            <div class="pill-grid">
-                                <label class="filter-pill">
-                                    <input type="radio" name="capture-filter" value="natural" checked>
-                                    <span>Natural</span>
-                                </label>
-                                <label class="filter-pill">
-                                    <input type="radio" name="capture-filter" value="warm">
-                                    <span>Warm Flash</span>
-                                </label>
-                                <label class="filter-pill">
-                                    <input type="radio" name="capture-filter" value="mono">
-                                    <span>Mono</span>
-                                </label>
-                                <label class="filter-pill">
-                                    <input type="radio" name="capture-filter" value="cool">
-                                    <span>Cool Sky</span>
-                                </label>
-                                <label class="filter-pill">
-                                    <input type="radio" name="capture-filter" value="sunset">
-                                    <span>Sunset</span>
-                                </label>
-                            </div>
-                        </section>
-
-                        <section class="control-grid">
-                            <label class="field">
-                                <span>캡션</span>
-                                <input id="caption-input" type="text" maxlength="24" placeholder="오늘의 무드">
-                            </label>
-                            <label class="field">
-                                <span>프레임 포인트 컬러</span>
-                                <input id="accent-color" class="color-input" type="color" value="#e85d38">
-                            </label>
-                        </section>
-
-                        <label class="check-field">
-                            <input id="mirror-toggle" type="checkbox" checked>
-                            전면 카메라처럼 좌우 반전해서 찍기
-                        </label>
-
-                        <label class="field upload-field">
-                            <span>사진 업로드로 테스트하기</span>
-                            <input id="photo-upload" class="field-control file-input" type="file" accept="image/*">
-                        </label>
-                    </div>
-
-                    <div id="result-shell" class="result-shell" data-mode="polaroid">
-                        <div id="result-placeholder" class="result-placeholder">아직 촬영 결과가 없습니다. 카메라를 켜고 찍거나 사진을 업로드해 보세요.</div>
-                        <canvas id="result-canvas" width="1080" height="1350" hidden></canvas>
-                    </div>
-
-                    <div class="button-row studio-buttons">
-                        <button id="clear-result-button" class="ghost-button" type="button">결과 비우기</button>
-                        <a id="download-button" class="primary-link is-disabled" href="#" aria-disabled="true" download="frame-atelier.png">PNG 저장</a>
-                    </div>
-                </article>
-            </div>
-        </section>
-
-        <section class="gallery-section">
-            <div class="wrap section-head">
-                <div>
-                    <p class="eyebrow">Session Gallery</p>
-                    <h2>이번 세션에서 만든 결과를 한눈에 확인할 수 있습니다</h2>
+                    </a>
+                    <a class="mode-item" href="#studio" data-mode-target="film">
+                        <span class="mode-number">02</span>
+                        <div class="mode-content">
+                            <h3>Film Strip</h3>
+                            <p>연속 네 컷을 세로 시트로 정리해 포토부스의 리듬을 그대로 살립니다.</p>
+                        </div>
+                    </a>
+                    <a class="mode-item" href="#studio" data-mode-target="postcard">
+                        <span class="mode-number">03</span>
+                        <div class="mode-content">
+                            <h3>Postcard</h3>
+                            <p>사진과 메모가 함께 놓인 엽서 구성으로 장면의 여운을 덧붙입니다.</p>
+                        </div>
+                    </a>
+                    <a class="mode-item" href="#studio" data-mode-target="editorial">
+                        <span class="mode-number">04</span>
+                        <div class="mode-content">
+                            <h3>Editorial</h3>
+                            <p>강한 타이틀과 조용한 커버 타이포그래피로 패션 에디토리얼 무드를 만듭니다.</p>
+                        </div>
+                    </a>
                 </div>
-                <p class="section-copy">촬영 또는 업로드 결과는 최근 순서대로 최대 6장까지 표시됩니다.</p>
-            </div>
-            <div id="session-gallery" class="wrap session-gallery">
-                <article class="empty-gallery">이번 세션 촬영본이 여기에 쌓입니다.</article>
             </div>
         </section>
 
-        <section class="trust-section">
-            <div class="wrap trust-grid">
-                <article class="info-card">
-                    <h2>이 사이트가 촬영하기 편한 이유</h2>
-                    <ul class="plain-list">
-                        <li>모드마다 필요한 컷 수를 자동으로 맞춰 폴라로이드 1장, 4컷 필름 4장을 순서대로 촬영합니다.</li>
-                        <li>필터와 캡션, 프레임 포인트 컬러를 바꾸면 같은 사진도 다른 무드로 바로 저장할 수 있습니다.</li>
-                        <li>기본 촬영 흐름은 브라우저 내부 처리 기준이라 결과 확인이 빠르고, 카메라가 막힌 환경에서는 업로드로 프레임을 미리 볼 수 있습니다.</li>
-                    </ul>
-                </article>
-                <article class="info-card accent-card">
-                    <h2>빠른 이동</h2>
-                    <div class="link-stack">
-                        <a href="guide.html">촬영 모드 사용법 보기</a>
-                        <a href="faq.html">카메라 권한과 저장 방식 확인</a>
-                        <a href="privacy.html">개인정보 처리방침 보기</a>
-                        <a href="terms.html">이용약관 보기</a>
+        <section class="stats-section" data-reveal>
+            <div class="site-shell">
+                <div class="stats-row">
+                    <article class="stat-item">
+                        <p class="stat-value">4</p>
+                        <p class="stat-caption">FRAME MODES</p>
+                    </article>
+                    <article class="stat-item">
+                        <p class="stat-value">5</p>
+                        <p class="stat-caption">FILTER STUDIES</p>
+                    </article>
+                    <article class="stat-item">
+                        <p class="stat-value">PNG</p>
+                        <p class="stat-caption">DIRECT EXPORT</p>
+                    </article>
+                    <article class="stat-item">
+                        <p class="stat-value">LOCAL</p>
+                        <p class="stat-caption">BROWSER FLOW</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section id="studio" class="studio-section" data-reveal>
+            <div class="studio-bleed">
+                <div class="site-shell studio-shell">
+                    <div class="section-head section-head--light">
+                        <div>
+                            <p class="eyebrow eyebrow--light">Live Studio</p>
+                            <h2>실시간 프리뷰를 맞추고, 종이 한 장처럼 바로 저장하세요</h2>
+                        </div>
+                        <p class="section-copy section-copy--light">프레임은 언더라인 탭으로 고르고, 필터는 실제 톤 프리뷰로 비교합니다. 덜 자주 쓰는 설정은 고급 설정 안으로 정리해 화면을 가볍게 유지했습니다.</p>
                     </div>
-                </article>
+
+                    <div class="studio-stage">
+                        <div id="preview-shell" class="preview-shell" data-mode="polaroid">
+                            <video id="camera-video" autoplay playsinline muted></video>
+                            <div class="preview-hud">
+                                <span id="camera-status" class="camera-status" data-state="neutral">카메라를 시작하면 상태가 여기에 표시됩니다.</span>
+                                <span id="mode-summary" class="mode-summary">Polaroid · 1장 촬영</span>
+                            </div>
+                            <div class="preview-guides">
+                                <span id="preview-guide" class="preview-guide">넓은 종이 여백이 있는 폴라로이드 레이아웃으로 저장됩니다.</span>
+                                <span id="countdown-badge" class="countdown-badge" hidden>3</span>
+                            </div>
+                        </div>
+
+                        <div class="studio-action-bar">
+                            <button id="start-camera-button" class="ghost-button icon-button" type="button">
+                                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 8.5h15v10h-15z"></path><path d="M8 8.5 9.8 5.5h4.4L16 8.5"></path><circle cx="12" cy="13.5" r="3.2"></circle></svg>
+                                <span>카메라 시작</span>
+                            </button>
+                            <button id="capture-button" class="ghost-button icon-button" type="button" disabled>
+                                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7.2"></circle><circle cx="12" cy="12" r="2.4"></circle></svg>
+                                <span>촬영</span>
+                            </button>
+                            <button id="stop-camera-button" class="ghost-button icon-button" type="button" disabled>
+                                <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6.5" y="6.5" width="11" height="11"></rect></svg>
+                                <span>카메라 종료</span>
+                            </button>
+                        </div>
+
+                        <div class="studio-switches">
+                            <fieldset class="text-toggle">
+                                <legend>카메라 방향</legend>
+                                <label>
+                                    <input type="radio" name="camera-facing" value="front" checked>
+                                    <span>전면</span>
+                                </label>
+                                <label>
+                                    <input type="radio" name="camera-facing" value="rear">
+                                    <span>후면</span>
+                                </label>
+                            </fieldset>
+
+                            <fieldset class="text-toggle">
+                                <legend>타이머</legend>
+                                <label>
+                                    <input type="radio" name="capture-timer" value="0">
+                                    <span>바로</span>
+                                </label>
+                                <label>
+                                    <input type="radio" name="capture-timer" value="3" checked>
+                                    <span>3초</span>
+                                </label>
+                                <label>
+                                    <input type="radio" name="capture-timer" value="5">
+                                    <span>5초</span>
+                                </label>
+                                <label>
+                                    <input type="radio" name="capture-timer" value="10">
+                                    <span>10초</span>
+                                </label>
+                            </fieldset>
+                        </div>
+
+                        <p class="studio-helper">HTTPS가 아니거나 권한이 막힌 환경에서는 업로드 테스트로 같은 프레임 레이아웃을 바로 확인할 수 있습니다.</p>
+                    </div>
+
+                    <div class="studio-console">
+                        <article class="studio-panel studio-panel--result">
+                            <div class="panel-heading">
+                                <div>
+                                    <p class="eyebrow eyebrow--light">Output</p>
+                                    <h3>Current Sheet</h3>
+                                </div>
+                                <p class="panel-copy">촬영 또는 업로드한 이미지는 현재 모드와 필터 기준으로 다시 렌더링됩니다.</p>
+                            </div>
+
+                            <div id="result-shell" class="result-shell" data-mode="polaroid">
+                                <div id="result-placeholder" class="result-placeholder">아직 결과가 없습니다. 카메라를 켜거나 업로드로 첫 시트를 만들어 보세요.</div>
+                                <canvas id="result-canvas" width="1080" height="1350" hidden></canvas>
+                            </div>
+
+                            <div class="studio-result-actions">
+                                <button id="clear-result-button" class="ghost-button" type="button">결과 비우기</button>
+                                <a id="download-button" class="ghost-button is-disabled" href="#" aria-disabled="true" download="frame-atelier.png">PNG 저장</a>
+                            </div>
+                        </article>
+
+                        <aside id="studio-settings" class="studio-panel studio-panel--settings" aria-labelledby="studio-settings-title">
+                            <div class="studio-settings__head">
+                                <div>
+                                    <p class="eyebrow eyebrow--light">Controls</p>
+                                    <h3 id="studio-settings-title">Studio Controls</h3>
+                                </div>
+                                <button class="drawer-close" type="button" data-close-settings aria-label="설정 닫기">&times;</button>
+                            </div>
+
+                            <section class="settings-block">
+                                <p class="panel-label">MODE</p>
+                                <div class="mode-tabs">
+                                    <label class="mode-tab">
+                                        <input type="radio" name="capture-mode" value="polaroid" checked>
+                                        <span>Polaroid</span>
+                                    </label>
+                                    <label class="mode-tab">
+                                        <input type="radio" name="capture-mode" value="film">
+                                        <span>Film Strip</span>
+                                    </label>
+                                    <label class="mode-tab">
+                                        <input type="radio" name="capture-mode" value="postcard">
+                                        <span>Postcard</span>
+                                    </label>
+                                    <label class="mode-tab">
+                                        <input type="radio" name="capture-mode" value="editorial">
+                                        <span>Editorial</span>
+                                    </label>
+                                </div>
+                            </section>
+
+                            <section class="settings-block">
+                                <p class="panel-label">FILTER</p>
+                                <div class="filter-grid">
+                                    <label class="filter-option">
+                                        <input type="radio" name="capture-filter" value="natural" checked>
+                                        <span class="filter-card">
+                                            <span class="filter-preview filter-preview--natural"></span>
+                                            <span class="filter-name">Natural</span>
+                                        </span>
+                                    </label>
+                                    <label class="filter-option">
+                                        <input type="radio" name="capture-filter" value="paper">
+                                        <span class="filter-card">
+                                            <span class="filter-preview filter-preview--paper"></span>
+                                            <span class="filter-name">Paper Warm</span>
+                                        </span>
+                                    </label>
+                                    <label class="filter-option">
+                                        <input type="radio" name="capture-filter" value="mono">
+                                        <span class="filter-card">
+                                            <span class="filter-preview filter-preview--mono"></span>
+                                            <span class="filter-name">Mono Grain</span>
+                                        </span>
+                                    </label>
+                                    <label class="filter-option">
+                                        <input type="radio" name="capture-filter" value="sepia">
+                                        <span class="filter-card">
+                                            <span class="filter-preview filter-preview--sepia"></span>
+                                            <span class="filter-name">Sepia Fade</span>
+                                        </span>
+                                    </label>
+                                    <label class="filter-option">
+                                        <input type="radio" name="capture-filter" value="noir">
+                                        <span class="filter-card">
+                                            <span class="filter-preview filter-preview--noir"></span>
+                                            <span class="filter-name">Studio Noir</span>
+                                        </span>
+                                    </label>
+                                </div>
+                            </section>
+
+                            <details class="advanced-settings">
+                                <summary>고급 설정 <span aria-hidden="true">↓</span></summary>
+                                <div class="advanced-settings__body">
+                                    <label class="line-field">
+                                        <input id="caption-input" type="text" maxlength="24" placeholder=" ">
+                                        <span>캡션</span>
+                                    </label>
+                                    <label class="line-field line-field--color">
+                                        <input id="accent-color" class="color-input" type="color" value="#c8a97e">
+                                        <span>프레임 포인트 컬러</span>
+                                    </label>
+                                    <label class="line-check">
+                                        <input id="mirror-toggle" type="checkbox" checked>
+                                        <span>좌우 반전 촬영</span>
+                                    </label>
+                                    <label class="line-field line-field--file">
+                                        <input id="photo-upload" class="file-input" type="file" accept="image/*">
+                                        <span>사진 업로드 테스트</span>
+                                    </label>
+                                </div>
+                            </details>
+                        </aside>
+                    </div>
+                </div>
+            </div>
+
+            <button class="studio-settings-scrim" type="button" data-close-settings hidden aria-label="설정 닫기"></button>
+
+            <div class="studio-mobile-bar">
+                <button class="mobile-bar-button" type="button" data-proxy-click="start-camera-button">카메라 시작</button>
+                <button class="mobile-bar-button" type="button" data-proxy-click="capture-button">촬영</button>
+                <button class="mobile-bar-button" type="button" data-proxy-click="download-button">저장</button>
+                <button class="mobile-bar-button mobile-bar-button--more" type="button" data-open-settings aria-label="더 보기">&#8943;</button>
+            </div>
+        </section>
+
+        <section class="gallery-section section-spacing" data-reveal>
+            <div class="site-shell">
+                <div class="section-intro">
+                    <p class="eyebrow">Session Gallery</p>
+                    <h2>이번 세션의 결과를 한 화면에서 차분히 검토합니다</h2>
+                </div>
+                <div id="session-gallery" class="session-gallery">
+                    <article class="empty-gallery">이번 세션의 결과물이 여기에 쌓입니다.</article>
+                </div>
             </div>
         </section>
     </main>
 
     <footer class="site-footer">
-        <div class="wrap footer-grid">
-            <div>
-                <strong>Frame Atelier</strong>
-                <p>브라우저에서 폴라로이드, 4컷, 포스트카드, 매거진 스타일 사진을 만드는 웹 포토부스</p>
+        <div class="site-shell footer-grid">
+            <div class="footer-brand">
+                <a class="brand brand--footer" href="index.html">Frame Atelier</a>
+                <p>Quietly composed browser photo booth for polished frames, tactile filters, and printable PNG sheets.</p>
             </div>
-            <nav class="footer-nav" aria-label="하단 메뉴">
-                <a href="about.html">소개</a>
-                <a href="guide.html">촬영가이드</a>
+            <nav class="footer-links" aria-label="하단 메뉴">
+                <a href="index.html#studio">Studio</a>
+                <a href="guide.html">Guide</a>
                 <a href="faq.html">FAQ</a>
-                <a href="privacy.html">개인정보 처리방침</a>
-                <a href="terms.html">이용약관</a>
-                <a href="contact.html">문의</a>
+                <a href="about.html">About</a>
+                <a href="privacy.html">Privacy</a>
+                <a href="terms.html">Terms</a>
+                <a href="contact.html">Contact</a>
             </nav>
         </div>
     </footer>
 
-    <script src="main.js"></script>
+    <script src="main.js" defer></script>
 </body>
 </html>

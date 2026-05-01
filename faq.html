@@ -4,83 +4,154 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FAQ | Frame Atelier</title>
-    <meta name="description" content="Frame Atelier 사용 중 자주 묻는 질문과 카메라 권한, 저장 방식, 모바일 지원 기준을 안내합니다.">
+    <meta name="description" content="Frame Atelier 사용 중 자주 묻는 질문과 카메라 권한, 저장 방식, 모바일 동작 기준을 안내합니다.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400;1,500&family=DM+Mono&family=DM+Sans:wght@300;400&family=Noto+Sans+KR:wght@300;400&family=Noto+Serif+KR:wght@300;400&display=swap" rel="stylesheet">
+    <script>document.documentElement.classList.add("js");</script>
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
-    <header class="site-header">
-        <div class="wrap header-row">
-            <a class="brand" href="index.html"><span class="brand-mark">F</span><span>Frame Atelier</span></a>
+<body class="page-template">
+    <header class="site-header" data-header>
+        <div class="site-shell site-header__row">
+            <a class="brand" href="index.html" aria-label="Frame Atelier 홈">Frame Atelier</a>
             <nav class="site-nav" aria-label="주요 메뉴">
-                <a href="index.html">홈</a>
-                <a href="guide.html">촬영가이드</a>
-                <a href="about.html">소개</a>
-                <a href="contact.html">문의</a>
+                <a href="index.html#studio">Studio</a>
+                <a href="guide.html">Guide</a>
+                <a href="faq.html" aria-current="page">FAQ</a>
+                <a href="about.html">About</a>
+                <a href="contact.html">Contact</a>
+            </nav>
+            <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-drawer">
+                <span class="menu-toggle__label">Menu</span>
+                <span class="menu-toggle__mark" aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div id="mobile-drawer" class="mobile-drawer" hidden>
+            <nav class="mobile-nav" aria-label="모바일 메뉴">
+                <a href="index.html#studio">Studio</a>
+                <a href="guide.html">Guide</a>
+                <a href="faq.html" aria-current="page">FAQ</a>
+                <a href="about.html">About</a>
+                <a href="contact.html">Contact</a>
             </nav>
         </div>
     </header>
 
-    <main>
+    <main class="page-main">
         <section class="page-hero">
-            <div class="wrap">
-                <article class="content-card">
-                    <p class="page-kicker">FAQ</p>
-                    <h1>촬영 전후에 자주 확인하는 질문을 실제 사용 흐름 기준으로 정리했습니다</h1>
-                    <p class="page-lead">카메라 권한, 저장 방식, 모바일 사용성, 4컷 연속 촬영, 업로드 대체 흐름을 한 페이지에서 확인할 수 있습니다.</p>
-                </article>
+            <div class="site-shell page-hero__grid">
+                <div>
+                    <p class="eyebrow">FAQ</p>
+                    <h1>촬영 전후에 가장 자주 확인하는 질문을 실제 사용 흐름 기준으로 모았습니다</h1>
+                </div>
+                <p class="page-lead">카메라 권한, 모바일 사용성, Film Strip 연속 촬영, 세션 갤러리, 업로드 대체 흐름을 한 페이지에서 확인할 수 있습니다.</p>
             </div>
         </section>
 
-        <section class="content-section">
-            <div class="wrap content-body">
-                <article class="content-card">
-                    <h2>촬영한 사진이 서버에 저장되나요?</h2>
-                    <p>기본 촬영과 합성 흐름은 브라우저 내부 처리 기준으로 구성했습니다. 사용자가 촬영한 프레임 이미지는 세션 안에서만 확인하고 다운로드할 수 있게 설계했으며, 사이트가 회원 계정에 자동 저장하는 구조는 기본 동작에 포함하지 않습니다.</p>
+        <section class="page-section">
+            <div class="site-shell editorial-stack">
+                <article class="editorial-block" data-reveal>
+                    <div class="editorial-block__head">
+                        <p class="page-index">01</p>
+                        <h2>촬영한 사진이 서버에 저장되나요?</h2>
+                    </div>
+                    <div class="editorial-block__body">
+                        <p>기본 촬영과 합성 흐름은 브라우저 내부 처리 기준으로 구성했습니다. 사용자가 만든 이미지는 현재 세션 안에서 확인하고 다운로드할 수 있도록 설계했으며, 자동으로 계정이나 서버에 장기 저장하는 구조는 기본 동작에 포함하지 않습니다.</p>
+                    </div>
                 </article>
-                <article class="content-card">
-                    <h2>모바일에서도 사용할 수 있나요?</h2>
-                    <p>가능합니다. 전면 또는 후면 카메라를 선택할 수 있고, 레이아웃은 모바일 화면에서도 세로 흐름으로 자연스럽게 재배치됩니다. 다만 브라우저별 권한 UI와 카메라 전환 방식은 조금씩 다를 수 있습니다.</p>
+
+                <article class="editorial-block" data-reveal>
+                    <div class="editorial-block__head">
+                        <p class="page-index">02</p>
+                        <h2>모바일에서도 사용할 수 있나요?</h2>
+                    </div>
+                    <div class="editorial-block__body">
+                        <p>가능합니다. 모바일에서는 코어 액션을 하단 바에 고정하고, 나머지 설정은 드로어 안으로 정리해 화면을 덜 복잡하게 유지합니다. 다만 브라우저별 권한 UI와 카메라 전환 방식은 조금씩 다를 수 있습니다.</p>
+                    </div>
                 </article>
-                <article class="content-card">
-                    <h2>카메라 버튼을 눌렀는데 작동하지 않는 이유는 무엇인가요?</h2>
-                    <p>브라우저 권한이 거부되었거나, HTTPS가 아닌 환경에서 카메라 접근이 제한되었을 가능성이 큽니다. 이 경우 권한 설정을 확인하거나 사진 업로드 입력으로 프레임만 먼저 테스트해 볼 수 있습니다.</p>
+
+                <article class="editorial-block" data-reveal>
+                    <div class="editorial-block__head">
+                        <p class="page-index">03</p>
+                        <h2>카메라 버튼을 눌렀는데 작동하지 않는 이유는 무엇인가요?</h2>
+                    </div>
+                    <div class="editorial-block__body">
+                        <p>브라우저 권한이 거부되었거나, HTTPS가 아닌 환경에서 카메라 접근이 제한되었을 가능성이 큽니다. 이 경우 권한 설정을 확인하거나 업로드 테스트로 프레임만 먼저 검토할 수 있습니다.</p>
+                    </div>
                 </article>
-                <article class="content-card">
-                    <h2>Film Strip은 어떻게 촬영되나요?</h2>
-                    <p>Film Strip 모드는 선택한 타이머를 기준으로 4장을 순서대로 촬영합니다. 촬영이 끝나면 세로형 포토부스 레이아웃으로 자동 합성되어 한 장의 PNG로 저장할 수 있습니다.</p>
+
+                <article class="editorial-block" data-reveal>
+                    <div class="editorial-block__head">
+                        <p class="page-index">04</p>
+                        <h2>Film Strip은 어떻게 촬영되나요?</h2>
+                    </div>
+                    <div class="editorial-block__body">
+                        <p>Film Strip 모드는 선택한 타이머를 기준으로 네 장을 순서대로 촬영합니다. 모든 컷이 끝나면 세로형 포토부스 시트로 자동 합성되어 한 장의 PNG로 저장할 수 있습니다.</p>
+                    </div>
                 </article>
-                <article class="content-card">
-                    <h2>필터와 캡션을 나중에 다시 바꿀 수 있나요?</h2>
-                    <p>현재 세션에서 결과가 남아 있는 동안에는 필터, 캡션, 포인트 컬러를 바꾸면 같은 원본 프레임으로 다시 렌더링됩니다. 완전히 다른 구도가 필요하면 다시 촬영하면 됩니다.</p>
+
+                <article class="editorial-block" data-reveal>
+                    <div class="editorial-block__head">
+                        <p class="page-index">05</p>
+                        <h2>필터와 캡션을 나중에 다시 바꿀 수 있나요?</h2>
+                    </div>
+                    <div class="editorial-block__body">
+                        <p>현재 세션에서 결과가 남아 있는 동안에는 필터, 캡션, 포인트 컬러를 바꾸면 같은 원본 프레임으로 다시 렌더링됩니다. 완전히 다른 구도가 필요하면 다시 촬영하면 됩니다.</p>
+                    </div>
                 </article>
-                <article class="content-card">
-                    <h2>업로드한 사진도 똑같이 저장할 수 있나요?</h2>
-                    <p>가능합니다. 업로드한 이미지는 현재 선택한 프레임과 필터 기준으로 결과 캔버스에 반영되며, PNG 저장 버튼으로 내려받을 수 있습니다.</p>
+
+                <article class="editorial-block" data-reveal>
+                    <div class="editorial-block__head">
+                        <p class="page-index">06</p>
+                        <h2>업로드한 사진도 똑같이 저장할 수 있나요?</h2>
+                    </div>
+                    <div class="editorial-block__body">
+                        <p>가능합니다. 업로드한 이미지는 현재 선택한 프레임과 필터 기준으로 같은 방식으로 합성되며, 결과 시트가 생성되면 PNG로 내려받을 수 있습니다.</p>
+                    </div>
                 </article>
-                <article class="content-card">
-                    <h2>세션 갤러리는 어디에 저장되나요?</h2>
-                    <p>세션 갤러리는 현재 페이지가 열려 있는 동안만 최근 결과를 보여주는 보조 영역입니다. 페이지를 새로고침하면 목록은 초기화될 수 있으므로 필요한 이미지는 바로 저장하는 것이 좋습니다.</p>
+
+                <article class="editorial-block" data-reveal>
+                    <div class="editorial-block__head">
+                        <p class="page-index">07</p>
+                        <h2>세션 갤러리는 어디에 저장되나요?</h2>
+                    </div>
+                    <div class="editorial-block__body">
+                        <p>세션 갤러리는 현재 페이지가 열려 있는 동안만 최근 결과를 보여주는 보조 영역입니다. 페이지를 새로고침하면 목록은 초기화될 수 있으므로 필요한 이미지는 바로 저장하는 편이 안전합니다.</p>
+                    </div>
                 </article>
-                <article class="content-card">
-                    <h2>오류나 스타일 제안은 어디에 남기면 되나요?</h2>
-                    <p><a href="contact.html">문의 페이지</a>에 정리한 운영 채널을 통해 제보할 수 있습니다. 어떤 브라우저와 기기에서 어떤 모드가 문제였는지 함께 남기면 확인이 더 빠릅니다.</p>
+
+                <article class="editorial-block" data-reveal>
+                    <div class="editorial-block__head">
+                        <p class="page-index">08</p>
+                        <h2>오류나 스타일 제안은 어디에 남기면 되나요?</h2>
+                    </div>
+                    <div class="editorial-block__body">
+                        <p><a href="contact.html">문의 페이지</a>에 정리한 운영 채널을 통해 제보할 수 있습니다. 어떤 브라우저와 기기에서 어떤 모드가 문제였는지 함께 남기면 확인이 더 빨라집니다.</p>
+                    </div>
                 </article>
             </div>
         </section>
     </main>
 
     <footer class="site-footer">
-        <div class="wrap footer-grid">
-            <div><strong>Frame Atelier</strong><p>카메라 권한과 저장 흐름 관련 자주 묻는 질문 정리</p></div>
-            <nav class="footer-nav" aria-label="하단 메뉴">
-                <a href="privacy.html">개인정보 처리방침</a>
-                <a href="terms.html">이용약관</a>
-                <a href="contact.html">문의</a>
+        <div class="site-shell footer-grid">
+            <div class="footer-brand">
+                <a class="brand brand--footer" href="index.html">Frame Atelier</a>
+                <p>Quietly composed browser photo booth for polished frames, tactile filters, and printable PNG sheets.</p>
+            </div>
+            <nav class="footer-links" aria-label="하단 메뉴">
+                <a href="index.html#studio">Studio</a>
+                <a href="guide.html">Guide</a>
+                <a href="faq.html" aria-current="page">FAQ</a>
+                <a href="about.html">About</a>
+                <a href="privacy.html">Privacy</a>
+                <a href="terms.html">Terms</a>
+                <a href="contact.html">Contact</a>
             </nav>
         </div>
     </footer>
+
+    <script src="main.js" defer></script>
 </body>
 </html>
