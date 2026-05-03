@@ -1519,9 +1519,18 @@ function refreshStudioConfig() {
 function setMenuOpen(open) {
     const toggle = document.querySelector(".menu-toggle");
     const drawer = document.getElementById("mobile-drawer");
+    const scrim = document.querySelector(".studio-settings-scrim");
 
     if (!toggle || !drawer) {
         return;
+    }
+
+    if (open) {
+        document.body.classList.remove("is-settings-open");
+
+        if (scrim) {
+            scrim.hidden = true;
+        }
     }
 
     toggle.setAttribute("aria-expanded", open ? "true" : "false");
@@ -1538,6 +1547,10 @@ function setSettingsOpen(open) {
             scrim.hidden = true;
         }
         return;
+    }
+
+    if (open) {
+        setMenuOpen(false);
     }
 
     document.body.classList.toggle("is-settings-open", open);

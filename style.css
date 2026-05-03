@@ -26,6 +26,7 @@ html,
 body {
     margin: 0;
     min-height: 100%;
+    overflow-x: hidden;
 }
 
 body {
@@ -3232,12 +3233,25 @@ body.home-page {
         padding-top: 108px;
     }
 
+    .app-section {
+        padding-bottom: calc(120px + env(safe-area-inset-bottom));
+    }
+
     .app-surface--intro,
     .app-preview-panel,
     .app-control-panel,
     .app-output-card {
         padding: 20px;
         border-radius: 24px;
+    }
+
+    .app-surface--intro {
+        gap: 20px;
+    }
+
+    .app-copy-block h1 {
+        font-size: clamp(2.6rem, 10vw, 3.7rem);
+        line-height: 1;
     }
 
     .app-copy {
@@ -3256,6 +3270,10 @@ body.home-page {
         grid-template-columns: 1fr;
     }
 
+    .app-preview-stage {
+        padding: 14px;
+    }
+
     .app-mini-settings {
         gap: 12px;
     }
@@ -3265,20 +3283,57 @@ body.home-page {
         font-size: 13px;
     }
 
+    .preview-hud {
+        flex-wrap: wrap;
+        gap: 8px 12px;
+    }
+
+    .camera-status {
+        max-width: none;
+        flex: 1 1 100%;
+    }
+
+    .mode-summary {
+        width: 100%;
+        text-align: left;
+    }
+
+    .preview-guides {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .preview-guide {
+        max-width: none;
+        font-size: 12px;
+    }
+
+    .countdown-badge {
+        align-self: flex-end;
+        font-size: 48px;
+    }
+
     .app-control-panel {
         position: fixed;
-        left: 16px;
-        right: 16px;
-        bottom: 68px;
+        left: 12px;
+        right: 12px;
+        bottom: calc(68px + env(safe-area-inset-bottom));
         z-index: 72;
         max-height: min(76vh, 760px);
         overflow: auto;
+        overscroll-behavior: contain;
+        -webkit-overflow-scrolling: touch;
         transform: translateY(calc(100% + 28px));
         opacity: 0;
         pointer-events: none;
         transition:
             transform 300ms var(--ease-editorial),
             opacity 300ms var(--ease-editorial);
+    }
+
+    .app-control-panel__header h2 {
+        max-width: none;
     }
 
     body.is-settings-open .app-control-panel {
@@ -3303,20 +3358,64 @@ body.home-page {
 
     .output-actions {
         width: 100%;
+        flex-direction: column;
     }
 
     .output-actions .ghost-button {
-        flex: 1 1 auto;
+        width: 100%;
     }
 
     .result-shell {
         min-height: 320px;
+    }
+
+    .studio-mobile-bar {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    .mobile-bar-button {
+        min-height: 52px;
     }
 }
 
 @media (max-width: 560px) {
     .site-shell {
         width: min(var(--max-width), calc(100% - 32px));
+    }
+
+    .app-main {
+        padding-top: 100px;
+    }
+
+    .app-surface--intro,
+    .app-preview-panel,
+    .app-control-panel,
+    .app-output-card {
+        padding: 18px;
+    }
+
+    .app-copy-block h1 {
+        font-size: clamp(2.2rem, 12vw, 3rem);
+    }
+
+    .app-top-actions .quick-pill {
+        width: 100%;
+    }
+
+    .preview-hud,
+    .preview-guides {
+        left: 12px;
+        right: 12px;
+    }
+
+    .camera-status,
+    .mode-summary {
+        font-size: 10px;
+    }
+
+    .countdown-badge {
+        font-size: 40px;
     }
 
     .filter-grid,
@@ -3336,5 +3435,9 @@ body.home-page {
 
     .section-intro--compact h2 {
         font-size: 28px;
+    }
+
+    .mobile-bar-button {
+        font-size: 14px;
     }
 }
