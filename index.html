@@ -424,6 +424,22 @@
                     <p id="quiz-hint" class="quiz-hint">알맞은 답을 하나 선택하세요.</p>
                 </article>
                 <div id="answer-list" class="answer-list"></div>
+                <form id="typing-answer-form" class="typing-answer-form" hidden>
+                    <label for="typing-answer-input">음과 뜻 직접 입력</label>
+                    <div class="typing-answer-row">
+                        <input
+                            id="typing-answer-input"
+                            type="text"
+                            inputmode="text"
+                            autocomplete="off"
+                            autocapitalize="none"
+                            spellcheck="false"
+                            placeholder="예: 사람 인"
+                        >
+                        <button id="typing-answer-button" type="submit">정답 확인</button>
+                    </div>
+                    <small>띄어쓰기와 쉼표는 달라도 괜찮아요.</small>
+                </form>
                 <p id="swipe-hint" class="swipe-hint" aria-live="polite">정답을 맞히면 왼쪽으로 밀어 다음 문제로 넘어갈 수 있어요.</p>
             </div>
 

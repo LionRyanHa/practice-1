@@ -397,6 +397,9 @@ const elements = {
     quizPrompt: document.querySelector("#quiz-prompt"),
     quizHint: document.querySelector("#quiz-hint"),
     answerList: document.querySelector("#answer-list"),
+    typingAnswerForm: document.querySelector("#typing-answer-form"),
+    typingAnswerInput: document.querySelector("#typing-answer-input"),
+    typingAnswerButton: document.querySelector("#typing-answer-button"),
     swipeHint: document.querySelector("#swipe-hint"),
     streakFire: document.querySelector("#streak-fire"),
     streakMessage: document.querySelector("#streak-message"),
@@ -946,6 +949,13 @@ function getAnswerField(direction) {
     return direction === "meaning-to-hanja" ? "hanja" : "meaning";
 }
 
+function normalizeTypedAnswer(value) {
+    return String(value)
+        .normalize("NFKC")
+        .toLowerCase()
+        .replace(/[\s,，·ㆍ.、/()_-]/g, "");
+}
+
 function buildQuestions(words, direction) {
     if (direction !== "mixed") {
         return words.map((word) => ({ ...word, direction }));
@@ -1034,9 +1044,11 @@ function renderQuestion() {
     const question = state.questions[state.currentIndex];
     const total = state.questions.length;
     const progress = ((state.currentIndex + 1) / total) * 100;
-    const options = buildAnswerOptions(question, state.lesson.words);
+    const isTypingQuestion = question.direction === "hanja-to-meaning";
+    const options = isTypingQuestion
+        ? []
+        : buildAnswerOptions(question, state.lesson.words);
     const answerField = getAnswerField(question.direction);
-    const isMeaningQuestion = question.direction === "hanja-to-meaning";
     const nextReward = getRewardForStreak(state.streak + 1);
 
     state.answered = false;
@@ -1045,61 +1057,57 @@ function renderQuestion() {
     elements.quizContent.classList.remove("swipe-out");
     elements.progressBar.style.width = `${progress}%`;
     elements.quizCount.textContent = `${state.currentIndex + 1}/${total}`;
-    elements.quizGuide.textContent = isMeaningQuestion
-        ? "한자에 맞는 뜻을 골라주세요"
+    elements.quizGuide.textContent = isTypingQuestion
+        ? "한자의 음과 뜻을 직접 입력해 주세요"
         : "뜻에 맞는 한자를 골라주세요";
-    elements.quizPrompt.textContent = isMeaningQuestion
+    elements.quizPrompt.textContent = isTypingQuestion
         ? question.hanja
         : question.meaning;
-    elements.quizPrompt.classList.toggle("hanja-prompt", isMeaningQuestion);
+    elements.quizPrompt.classList.toggle("hanja-prompt", isTypingQuestion);
     elements.currentReward.innerHTML = `
         <span class="point-coin small" aria-hidden="true">P</span>
         맞히면 ${nextReward.total}P
     `;
     elements.currentReward.classList.remove("earned");
-    elements.answerList.classList.toggle("meaning-options", isMeaningQuestion);
-    elements.quizHint.textContent = "알맞은 답을 하나 선택하세요.";
+    elements.answerList.hidden = isTypingQuestion;
+    elements.typingAnswerForm.hidden = !isTypingQuestion;
+    elements.typingAnswerInput.value = "";
+    elements.typingAnswerInput.disabled = false;
+    elements.typingAnswerButton.disabled = false;
+    elements.typingAnswerForm.classList.remove("correct", "wrong");
+    elements.quizHint.textContent = isTypingQuestion
+        ? "뜻과 음을 함께 써주세요. 예: 사람 인"
+        : "알맞은 답을 하나 선택하세요.";
     elements.swipeHint.textContent =
         "정답을 맞히면 왼쪽으로 밀어 다음 문제로 넘어갈 수 있어요.";
     elements.swipeHint.classList.remove("ready");
     elements.feedbackPanel.classList.remove("show", "wrong");
-    elements.answerList.innerHTML = options
-        .map(
-            (option, index) => `
-                <button
-                    class="answer-button"
-                    type="button"
-                    data-answer-index="${index}"
-                >${option[answerField]}</button>
-            `,
-        )
-        .join("");
+    elements.answerList.innerHTML = isTypingQuestion
+        ? ""
+        : options
+              .map(
+                  (option, index) => `
+                    <button
+                        class="answer-button"
+                        type="button"
+                        data-answer-index="${index}"
+                    >${option[answerField]}</button>
+                `,
+              )
+              .join("");
+
+    if (isTypingQuestion) {
+        window.setTimeout(() => elements.typingAnswerInput.focus(), 80);
+    }
 }
 
-function selectAnswer(selectedIndex) {
+function finishAnswer(isCorrect) {
     if (state.answered) {
         return;
     }
 
     state.answered = true;
     const question = state.questions[state.currentIndex];
-    const answerField = getAnswerField(question.direction);
-    const selectedAnswer = state.answerOptions[selectedIndex];
-    const isCorrect =
-        selectedAnswer &&
-        selectedAnswer[answerField] === question[answerField];
-    const answerButtons = elements.answerList.querySelectorAll(".answer-button");
-
-    answerButtons.forEach((button) => {
-        button.disabled = true;
-        const option = state.answerOptions[Number(button.dataset.answerIndex)];
-
-        if (option[answerField] === question[answerField]) {
-            button.classList.add("correct");
-        } else if (Number(button.dataset.answerIndex) === selectedIndex) {
-            button.classList.add("wrong");
-        }
-    });
 
     if (isCorrect) {
         state.correctCount += 1;
@@ -1140,6 +1148,62 @@ function selectAnswer(selectedIndex) {
     const isLastQuestion = state.currentIndex === state.questions.length - 1;
     elements.nextButton.textContent = isLastQuestion ? "결과 보기" : "다음 문제";
     elements.feedbackPanel.classList.add("show");
+}
+
+function selectAnswer(selectedIndex) {
+    if (state.answered) {
+        return;
+    }
+
+    const question = state.questions[state.currentIndex];
+    const answerField = getAnswerField(question.direction);
+    const selectedAnswer = state.answerOptions[selectedIndex];
+    const isCorrect =
+        selectedAnswer &&
+        selectedAnswer[answerField] === question[answerField];
+    const answerButtons = elements.answerList.querySelectorAll(".answer-button");
+
+    answerButtons.forEach((button) => {
+        button.disabled = true;
+        const option = state.answerOptions[Number(button.dataset.answerIndex)];
+
+        if (option[answerField] === question[answerField]) {
+            button.classList.add("correct");
+        } else if (Number(button.dataset.answerIndex) === selectedIndex) {
+            button.classList.add("wrong");
+        }
+    });
+
+    finishAnswer(isCorrect);
+}
+
+function submitTypedAnswer(event) {
+    event.preventDefault();
+
+    if (state.answered) {
+        return;
+    }
+
+    const typedAnswer = normalizeTypedAnswer(
+        elements.typingAnswerInput.value,
+    );
+
+    if (!typedAnswer) {
+        elements.typingAnswerInput.focus();
+        showToast("음과 뜻을 입력해 주세요.");
+        return;
+    }
+
+    const question = state.questions[state.currentIndex];
+    const isCorrect =
+        typedAnswer === normalizeTypedAnswer(question.meaning);
+
+    elements.typingAnswerInput.disabled = true;
+    elements.typingAnswerButton.disabled = true;
+    elements.typingAnswerForm.classList.add(
+        isCorrect ? "correct" : "wrong",
+    );
+    finishAnswer(isCorrect);
 }
 
 function advanceQuestion() {
@@ -1432,6 +1496,8 @@ elements.answerList.addEventListener("click", (event) => {
         selectAnswer(Number(answerButton.dataset.answerIndex));
     }
 });
+
+elements.typingAnswerForm.addEventListener("submit", submitTypedAnswer);
 
 let swipeStart = null;
 
