@@ -1,3 +1,0 @@
-User-agent: *
-Allow: /
-Sitemap: https://practice-1-eq3.pages.dev/sitemap.xml
