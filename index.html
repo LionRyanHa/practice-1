@@ -24,15 +24,15 @@
 
                 <form id="login-form" class="login-form" novalidate>
                     <label class="input-field">
-                        <span>아이디</span>
+                        <span>이메일</span>
                         <input
                             id="username"
-                            name="username"
-                            type="text"
-                            autocomplete="username"
+                            name="email"
+                            type="email"
+                            autocomplete="email"
                             autocapitalize="none"
                             spellcheck="false"
-                            placeholder="아이디를 입력해 주세요"
+                            placeholder="name@example.com"
                             required
                         >
                     </label>
@@ -53,8 +53,39 @@
                     </label>
 
                     <p id="login-error" class="form-error" role="alert" aria-live="polite"></p>
-                    <button class="primary-button" type="submit">로그인</button>
+                    <div class="login-actions">
+                        <button id="login-submit-button" class="primary-button" type="submit">로그인</button>
+                        <button id="signup-button" class="secondary-button" type="button">회원가입</button>
+                    </div>
                 </form>
+            </div>
+        </section>
+
+        <section id="invite-screen" class="screen content-screen invite-screen" aria-labelledby="invite-title">
+            <div class="invite-content">
+                <div class="brand-mark" aria-hidden="true">한</div>
+                <p class="eyebrow">초대 확인</p>
+                <h1 id="invite-title">초대코드를 입력해 주세요</h1>
+                <p class="supporting-text">관리자에게 받은 최신 코드를 입력하면 학습을 시작할 수 있어요.</p>
+
+                <form id="invite-form" class="invite-form" novalidate>
+                    <label class="input-field">
+                        <span>초대코드</span>
+                        <input
+                            id="invite-code-input"
+                            name="inviteCode"
+                            type="text"
+                            autocomplete="one-time-code"
+                            autocapitalize="characters"
+                            spellcheck="false"
+                            placeholder="예: A1B2C3D4"
+                            required
+                        >
+                    </label>
+                    <p id="invite-error" class="form-error" role="alert" aria-live="polite"></p>
+                    <button id="invite-submit-button" class="primary-button" type="submit">입장하기</button>
+                </form>
+                <button id="invite-logout-button" class="text-link-button" type="button">다른 계정으로 로그인</button>
             </div>
         </section>
 
@@ -176,6 +207,20 @@
                     </div>
                 </section>
 
+                <section id="admin-invite-panel" class="settings-group admin-invite-panel" aria-labelledby="admin-invite-title" hidden>
+                    <div class="settings-group-heading">
+                        <div>
+                            <span class="settings-kicker">관리자</span>
+                            <h2 id="admin-invite-title">현재 초대코드</h2>
+                        </div>
+                        <p>승인된 계정에만 표시돼요.</p>
+                    </div>
+                    <div class="invite-code-box">
+                        <strong id="current-invite-code">확인 중</strong>
+                        <button id="refresh-invite-code-button" type="button">새로고침</button>
+                    </div>
+                </section>
+
                 <section class="settings-group" aria-labelledby="profile-setting-title">
                     <div class="settings-group-heading">
                         <div>
@@ -201,7 +246,6 @@
                     <div class="segmented-control" role="group" aria-label="화면 테마">
                         <button type="button" data-theme-option="light">라이트</button>
                         <button type="button" data-theme-option="dark">다크</button>
-                        <button type="button" data-theme-option="system">시스템</button>
                     </div>
                 </section>
 
@@ -212,15 +256,6 @@
                             <h2 id="study-setting-title">퀴즈 설정</h2>
                         </div>
                     </div>
-
-                    <label class="toggle-row">
-                        <span>
-                            <strong>스와이프로 다음 문제</strong>
-                            <small>정답 후 카드를 왼쪽으로 밀어 이동해요.</small>
-                        </span>
-                        <input id="swipe-setting" type="checkbox">
-                        <span class="toggle-switch" aria-hidden="true"></span>
-                    </label>
 
                     <div class="setting-choice">
                         <span>
@@ -274,7 +309,7 @@
                 </section>
 
                 <div class="leaderboard-note">
-                    현재 기기에 저장된 내 레벨과 포인트 기록이에요.
+                    가입한 사용자들의 레벨과 포인트를 서버 기록으로 비교해요.
                 </div>
 
                 <div id="leaderboard-list" class="leaderboard-list"></div>
@@ -440,15 +475,7 @@
                     </div>
                     <small>띄어쓰기와 쉼표는 달라도 괜찮아요.</small>
                 </form>
-                <p id="swipe-hint" class="swipe-hint" aria-live="polite">정답을 맞히면 왼쪽으로 밀어 다음 문제로 넘어갈 수 있어요.</p>
-            </div>
-
-            <div id="feedback-panel" class="feedback-panel" aria-live="polite">
-                <div>
-                    <strong id="feedback-title"></strong>
-                    <span id="feedback-description"></span>
-                </div>
-                <button id="next-button" class="primary-button" type="button">다음</button>
+                <p id="swipe-hint" class="swipe-hint" aria-live="polite">답을 확인한 뒤 왼쪽으로 밀어 다음 문제로 넘어가요.</p>
             </div>
         </section>
 
@@ -469,6 +496,14 @@
                         <span>전체 문제 <b id="total-count">3</b></span>
                     </div>
                 </div>
+
+                <section id="wrong-answer-section" class="wrong-answer-section" hidden>
+                    <header>
+                        <span>다시 볼 문제</span>
+                        <strong id="wrong-answer-count">0개</strong>
+                    </header>
+                    <div id="wrong-answer-list" class="wrong-answer-list"></div>
+                </section>
 
                 <div class="result-point-card">
                     <span>이번 학습에서 모은 포인트</span>
@@ -553,6 +588,8 @@
         <div id="app-toast" class="app-toast" role="status" aria-live="polite"></div>
     </main>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
     <script src="app.js"></script>
 </body>
 </html>

@@ -1,11 +1,26 @@
 "use strict";
 
-const ALLOWED_ACCOUNT = {
-    username: "lionryan4796",
-    password: "ryanlion",
-};
+const SUPABASE_CONFIG = window.HANJA_SUPABASE_CONFIG || {};
+const SUPABASE_URL = SUPABASE_CONFIG.url || "";
+const SUPABASE_PUBLISHABLE_KEY = SUPABASE_CONFIG.publishableKey || "";
+const supabaseClient =
+    window.supabase && SUPABASE_URL && SUPABASE_PUBLISHABLE_KEY
+        ? window.supabase.createClient(
+              SUPABASE_URL,
+              SUPABASE_PUBLISHABLE_KEY,
+              {
+                  auth: {
+                      persistSession: true,
+                      autoRefreshToken: true,
+                      detectSessionInUrl: true,
+                  },
+              },
+          )
+        : null;
 
 const PROFILE_STORAGE_KEY = "hanja-profile-v1";
+const LEGACY_LOGIN_STORAGE_KEY = "hanja-login-v2";
+const USER_PROFILE_STORAGE_PREFIX = "hanja-profile-v2:";
 const DEFAULT_PROFILE = {
     displayName: "한자 학습자",
     points: 0,
@@ -13,57 +28,215 @@ const DEFAULT_PROFILE = {
     unlockedLessons: [1],
     lastAttendanceDate: "",
     attendanceCount: 0,
-    theme: "system",
-    swipeEnabled: true,
+    theme: "light",
     defaultDirection: "meaning-to-hanja",
+    legacyImported: false,
 };
 
-function loadProfile() {
-    try {
-        const savedProfile = JSON.parse(
-            localStorage.getItem(PROFILE_STORAGE_KEY) || "{}",
-        );
-        const unlockedLessons = Array.isArray(savedProfile.unlockedLessons)
-            ? savedProfile.unlockedLessons
-                  .map(Number)
-                  .filter((lessonId) => lessonId >= 1 && lessonId <= 5)
-            : [1];
+let currentUser = null;
+let remoteLeaderboardEntries = [];
+let remoteSaveChain = Promise.resolve();
+let authActivationToken = 0;
+let inviteStatus = {
+    inviteApproved: false,
+    isAdmin: false,
+    currentCode: "",
+};
 
-        return {
-            ...DEFAULT_PROFILE,
-            ...savedProfile,
-            displayName:
-                typeof savedProfile.displayName === "string" &&
-                savedProfile.displayName.trim()
-                    ? savedProfile.displayName.trim().slice(0, 12)
-                    : DEFAULT_PROFILE.displayName,
-            points: Math.max(0, Number(savedProfile.points) || 0),
-            level: Math.max(1, Math.floor(Number(savedProfile.level) || 1)),
-            unlockedLessons: Array.from(
-                new Set([1, ...unlockedLessons]),
-            ).sort((first, second) => first - second),
-            lastAttendanceDate:
-                typeof savedProfile.lastAttendanceDate === "string"
-                    ? savedProfile.lastAttendanceDate
-                    : "",
-            attendanceCount: Math.max(
-                0,
-                Math.floor(Number(savedProfile.attendanceCount) || 0),
-            ),
-        };
+function normalizeProfile(savedProfile = {}) {
+    const unlockedLessons = Array.isArray(savedProfile.unlockedLessons)
+        ? savedProfile.unlockedLessons
+              .map(Number)
+              .filter((lessonId) => lessonId >= 1 && lessonId <= 5)
+        : [1];
+    const defaultDirection = [
+        "meaning-to-hanja",
+        "hanja-to-meaning",
+        "mixed",
+    ].includes(savedProfile.defaultDirection)
+        ? savedProfile.defaultDirection
+        : DEFAULT_PROFILE.defaultDirection;
+
+    return {
+        ...DEFAULT_PROFILE,
+        displayName:
+            typeof savedProfile.displayName === "string" &&
+            savedProfile.displayName.trim()
+                ? savedProfile.displayName.trim().slice(0, 12)
+                : DEFAULT_PROFILE.displayName,
+        points: Math.max(0, Math.floor(Number(savedProfile.points) || 0)),
+        level: Math.max(1, Math.floor(Number(savedProfile.level) || 1)),
+        unlockedLessons: Array.from(new Set([1, ...unlockedLessons])).sort(
+            (first, second) => first - second,
+        ),
+        lastAttendanceDate:
+            typeof savedProfile.lastAttendanceDate === "string"
+                ? savedProfile.lastAttendanceDate
+                : "",
+        attendanceCount: Math.max(
+            0,
+            Math.floor(Number(savedProfile.attendanceCount) || 0),
+        ),
+        theme: savedProfile.theme === "dark" ? "dark" : "light",
+        defaultDirection,
+        legacyImported: Boolean(savedProfile.legacyImported),
+    };
+}
+
+function loadProfile(storageKey = PROFILE_STORAGE_KEY) {
+    try {
+        return normalizeProfile(
+            JSON.parse(localStorage.getItem(storageKey) || "{}"),
+        );
     } catch {
         return { ...DEFAULT_PROFILE };
     }
 }
 
 const profile = loadProfile();
+delete profile.swipeEnabled;
 
-function saveProfile() {
+function getUserProfileStorageKey(userId = currentUser && currentUser.id) {
+    return userId
+        ? `${USER_PROFILE_STORAGE_PREFIX}${userId}`
+        : PROFILE_STORAGE_KEY;
+}
+
+function saveProfile(options = {}) {
+    const shouldSaveRemote = options.remote !== false;
+
     try {
-        localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(profile));
+        localStorage.setItem(
+            getUserProfileStorageKey(),
+            JSON.stringify(profile),
+        );
     } catch {
         // 저장소가 차단된 환경에서는 현재 탭에서만 상태를 유지합니다.
     }
+
+    if (shouldSaveRemote) {
+        queueRemoteProfileSave();
+    }
+}
+
+function toDatabaseProfile() {
+    return {
+        user_id: currentUser.id,
+        display_name: profile.displayName,
+        points: Math.max(0, Math.floor(Number(profile.points) || 0)),
+        level: Math.max(1, Math.floor(Number(profile.level) || 1)),
+        unlocked_lessons: profile.unlockedLessons,
+        last_attendance_date: profile.lastAttendanceDate || null,
+        attendance_count: Math.max(
+            0,
+            Math.floor(Number(profile.attendanceCount) || 0),
+        ),
+        theme: profile.theme === "dark" ? "dark" : "light",
+        default_direction: profile.defaultDirection,
+        legacy_imported: Boolean(profile.legacyImported),
+    };
+}
+
+function fromDatabaseProfile(row) {
+    return normalizeProfile({
+        displayName: row.display_name,
+        points: row.points,
+        level: row.level,
+        unlockedLessons: row.unlocked_lessons,
+        lastAttendanceDate: row.last_attendance_date || "",
+        attendanceCount: row.attendance_count,
+        theme: row.theme,
+        defaultDirection: row.default_direction,
+        legacyImported: row.legacy_imported,
+    });
+}
+
+function hasMeaningfulLocalProfile(localProfile) {
+    return (
+        localProfile.points > 0 ||
+        localProfile.level > 1 ||
+        localProfile.unlockedLessons.length > 1 ||
+        localProfile.attendanceCount > 0 ||
+        localProfile.displayName !== DEFAULT_PROFILE.displayName
+    );
+}
+
+function mergeProfiles(remoteProfile, localProfile) {
+    return normalizeProfile({
+        ...remoteProfile,
+        displayName:
+            remoteProfile.displayName !== DEFAULT_PROFILE.displayName
+                ? remoteProfile.displayName
+                : localProfile.displayName,
+        points: Math.max(remoteProfile.points, localProfile.points),
+        level: Math.max(remoteProfile.level, localProfile.level),
+        unlockedLessons: [
+            ...remoteProfile.unlockedLessons,
+            ...localProfile.unlockedLessons,
+        ],
+        lastAttendanceDate:
+            remoteProfile.lastAttendanceDate > localProfile.lastAttendanceDate
+                ? remoteProfile.lastAttendanceDate
+                : localProfile.lastAttendanceDate,
+        attendanceCount: Math.max(
+            remoteProfile.attendanceCount,
+            localProfile.attendanceCount,
+        ),
+        theme: localProfile.theme || remoteProfile.theme,
+        defaultDirection:
+            localProfile.defaultDirection || remoteProfile.defaultDirection,
+        legacyImported: true,
+    });
+}
+
+function getDisplayNameFromUser(user) {
+    const metadata = user && user.user_metadata ? user.user_metadata : {};
+    const name =
+        metadata.display_name ||
+        metadata.full_name ||
+        metadata.name ||
+        (user.email ? user.email.split("@")[0] : "");
+
+    return String(name || DEFAULT_PROFILE.displayName)
+        .trim()
+        .slice(0, 12) || DEFAULT_PROFILE.displayName;
+}
+
+function getAuthRedirectUrl() {
+    return `${window.location.origin}${window.location.pathname}`;
+}
+
+function queueRemoteProfileSave() {
+    if (!supabaseClient || !currentUser) {
+        return remoteSaveChain;
+    }
+
+    const currentEntry = remoteLeaderboardEntries.find(
+        (entry) => entry.isCurrent,
+    );
+
+    if (currentEntry) {
+        currentEntry.displayName = profile.displayName;
+        currentEntry.points = profile.points;
+        currentEntry.level = profile.level;
+    }
+
+    remoteSaveChain = remoteSaveChain
+        .then(async () => {
+            const { error } = await supabaseClient
+                .from("profiles")
+                .upsert(toDatabaseProfile(), { onConflict: "user_id" });
+
+            if (error) {
+                throw error;
+            }
+        })
+        .catch((error) => {
+            console.error("profile save failed", error);
+            showToast("서버 저장에 실패했어요. Supabase 설정을 확인해 주세요.");
+        });
+
+    return remoteSaveChain;
 }
 
 // 실제 단어를 받으면 이 데이터만 교체하면 됩니다.
@@ -345,6 +518,7 @@ const state = {
     answerOptions: [],
     currentIndex: 0,
     correctCount: 0,
+    wrongAnswers: [],
     streak: 0,
     pointsEarned: 0,
     answered: false,
@@ -362,6 +536,13 @@ const elements = {
     password: document.querySelector("#password"),
     passwordToggle: document.querySelector("#password-toggle"),
     loginError: document.querySelector("#login-error"),
+    loginSubmitButton: document.querySelector("#login-submit-button"),
+    signupButton: document.querySelector("#signup-button"),
+    inviteForm: document.querySelector("#invite-form"),
+    inviteCodeInput: document.querySelector("#invite-code-input"),
+    inviteError: document.querySelector("#invite-error"),
+    inviteSubmitButton: document.querySelector("#invite-submit-button"),
+    inviteLogoutButton: document.querySelector("#invite-logout-button"),
     logoutButton: document.querySelector("#logout-button"),
     screenLinkButtons: document.querySelectorAll("[data-screen-link]"),
     profileAvatar: document.querySelector("#profile-avatar"),
@@ -407,25 +588,26 @@ const elements = {
     quizStreak: document.querySelector("#quiz-streak"),
     quizPointsEarned: document.querySelector("#quiz-points-earned"),
     currentReward: document.querySelector("#current-reward"),
-    feedbackPanel: document.querySelector("#feedback-panel"),
-    feedbackTitle: document.querySelector("#feedback-title"),
-    feedbackDescription: document.querySelector("#feedback-description"),
-    nextButton: document.querySelector("#next-button"),
     resultMessage: document.querySelector("#result-message"),
     scorePercent: document.querySelector("#score-percent"),
     correctCount: document.querySelector("#correct-count"),
     totalCount: document.querySelector("#total-count"),
     resultPointsEarned: document.querySelector("#result-points-earned"),
     resultTotalPoints: document.querySelector("#result-total-points"),
+    wrongAnswerSection: document.querySelector("#wrong-answer-section"),
+    wrongAnswerCount: document.querySelector("#wrong-answer-count"),
+    wrongAnswerList: document.querySelector("#wrong-answer-list"),
     retryButton: document.querySelector("#retry-button"),
     resultHomeButton: document.querySelector("#result-home-button"),
     themeButtons: document.querySelectorAll("[data-theme-option]"),
-    swipeSetting: document.querySelector("#swipe-setting"),
     defaultDirectionButtons: document.querySelectorAll(
         "[data-default-direction]",
     ),
     profileNameForm: document.querySelector("#profile-name-form"),
     profileNameInput: document.querySelector("#profile-name-input"),
+    adminInvitePanel: document.querySelector("#admin-invite-panel"),
+    currentInviteCode: document.querySelector("#current-invite-code"),
+    refreshInviteCodeButton: document.querySelector("#refresh-invite-code-button"),
     myRank: document.querySelector("#my-rank"),
     myRankSummary: document.querySelector("#my-rank-summary"),
     leaderboardList: document.querySelector("#leaderboard-list"),
@@ -462,14 +644,7 @@ const elements = {
 };
 
 function getResolvedTheme(theme = profile.theme) {
-    if (theme !== "system") {
-        return theme;
-    }
-
-    return typeof window.matchMedia === "function" &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches
-        ? "dark"
-        : "light";
+    return theme === "dark" ? "dark" : "light";
 }
 
 function applyTheme() {
@@ -517,14 +692,20 @@ function escapeHTML(value) {
 }
 
 function getLeaderboardEntries() {
-    return [
-        {
+    const entries = remoteLeaderboardEntries.length
+        ? remoteLeaderboardEntries.map((entry) => ({ ...entry }))
+        : [];
+
+    if (!entries.some((entry) => entry.isCurrent)) {
+        entries.push({
             name: profile.displayName,
             level: profile.level,
             points: profile.points,
             isCurrent: true,
-        },
-    ].sort(
+        });
+    }
+
+    return entries.sort(
         (first, second) =>
             second.level - first.level ||
             second.points - first.points ||
@@ -536,7 +717,7 @@ function renderLeaderboard() {
     const entries = getLeaderboardEntries();
     const currentIndex = entries.findIndex((entry) => entry.isCurrent);
 
-    elements.myRank.textContent = currentIndex + 1;
+    elements.myRank.textContent = currentIndex >= 0 ? currentIndex + 1 : "-";
     elements.myRankSummary.textContent = `레벨 ${profile.level} · ${profile.points}P`;
     elements.leaderboardList.innerHTML = entries
         .map((entry, index) => {
@@ -558,6 +739,32 @@ function renderLeaderboard() {
             `;
         })
         .join("");
+}
+
+async function refreshLeaderboard() {
+    if (!supabaseClient || !currentUser) {
+        renderLeaderboard();
+        return;
+    }
+
+    const { data, error } = await supabaseClient.rpc("get_leaderboard", {
+        limit_count: 50,
+    });
+
+    if (error) {
+        console.error("leaderboard load failed", error);
+        remoteLeaderboardEntries = [];
+        renderLeaderboard();
+        return;
+    }
+
+    remoteLeaderboardEntries = (data || []).map((entry) => ({
+        name: entry.display_name || DEFAULT_PROFILE.displayName,
+        level: Math.max(1, Number(entry.level) || 1),
+        points: Math.max(0, Number(entry.points) || 0),
+        isCurrent: Boolean(entry.is_current),
+    }));
+    renderLeaderboard();
 }
 
 function updateProfileUI() {
@@ -628,7 +835,6 @@ function syncSettingsUI() {
         button.classList.toggle("selected", isSelected);
         button.setAttribute("aria-pressed", String(isSelected));
     });
-    elements.swipeSetting.checked = profile.swipeEnabled;
 }
 
 let toastTimer = null;
@@ -643,7 +849,158 @@ function showToast(message) {
     }, 2200);
 }
 
+function canUseApp() {
+    return inviteStatus.inviteApproved || inviteStatus.isAdmin;
+}
+
+function setInviteStatus(status = {}) {
+    const source = Array.isArray(status) ? status[0] || {} : status || {};
+
+    inviteStatus = {
+        inviteApproved: Boolean(
+            source.invite_approved ?? source.inviteApproved,
+        ),
+        isAdmin: Boolean(source.is_admin ?? source.isAdmin),
+        currentCode:
+            typeof (source.current_code ?? source.currentCode) === "string"
+                ? source.current_code ?? source.currentCode
+                : "",
+    };
+    renderInviteStatus();
+
+    return inviteStatus;
+}
+
+function renderInviteStatus() {
+    if (!elements.adminInvitePanel) {
+        return;
+    }
+
+    elements.adminInvitePanel.hidden = !inviteStatus.isAdmin;
+    elements.currentInviteCode.textContent = inviteStatus.currentCode || "확인 중";
+}
+
+async function refreshInviteStatus() {
+    if (!supabaseClient || !currentUser) {
+        return setInviteStatus();
+    }
+
+    const { data, error } = await supabaseClient.rpc("get_invite_status");
+
+    if (error) {
+        console.error("invite status load failed", error);
+        return setInviteStatus({ invite_approved: true });
+    }
+
+    return setInviteStatus(data);
+}
+
+function getInviteErrorMessage(error) {
+    const message = String((error && error.message) || "").toLowerCase();
+
+    if (message.includes("invalid_invite_code")) {
+        return "초대코드가 맞지 않아요. 관리자에게 최신 코드를 다시 받아주세요.";
+    }
+    if (message.includes("profile_not_found")) {
+        return "프로필을 찾지 못했어요. 다시 로그인해 주세요.";
+    }
+
+    return "초대코드를 확인하지 못했어요. 잠시 뒤 다시 시도해 주세요.";
+}
+
+async function handleInviteSubmit(event) {
+    event.preventDefault();
+
+    const code = elements.inviteCodeInput.value.trim().toUpperCase();
+
+    if (!code) {
+        elements.inviteError.textContent = "초대코드를 입력해 주세요.";
+        elements.inviteCodeInput.focus();
+        return;
+    }
+    if (!supabaseClient || !currentUser) {
+        elements.inviteError.textContent = "먼저 로그인해 주세요.";
+        return;
+    }
+
+    elements.inviteSubmitButton.disabled = true;
+    elements.inviteError.textContent = "";
+    const { data, error } = await supabaseClient.rpc("claim_invite_code", {
+        code_input: code,
+    });
+    elements.inviteSubmitButton.disabled = false;
+
+    if (error) {
+        elements.inviteError.textContent = getInviteErrorMessage(error);
+        elements.inviteCodeInput.select();
+        return;
+    }
+
+    setInviteStatus(data);
+    elements.inviteCodeInput.value = "";
+    showToast("초대코드가 확인됐어요.");
+    showScreen("home");
+}
+
+async function refreshAdminInviteCode() {
+    if (!inviteStatus.isAdmin) {
+        return;
+    }
+
+    elements.refreshInviteCodeButton.disabled = true;
+    await refreshInviteStatus();
+    elements.refreshInviteCodeButton.disabled = false;
+    showToast("초대코드를 새로 확인했어요.");
+}
+
+function isCoarsePointer() {
+    return window.matchMedia && window.matchMedia("(pointer: coarse)").matches;
+}
+
+function updateTypingViewportInset() {
+    if (!window.visualViewport || !elements.quizScreen.classList.contains("typing-mode")) {
+        return;
+    }
+
+    const inset = Math.max(
+        0,
+        window.innerHeight - window.visualViewport.height - window.visualViewport.offsetTop,
+    );
+    document.documentElement.style.setProperty(
+        "--quiz-keyboard-inset",
+        `${Math.round(inset)}px`,
+    );
+}
+
+function setTypingKeyboardActive(isActive) {
+    elements.quizScreen.classList.toggle("typing-keyboard-active", isActive);
+
+    if (isActive) {
+        updateTypingViewportInset();
+    } else {
+        document.documentElement.style.removeProperty("--quiz-keyboard-inset");
+    }
+}
+
+function stabilizeTypingViewport() {
+    setTypingKeyboardActive(true);
+    window.setTimeout(() => {
+        updateTypingViewportInset();
+        elements.quizContent.scrollTo({ top: 0, behavior: "auto" });
+    }, 120);
+}
+
 function showScreen(name) {
+    if (currentUser && !canUseApp() && name !== "invite" && name !== "login") {
+        name = "invite";
+    }
+
+    if (name !== "quiz") {
+        setTypingKeyboardActive(false);
+        elements.quizScreen.classList.remove("typing-mode");
+        elements.quizContent.classList.remove("typing-mode");
+    }
+
     elements.screens.forEach((screen) => {
         screen.classList.toggle("active", screen.id === `${name}-screen`);
     });
@@ -664,28 +1021,151 @@ function showScreen(name) {
     } else if (name === "leaderboard") {
         updateProfileUI();
         renderLeaderboard();
+        void refreshLeaderboard();
+    } else if (name === "invite") {
+        renderInviteStatus();
+        elements.inviteCodeInput.focus();
     }
 
     window.scrollTo({ top: 0, behavior: "auto" });
 }
 
-function setLoginState(isLoggedIn) {
-    try {
-        if (isLoggedIn) {
-            sessionStorage.setItem("hanja-login", "true");
-        } else {
-            sessionStorage.removeItem("hanja-login");
+async function loadRemoteProfile(user) {
+    const userCache = loadProfile(getUserProfileStorageKey(user.id));
+    const hasLegacyProfile = Boolean(localStorage.getItem(PROFILE_STORAGE_KEY));
+    const legacyProfile = hasLegacyProfile
+        ? loadProfile(PROFILE_STORAGE_KEY)
+        : { ...DEFAULT_PROFILE };
+    const { data, error } = await supabaseClient
+        .from("profiles")
+        .select(
+            "user_id, display_name, points, level, unlocked_lessons, last_attendance_date, attendance_count, theme, default_direction, legacy_imported",
+        )
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+    if (error) {
+        console.error("profile load failed", error);
+        const fallbackProfile = hasMeaningfulLocalProfile(userCache)
+            ? userCache
+            : normalizeProfile({ displayName: getDisplayNameFromUser(user) });
+        Object.assign(profile, fallbackProfile);
+        saveProfile({ remote: false });
+        showToast("Supabase SQL 설치 후 서버 저장이 시작돼요.");
+        return;
+    }
+
+    let nextProfile = data
+        ? fromDatabaseProfile(data)
+        : hasMeaningfulLocalProfile(userCache)
+          ? userCache
+          : normalizeProfile({ displayName: getDisplayNameFromUser(user) });
+    const shouldImportLegacy =
+        !nextProfile.legacyImported &&
+        hasLegacyProfile &&
+        hasMeaningfulLocalProfile(legacyProfile);
+
+    if (shouldImportLegacy) {
+        nextProfile = mergeProfiles(nextProfile, legacyProfile);
+    }
+
+    nextProfile.legacyImported = true;
+    Object.assign(profile, nextProfile);
+    saveProfile({ remote: false });
+
+    if (!data || !data.legacy_imported || shouldImportLegacy) {
+        const { error: saveError } = await supabaseClient
+            .from("profiles")
+            .upsert(toDatabaseProfile(), { onConflict: "user_id" });
+
+        if (saveError) {
+            console.error("initial profile save failed", saveError);
+            showToast("초기 프로필 서버 저장에 실패했어요.");
         }
-    } catch {
-        // 저장소를 막은 브라우저에서도 현재 탭의 화면 전환은 정상 동작합니다.
+    }
+
+    if (shouldImportLegacy) {
+        localStorage.removeItem(PROFILE_STORAGE_KEY);
+        localStorage.removeItem(LEGACY_LOGIN_STORAGE_KEY);
+        sessionStorage.removeItem("hanja-login");
+        showToast("기존 학습 기록을 서버 계정으로 옮겼어요.");
     }
 }
 
-function hasLoginSession() {
-    try {
-        return sessionStorage.getItem("hanja-login") === "true";
-    } catch {
-        return false;
+async function activateSession(session) {
+    if (!session || !session.user) {
+        handleSignedOut();
+        return;
+    }
+
+    const activationToken = ++authActivationToken;
+    currentUser = session.user;
+    await loadRemoteProfile(currentUser);
+    await refreshInviteStatus();
+
+    if (activationToken !== authActivationToken) {
+        return;
+    }
+
+    applyTheme();
+    syncSettingsUI();
+    updateProfileUI();
+    renderLessons();
+    elements.loginError.textContent = "";
+    elements.inviteError.textContent = "";
+    elements.loginForm.reset();
+    showScreen(canUseApp() ? "home" : "invite");
+}
+
+function handleSignedOut() {
+    authActivationToken += 1;
+    currentUser = null;
+    remoteLeaderboardEntries = [];
+    setInviteStatus();
+    Object.assign(profile, normalizeProfile());
+    state.lesson = null;
+    attendancePromptShown = false;
+    closeAttendanceModal();
+    closePurchaseModal();
+    closeWordPreview();
+    applyTheme();
+    syncSettingsUI();
+    updateProfileUI();
+    renderLessons();
+    showScreen("login");
+}
+
+async function initializeAuth() {
+    if (!supabaseClient) {
+        elements.loginError.textContent =
+            "Supabase 라이브러리 또는 공개 설정을 불러오지 못했어요.";
+        showScreen("login");
+        return;
+    }
+
+    supabaseClient.auth.onAuthStateChange((event, session) => {
+        if (event === "INITIAL_SESSION" || event === "TOKEN_REFRESHED") {
+            return;
+        }
+        if (event === "SIGNED_OUT") {
+            handleSignedOut();
+        } else if (session) {
+            void activateSession(session);
+        }
+    });
+
+    const { data, error } = await supabaseClient.auth.getSession();
+
+    if (error) {
+        elements.loginError.textContent = "로그인 상태를 확인하지 못했어요.";
+        showScreen("login");
+        return;
+    }
+
+    if (data.session) {
+        await activateSession(data.session);
+    } else {
+        showScreen("login");
     }
 }
 
@@ -1011,7 +1491,7 @@ function updateQuizRewardUI() {
             : state.streak >= 3
               ? "불꽃 콤보가 터졌어요!"
               : state.streak > 0
-                ? "좋아요, 계속 이어가요!"
+                ? "연속 정답 진행 중"
                 : "첫 정답에 도전해요";
     elements.streakNextReward.textContent = `다음 +${nextReward.total}P`;
     elements.quizPointsEarned.textContent = `+${state.pointsEarned}P`;
@@ -1029,12 +1509,12 @@ function startQuiz() {
     state.questions = buildQuestions(words, state.direction);
     state.currentIndex = 0;
     state.correctCount = 0;
+    state.wrongAnswers = [];
     state.streak = 0;
     state.pointsEarned = 0;
     state.answered = false;
     state.canSwipeNext = false;
     state.isAdvancing = false;
-    elements.feedbackPanel.classList.remove("show", "wrong");
     showScreen("quiz");
     updateQuizRewardUI();
     renderQuestion();
@@ -1054,7 +1534,11 @@ function renderQuestion() {
     state.answered = false;
     state.canSwipeNext = false;
     state.answerOptions = options;
+    elements.quizScreen.classList.toggle("typing-mode", isTypingQuestion);
+    elements.quizContent.classList.toggle("typing-mode", isTypingQuestion);
+    setTypingKeyboardActive(false);
     elements.quizContent.classList.remove("swipe-out");
+    elements.quizContent.scrollTo({ top: 0, behavior: "auto" });
     elements.progressBar.style.width = `${progress}%`;
     elements.quizCount.textContent = `${state.currentIndex + 1}/${total}`;
     elements.quizGuide.textContent = isTypingQuestion
@@ -1079,9 +1563,8 @@ function renderQuestion() {
         ? "뜻과 음을 함께 써주세요. 예: 사람 인"
         : "알맞은 답을 하나 선택하세요.";
     elements.swipeHint.textContent =
-        "정답을 맞히면 왼쪽으로 밀어 다음 문제로 넘어갈 수 있어요.";
+        "답을 확인한 뒤 왼쪽으로 밀어 다음 문제로 넘어가요.";
     elements.swipeHint.classList.remove("ready");
-    elements.feedbackPanel.classList.remove("show", "wrong");
     elements.answerList.innerHTML = isTypingQuestion
         ? ""
         : options
@@ -1096,12 +1579,14 @@ function renderQuestion() {
               )
               .join("");
 
-    if (isTypingQuestion) {
-        window.setTimeout(() => elements.typingAnswerInput.focus(), 80);
+    if (isTypingQuestion && !isCoarsePointer()) {
+        window.setTimeout(() => {
+            elements.typingAnswerInput.focus({ preventScroll: true });
+        }, 80);
     }
 }
 
-function finishAnswer(isCorrect) {
+function finishAnswer(isCorrect, submittedAnswer = "") {
     if (state.answered) {
         return;
     }
@@ -1123,31 +1608,27 @@ function finishAnswer(isCorrect) {
             ${reward.total}P 받았어요!
         `;
         elements.currentReward.classList.add("earned");
-        state.canSwipeNext = true;
-        elements.feedbackTitle.textContent = `정답! +${reward.total}P`;
-        elements.feedbackDescription.textContent =
-            reward.streakBonus > 0
-                ? `${state.streak}연속 보너스 +${reward.streakBonus}P · ${question.hanja}은(는) ${question.meaning}`
-                : `${question.hanja}은(는) ${question.meaning}`;
-        elements.feedbackPanel.classList.remove("wrong");
-        elements.swipeHint.textContent =
-            "왼쪽으로 밀거나 아래 버튼을 눌러 다음으로 이동하세요.";
-        elements.swipeHint.classList.add("ready");
+        elements.quizHint.textContent = `${question.hanja} · ${question.meaning}`;
     } else {
         state.streak = 0;
+        state.wrongAnswers.push({
+            hanja: question.hanja,
+            meaning: question.meaning,
+            direction: question.direction,
+            submittedAnswer: String(submittedAnswer).trim(),
+        });
         updateQuizRewardUI();
         elements.currentReward.textContent = "이번 문제는 0P";
         elements.currentReward.classList.remove("earned");
-        elements.feedbackTitle.textContent = "조금 아쉬워요";
-        elements.feedbackDescription.textContent = `연속 정답이 끊겼어요. 정답은 ${question.hanja} · ${question.meaning}이에요.`;
-        elements.feedbackPanel.classList.add("wrong");
-        elements.swipeHint.textContent =
-            "정답을 확인한 뒤 아래 버튼을 눌러 계속하세요.";
+        elements.quizHint.textContent = `정답: ${question.hanja} · ${question.meaning}`;
     }
 
-    const isLastQuestion = state.currentIndex === state.questions.length - 1;
-    elements.nextButton.textContent = isLastQuestion ? "결과 보기" : "다음 문제";
-    elements.feedbackPanel.classList.add("show");
+    state.canSwipeNext = true;
+    elements.swipeHint.textContent =
+        state.currentIndex === state.questions.length - 1
+            ? "왼쪽으로 밀어 결과를 확인하세요."
+            : "왼쪽으로 밀어 다음 문제로 넘어가세요.";
+    elements.swipeHint.classList.add("ready");
 }
 
 function selectAnswer(selectedIndex) {
@@ -1174,7 +1655,10 @@ function selectAnswer(selectedIndex) {
         }
     });
 
-    finishAnswer(isCorrect);
+    finishAnswer(
+        isCorrect,
+        selectedAnswer ? selectedAnswer[answerField] : "",
+    );
 }
 
 function submitTypedAnswer(event) {
@@ -1203,7 +1687,7 @@ function submitTypedAnswer(event) {
     elements.typingAnswerForm.classList.add(
         isCorrect ? "correct" : "wrong",
     );
-    finishAnswer(isCorrect);
+    finishAnswer(isCorrect, elements.typingAnswerInput.value);
 }
 
 function advanceQuestion() {
@@ -1249,46 +1733,151 @@ function showResult() {
     elements.totalCount.textContent = total;
     elements.resultPointsEarned.textContent = `+${state.pointsEarned}P`;
     elements.resultTotalPoints.textContent = `${profile.points}P`;
+    elements.wrongAnswerSection.hidden = state.wrongAnswers.length === 0;
+    elements.wrongAnswerCount.textContent = `${state.wrongAnswers.length}개`;
+    elements.wrongAnswerList.innerHTML = state.wrongAnswers
+        .map((answer) => {
+            const prompt =
+                answer.direction === "meaning-to-hanja"
+                    ? answer.meaning
+                    : answer.hanja;
+            const submitted = answer.submittedAnswer || "답하지 않음";
+
+            return `
+                <article class="wrong-answer-row">
+                    <span class="wrong-answer-hanja">${escapeHTML(answer.hanja)}</span>
+                    <span class="wrong-answer-copy">
+                        <strong>${escapeHTML(answer.meaning)}</strong>
+                        <small>문제 ${escapeHTML(prompt)} · 내 답 ${escapeHTML(submitted)}</small>
+                    </span>
+                </article>
+            `;
+        })
+        .join("");
     showScreen("result");
 }
 
-function handleLogin(event) {
-    event.preventDefault();
+function getAuthErrorMessage(error) {
+    const message = String((error && error.message) || "").toLowerCase();
 
-    const username = elements.username.value.trim();
-    const password = elements.password.value;
-    const isAllowed =
-        username === ALLOWED_ACCOUNT.username &&
-        password === ALLOWED_ACCOUNT.password;
-
-    if (!username || !password) {
-        elements.loginError.textContent = "아이디와 비밀번호를 모두 입력해 주세요.";
-        return;
+    if (message.includes("invalid login credentials")) {
+        return "이메일 또는 비밀번호가 올바르지 않아요.";
+    }
+    if (message.includes("email not confirmed")) {
+        return "이메일 인증을 완료한 뒤 로그인해 주세요.";
+    }
+    if (message.includes("already registered")) {
+        return "이미 가입된 이메일이에요.";
+    }
+    if (message.includes("password")) {
+        return "비밀번호는 6자 이상으로 입력해 주세요.";
+    }
+    if (message.includes("provider") || message.includes("unsupported")) {
+        return "Supabase에서 해당 로그인 제공자를 먼저 설정해 주세요.";
     }
 
-    if (!isAllowed) {
-        elements.loginError.textContent = "아이디 또는 비밀번호가 올바르지 않아요.";
-        elements.password.value = "";
-        elements.password.focus();
-        return;
-    }
-
-    setLoginState(true);
-    elements.loginError.textContent = "";
-    elements.loginForm.reset();
-    showScreen("home");
+    return (error && error.message) || "로그인 처리 중 오류가 발생했어요.";
 }
 
-function logout() {
-    setLoginState(false);
-    state.lesson = null;
-    attendancePromptShown = false;
-    closeAttendanceModal();
-    closeWordPreview();
+function setAuthButtonsBusy(isBusy) {
+    elements.loginSubmitButton.disabled = isBusy;
+    elements.signupButton.disabled = isBusy;
+}
+
+async function handleLogin(event) {
+    event.preventDefault();
+
+    const email = elements.username.value.trim().toLowerCase();
+    const password = elements.password.value;
+
+    if (!email || !password) {
+        elements.loginError.textContent =
+            "이메일과 비밀번호를 모두 입력해 주세요.";
+        return;
+    }
+    if (!supabaseClient) {
+        elements.loginError.textContent = "Supabase 연결 설정을 확인해 주세요.";
+        return;
+    }
+
+    setAuthButtonsBusy(true);
+    elements.loginError.textContent = "";
+    const { error } = await supabaseClient.auth.signInWithPassword({
+        email,
+        password,
+    });
+    setAuthButtonsBusy(false);
+
+    if (error) {
+        elements.loginError.textContent = getAuthErrorMessage(error);
+        elements.password.focus();
+    }
+}
+
+async function handleSignup() {
+    const email = elements.username.value.trim().toLowerCase();
+    const password = elements.password.value;
+
+    if (!email || !password) {
+        elements.loginError.textContent =
+            "가입할 이메일과 비밀번호를 입력해 주세요.";
+        return;
+    }
+    if (password.length < 6) {
+        elements.loginError.textContent =
+            "비밀번호는 6자 이상으로 입력해 주세요.";
+        return;
+    }
+    if (!supabaseClient) {
+        elements.loginError.textContent = "Supabase 연결 설정을 확인해 주세요.";
+        return;
+    }
+
+    setAuthButtonsBusy(true);
+    elements.loginError.textContent = "";
+    const { data, error } = await supabaseClient.auth.signUp({
+        email,
+        password,
+        options: {
+            emailRedirectTo: getAuthRedirectUrl(),
+            data: {
+                display_name: email.split("@")[0].slice(0, 12),
+            },
+        },
+    });
+    setAuthButtonsBusy(false);
+
+    if (error) {
+        elements.loginError.textContent = getAuthErrorMessage(error);
+        return;
+    }
+
+    if (!data.session) {
+        elements.loginError.textContent =
+            "가입 확인 메일을 보냈어요. 메일의 링크를 눌러주세요.";
+        return;
+    }
+
+    showToast("회원가입이 완료됐어요.");
+}
+
+async function logout() {
+    if (!supabaseClient) {
+        handleSignedOut();
+        return;
+    }
+
+    const { error } = await supabaseClient.auth.signOut();
+
+    if (error) {
+        showToast("로그아웃하지 못했어요.");
+        return;
+    }
+
+    handleSignedOut();
     elements.loginForm.reset();
     elements.password.type = "password";
     elements.passwordToggle.textContent = "보기";
-    showScreen("login");
 }
 
 function claimAttendanceReward() {
@@ -1349,6 +1938,13 @@ function saveProfileName(event) {
 }
 
 elements.loginForm.addEventListener("submit", handleLogin);
+elements.signupButton.addEventListener("click", handleSignup);
+elements.inviteForm.addEventListener("submit", handleInviteSubmit);
+elements.inviteLogoutButton.addEventListener("click", logout);
+elements.refreshInviteCodeButton.addEventListener(
+    "click",
+    refreshAdminInviteCode,
+);
 
 elements.passwordToggle.addEventListener("click", () => {
     const shouldShow = elements.password.type === "password";
@@ -1470,11 +2066,6 @@ elements.themeButtons.forEach((button) => {
     });
 });
 
-elements.swipeSetting.addEventListener("change", () => {
-    profile.swipeEnabled = elements.swipeSetting.checked;
-    saveProfile();
-});
-
 elements.defaultDirectionButtons.forEach((button) => {
     button.addEventListener("click", () => {
         profile.defaultDirection = button.dataset.defaultDirection;
@@ -1498,15 +2089,24 @@ elements.answerList.addEventListener("click", (event) => {
 });
 
 elements.typingAnswerForm.addEventListener("submit", submitTypedAnswer);
+elements.typingAnswerInput.addEventListener("focus", stabilizeTypingViewport);
+elements.typingAnswerInput.addEventListener("blur", () => {
+    window.setTimeout(() => {
+        if (document.activeElement !== elements.typingAnswerInput) {
+            setTypingKeyboardActive(false);
+        }
+    }, 120);
+});
+
+if (window.visualViewport) {
+    window.visualViewport.addEventListener("resize", updateTypingViewportInset);
+    window.visualViewport.addEventListener("scroll", updateTypingViewportInset);
+}
 
 let swipeStart = null;
 
 elements.quizScreen.addEventListener("pointerdown", (event) => {
-    if (
-        !profile.swipeEnabled ||
-        !state.canSwipeNext ||
-        state.isAdvancing
-    ) {
+    if (!state.canSwipeNext || state.isAdvancing) {
         return;
     }
 
@@ -1538,30 +2138,17 @@ elements.quizScreen.addEventListener("pointercancel", () => {
     swipeStart = null;
 });
 
-elements.nextButton.addEventListener("click", () => goToNextQuestion());
 elements.quitQuizButton.addEventListener("click", () => {
-    elements.feedbackPanel.classList.remove("show", "wrong");
     showScreen("mode");
 });
 elements.retryButton.addEventListener("click", startQuiz);
 elements.resultHomeButton.addEventListener("click", () => showScreen("home"));
 
-if (typeof window.matchMedia === "function") {
-    const systemTheme = window.matchMedia("(prefers-color-scheme: dark)");
-    const handleSystemThemeChange = () => {
-        if (profile.theme === "system") {
-            applyTheme();
-        }
-    };
-
-    if (typeof systemTheme.addEventListener === "function") {
-        systemTheme.addEventListener("change", handleSystemThemeChange);
-    }
-}
 
 applyTheme();
 syncSettingsUI();
 updateProfileUI();
 renderLessons();
 closePurchaseModal();
-showScreen(hasLoginSession() ? "home" : "login");
+showScreen("login");
+void initializeAuth();
