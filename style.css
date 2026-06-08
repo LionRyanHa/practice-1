@@ -2013,6 +2013,16 @@ input:focus-visible {
     -webkit-overflow-scrolling: touch;
 }
 
+.quiz-screen.typing-keyboard-active {
+    min-height: var(--quiz-visual-height, 100dvh);
+    height: var(--quiz-visual-height, 100dvh);
+}
+
+.quiz-screen.typing-keyboard-active .quiz-content {
+    overflow-y: hidden;
+    padding-bottom: max(10px, env(safe-area-inset-bottom));
+}
+
 .quiz-screen.typing-mode .study-card,
 .quiz-screen.typing-mode .typing-answer-form {
     flex: 0 0 auto;
@@ -2104,8 +2114,12 @@ input:focus-visible {
 }
 
 .swipe-hint {
+    width: 100%;
     margin: 22px 0 0;
+    padding: 0;
+    border: 0;
     color: var(--text-soft);
+    background: transparent;
     font-size: 12px;
     line-height: 1.5;
     text-align: center;
@@ -3052,12 +3066,12 @@ input:focus-visible {
     }
 
     .quiz-screen.typing-keyboard-active .study-card {
-        min-height: clamp(150px, 30dvh, 190px);
+        min-height: 158px;
         padding: 18px 16px 14px;
     }
 
     .quiz-screen.typing-keyboard-active .study-card-guide {
-        margin-top: 24px;
+        margin: 10px 0 4px;
         font-size: 11px;
     }
 
@@ -3073,8 +3087,7 @@ input:focus-visible {
     }
 
     .quiz-screen.typing-keyboard-active .quiz-hint {
-        margin-top: 7px;
-        font-size: 11px;
+        display: none;
     }
 
     .quiz-screen.typing-keyboard-active .typing-answer-form {
@@ -3100,7 +3113,7 @@ input:focus-visible {
         min-height: 46px;
     }
 
-    .swipe-hint {
+    .swipe-hint:not(.ready) {
         display: none;
     }
 }

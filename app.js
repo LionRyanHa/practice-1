@@ -962,14 +962,24 @@ function updateTypingViewportInset() {
         return;
     }
 
+    const visualHeight = Math.round(window.visualViewport.height);
     const inset = Math.max(
         0,
         window.innerHeight - window.visualViewport.height - window.visualViewport.offsetTop,
     );
     document.documentElement.style.setProperty(
+        "--quiz-visual-height",
+        `${visualHeight}px`,
+    );
+    document.documentElement.style.setProperty(
         "--quiz-keyboard-inset",
         `${Math.round(inset)}px`,
     );
+}
+
+function resetTypingViewportMetrics() {
+    document.documentElement.style.removeProperty("--quiz-keyboard-inset");
+    document.documentElement.style.removeProperty("--quiz-visual-height");
 }
 
 function setTypingKeyboardActive(isActive) {
@@ -978,7 +988,7 @@ function setTypingKeyboardActive(isActive) {
     if (isActive) {
         updateTypingViewportInset();
     } else {
-        document.documentElement.style.removeProperty("--quiz-keyboard-inset");
+        resetTypingViewportMetrics();
     }
 }
 
@@ -987,7 +997,18 @@ function stabilizeTypingViewport() {
     window.setTimeout(() => {
         updateTypingViewportInset();
         elements.quizContent.scrollTo({ top: 0, behavior: "auto" });
+        window.scrollTo({ top: 0, behavior: "auto" });
     }, 120);
+}
+
+function releaseTypingInputFocus() {
+    if (document.activeElement === elements.typingAnswerInput) {
+        elements.typingAnswerInput.blur();
+    }
+
+    setTypingKeyboardActive(false);
+    elements.quizContent.scrollTo({ top: 0, behavior: "auto" });
+    window.scrollTo({ top: 0, behavior: "auto" });
 }
 
 function showScreen(name) {
@@ -1682,6 +1703,7 @@ function submitTypedAnswer(event) {
     const isCorrect =
         typedAnswer === normalizeTypedAnswer(question.meaning);
 
+    releaseTypingInputFocus();
     elements.typingAnswerInput.disabled = true;
     elements.typingAnswerButton.disabled = true;
     elements.typingAnswerForm.classList.add(
@@ -2105,25 +2127,25 @@ if (window.visualViewport) {
 
 let swipeStart = null;
 
-elements.quizScreen.addEventListener("pointerdown", (event) => {
+function beginQuizSwipe(pointerId, x, y) {
     if (!state.canSwipeNext || state.isAdvancing) {
         return;
     }
 
     swipeStart = {
-        pointerId: event.pointerId,
-        x: event.clientX,
-        y: event.clientY,
+        pointerId,
+        x,
+        y,
     };
-});
+}
 
-elements.quizScreen.addEventListener("pointerup", (event) => {
-    if (!swipeStart || swipeStart.pointerId !== event.pointerId) {
+function completeQuizSwipe(pointerId, x, y) {
+    if (!swipeStart || swipeStart.pointerId !== pointerId) {
         return;
     }
 
-    const horizontalDistance = event.clientX - swipeStart.x;
-    const verticalDistance = event.clientY - swipeStart.y;
+    const horizontalDistance = x - swipeStart.x;
+    const verticalDistance = y - swipeStart.y;
     swipeStart = null;
 
     if (
@@ -2132,10 +2154,45 @@ elements.quizScreen.addEventListener("pointerup", (event) => {
     ) {
         goToNextQuestion(true);
     }
+}
+
+elements.quizScreen.addEventListener("pointerdown", (event) => {
+    beginQuizSwipe(event.pointerId, event.clientX, event.clientY);
+});
+
+elements.quizScreen.addEventListener("pointerup", (event) => {
+    completeQuizSwipe(event.pointerId, event.clientX, event.clientY);
+});
+
+elements.quizScreen.addEventListener("touchstart", (event) => {
+    if (event.touches.length !== 1) {
+        return;
+    }
+
+    const touch = event.touches[0];
+    beginQuizSwipe(touch.identifier, touch.clientX, touch.clientY);
+});
+
+elements.quizScreen.addEventListener("touchend", (event) => {
+    const touch = Array.from(event.changedTouches).find(
+        (item) => swipeStart && item.identifier === swipeStart.pointerId,
+    );
+
+    if (touch) {
+        completeQuizSwipe(touch.identifier, touch.clientX, touch.clientY);
+    }
 });
 
 elements.quizScreen.addEventListener("pointercancel", () => {
     swipeStart = null;
+});
+
+elements.quizScreen.addEventListener("touchcancel", () => {
+    swipeStart = null;
+});
+
+elements.swipeHint.addEventListener("click", () => {
+    goToNextQuestion(false);
 });
 
 elements.quitQuizButton.addEventListener("click", () => {
