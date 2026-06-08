@@ -49,13 +49,10 @@ function normalizeProfile(savedProfile = {}) {
               .map(Number)
               .filter((lessonId) => lessonId >= 1 && lessonId <= 5)
         : [1];
-    const defaultDirection = [
-        "meaning-to-hanja",
-        "hanja-to-meaning",
-        "mixed",
-    ].includes(savedProfile.defaultDirection)
-        ? savedProfile.defaultDirection
-        : DEFAULT_PROFILE.defaultDirection;
+    const defaultDirection =
+        savedProfile.defaultDirection === "meaning-to-hanja"
+            ? savedProfile.defaultDirection
+            : DEFAULT_PROFILE.defaultDirection;
 
     return {
         ...DEFAULT_PROFILE,
