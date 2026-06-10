@@ -1584,9 +1584,10 @@ function renderQuestion() {
     elements.quizHint.textContent = isTypingQuestion
         ? "뜻과 음을 함께 써주세요. 예: 사람 인"
         : "알맞은 답을 하나 선택하세요.";
+    elements.swipeHint.hidden = isTypingQuestion;
     elements.swipeHint.textContent =
         "답을 확인한 뒤 옆으로 밀어 다음 문제로 넘어가요.";
-    elements.swipeHint.classList.remove("ready");
+    elements.swipeHint.classList.remove("ready", "typing-next");
     elements.answerList.innerHTML = isTypingQuestion
         ? ""
         : options
@@ -1645,12 +1646,19 @@ function finishAnswer(isCorrect, submittedAnswer = "") {
         elements.quizHint.textContent = `정답: ${question.hanja} · ${question.meaning}`;
     }
 
-    state.canSwipeNext = true;
-    elements.quizScreen.classList.add("swipe-ready");
-    elements.swipeHint.textContent =
-        state.currentIndex === state.questions.length - 1
-            ? "옆으로 밀어 결과를 확인하세요."
-            : "옆으로 밀어 다음 문제로 넘어가세요.";
+    const isTypingQuestion = question.direction === "hanja-to-meaning";
+
+    state.canSwipeNext = !isTypingQuestion;
+    elements.quizScreen.classList.toggle("swipe-ready", !isTypingQuestion);
+    elements.swipeHint.hidden = false;
+    elements.swipeHint.textContent = isTypingQuestion
+        ? state.currentIndex === state.questions.length - 1
+            ? "결과 보기"
+            : "다음 문제"
+        : state.currentIndex === state.questions.length - 1
+          ? "옆으로 밀어 결과를 확인하세요."
+          : "옆으로 밀어 다음 문제로 넘어가세요.";
+    elements.swipeHint.classList.toggle("typing-next", isTypingQuestion);
     elements.swipeHint.classList.add("ready");
 }
 

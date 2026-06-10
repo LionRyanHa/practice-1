@@ -2134,6 +2134,24 @@ input:focus-visible {
     font-weight: 700;
 }
 
+.swipe-hint.typing-next {
+    position: static;
+    flex: 0 0 auto;
+    min-height: 54px;
+    margin-top: 14px;
+    padding: 0 18px;
+    border-radius: 16px;
+    color: #fff;
+    background: var(--primary);
+    box-shadow: 0 10px 22px rgba(101, 88, 232, 0.22);
+    font-size: 15px;
+    font-weight: 850;
+}
+
+.swipe-hint.typing-next:active {
+    transform: translateY(1px);
+}
+
 
 .result-screen {
     align-items: center;
