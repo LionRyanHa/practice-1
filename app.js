@@ -49,10 +49,13 @@ function normalizeProfile(savedProfile = {}) {
               .map(Number)
               .filter((lessonId) => lessonId >= 1 && lessonId <= 5)
         : [1];
-    const defaultDirection =
-        savedProfile.defaultDirection === "meaning-to-hanja"
-            ? savedProfile.defaultDirection
-            : DEFAULT_PROFILE.defaultDirection;
+    const defaultDirection = [
+        "meaning-to-hanja",
+        "hanja-to-meaning",
+        "mixed",
+    ].includes(savedProfile.defaultDirection)
+        ? savedProfile.defaultDirection
+        : DEFAULT_PROFILE.defaultDirection;
 
     return {
         ...DEFAULT_PROFILE,
@@ -1743,7 +1746,7 @@ function showResult() {
 
     const directionLabels = {
         "meaning-to-hanja": "뜻→한자",
-        "hanja-to-meaning": "한자→뜻",
+        "hanja-to-meaning": "한자→음·뜻",
         mixed: "혼합",
     };
     elements.resultMessage.textContent = `${state.lesson.id}과 ${state.mode === "random" ? "랜덤" : "순서"} · ${directionLabels[state.direction]} 학습을 모두 마쳤어요.`;
