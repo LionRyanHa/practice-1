@@ -1018,7 +1018,7 @@ function showScreen(name) {
 
     if (name !== "quiz") {
         setTypingKeyboardActive(false);
-        elements.quizScreen.classList.remove("typing-mode");
+        elements.quizScreen.classList.remove("typing-mode", "swipe-ready");
         elements.quizContent.classList.remove("typing-mode");
     }
 
@@ -1556,6 +1556,7 @@ function renderQuestion() {
     state.canSwipeNext = false;
     state.answerOptions = options;
     elements.quizScreen.classList.toggle("typing-mode", isTypingQuestion);
+    elements.quizScreen.classList.remove("swipe-ready");
     elements.quizContent.classList.toggle("typing-mode", isTypingQuestion);
     setTypingKeyboardActive(false);
     elements.quizContent.classList.remove("swipe-out");
@@ -1645,6 +1646,7 @@ function finishAnswer(isCorrect, submittedAnswer = "") {
     }
 
     state.canSwipeNext = true;
+    elements.quizScreen.classList.add("swipe-ready");
     elements.swipeHint.textContent =
         state.currentIndex === state.questions.length - 1
             ? "옆으로 밀어 결과를 확인하세요."
@@ -2140,20 +2142,29 @@ function beginQuizSwipe(pointerId, x, y) {
     };
 }
 
-function completeQuizSwipe(pointerId, x, y) {
+function tryQuizSwipe(pointerId, x, y) {
     if (!swipeStart || swipeStart.pointerId !== pointerId) {
-        return;
+        return false;
     }
 
     const horizontalDistance = x - swipeStart.x;
     const verticalDistance = y - swipeStart.y;
-    swipeStart = null;
 
     if (
-        Math.abs(horizontalDistance) > 55 &&
-        Math.abs(horizontalDistance) > Math.abs(verticalDistance) * 1.2
+        Math.abs(horizontalDistance) <= 55 ||
+        Math.abs(horizontalDistance) <= Math.abs(verticalDistance) * 1.2
     ) {
-        goToNextQuestion(true);
+        return false;
+    }
+
+    swipeStart = null;
+    goToNextQuestion(true);
+    return true;
+}
+
+function completeQuizSwipe(pointerId, x, y) {
+    if (!tryQuizSwipe(pointerId, x, y)) {
+        swipeStart = null;
     }
 }
 
@@ -2168,6 +2179,14 @@ if ("PointerEvent" in window) {
         if (swipeStart && elements.quizScreen.setPointerCapture) {
             elements.quizScreen.setPointerCapture(event.pointerId);
         }
+    });
+
+    elements.quizScreen.addEventListener("pointermove", (event) => {
+        if (!event.isPrimary) {
+            return;
+        }
+
+        tryQuizSwipe(event.pointerId, event.clientX, event.clientY);
     });
 
     elements.quizScreen.addEventListener("pointerup", (event) => {
@@ -2191,6 +2210,23 @@ if ("PointerEvent" in window) {
         const touch = event.touches[0];
         beginQuizSwipe(touch.identifier, touch.clientX, touch.clientY);
     });
+
+    elements.quizScreen.addEventListener(
+        "touchmove",
+        (event) => {
+            const touch = Array.from(event.touches).find(
+                (item) => swipeStart && item.identifier === swipeStart.pointerId,
+            );
+
+            if (!touch) {
+                return;
+            }
+
+            event.preventDefault();
+            tryQuizSwipe(touch.identifier, touch.clientX, touch.clientY);
+        },
+        { passive: false },
+    );
 
     elements.quizScreen.addEventListener("touchend", (event) => {
         const touch = Array.from(event.changedTouches).find(
