@@ -1584,7 +1584,7 @@ function renderQuestion() {
         ? "뜻과 음을 함께 써주세요. 예: 사람 인"
         : "알맞은 답을 하나 선택하세요.";
     elements.swipeHint.textContent =
-        "답을 확인한 뒤 왼쪽으로 밀어 다음 문제로 넘어가요.";
+        "답을 확인한 뒤 옆으로 밀어 다음 문제로 넘어가요.";
     elements.swipeHint.classList.remove("ready");
     elements.answerList.innerHTML = isTypingQuestion
         ? ""
@@ -1647,8 +1647,8 @@ function finishAnswer(isCorrect, submittedAnswer = "") {
     state.canSwipeNext = true;
     elements.swipeHint.textContent =
         state.currentIndex === state.questions.length - 1
-            ? "왼쪽으로 밀어 결과를 확인하세요."
-            : "왼쪽으로 밀어 다음 문제로 넘어가세요.";
+            ? "옆으로 밀어 결과를 확인하세요."
+            : "옆으로 밀어 다음 문제로 넘어가세요.";
     elements.swipeHint.classList.add("ready");
 }
 
@@ -2129,6 +2129,7 @@ let swipeStart = null;
 
 function beginQuizSwipe(pointerId, x, y) {
     if (!state.canSwipeNext || state.isAdvancing) {
+        swipeStart = null;
         return;
     }
 
@@ -2149,47 +2150,62 @@ function completeQuizSwipe(pointerId, x, y) {
     swipeStart = null;
 
     if (
-        horizontalDistance < -55 &&
+        Math.abs(horizontalDistance) > 55 &&
         Math.abs(horizontalDistance) > Math.abs(verticalDistance) * 1.2
     ) {
         goToNextQuestion(true);
     }
 }
 
-elements.quizScreen.addEventListener("pointerdown", (event) => {
-    beginQuizSwipe(event.pointerId, event.clientX, event.clientY);
-});
+if ("PointerEvent" in window) {
+    elements.quizScreen.addEventListener("pointerdown", (event) => {
+        if (!event.isPrimary) {
+            return;
+        }
 
-elements.quizScreen.addEventListener("pointerup", (event) => {
-    completeQuizSwipe(event.pointerId, event.clientX, event.clientY);
-});
+        beginQuizSwipe(event.pointerId, event.clientX, event.clientY);
 
-elements.quizScreen.addEventListener("touchstart", (event) => {
-    if (event.touches.length !== 1) {
-        return;
-    }
+        if (swipeStart && elements.quizScreen.setPointerCapture) {
+            elements.quizScreen.setPointerCapture(event.pointerId);
+        }
+    });
 
-    const touch = event.touches[0];
-    beginQuizSwipe(touch.identifier, touch.clientX, touch.clientY);
-});
+    elements.quizScreen.addEventListener("pointerup", (event) => {
+        if (!event.isPrimary) {
+            return;
+        }
 
-elements.quizScreen.addEventListener("touchend", (event) => {
-    const touch = Array.from(event.changedTouches).find(
-        (item) => swipeStart && item.identifier === swipeStart.pointerId,
-    );
+        completeQuizSwipe(event.pointerId, event.clientX, event.clientY);
+    });
 
-    if (touch) {
-        completeQuizSwipe(touch.identifier, touch.clientX, touch.clientY);
-    }
-});
+    elements.quizScreen.addEventListener("pointercancel", () => {
+        swipeStart = null;
+    });
+} else {
+    elements.quizScreen.addEventListener("touchstart", (event) => {
+        if (event.touches.length !== 1) {
+            swipeStart = null;
+            return;
+        }
 
-elements.quizScreen.addEventListener("pointercancel", () => {
-    swipeStart = null;
-});
+        const touch = event.touches[0];
+        beginQuizSwipe(touch.identifier, touch.clientX, touch.clientY);
+    });
 
-elements.quizScreen.addEventListener("touchcancel", () => {
-    swipeStart = null;
-});
+    elements.quizScreen.addEventListener("touchend", (event) => {
+        const touch = Array.from(event.changedTouches).find(
+            (item) => swipeStart && item.identifier === swipeStart.pointerId,
+        );
+
+        if (touch) {
+            completeQuizSwipe(touch.identifier, touch.clientX, touch.clientY);
+        }
+    });
+
+    elements.quizScreen.addEventListener("touchcancel", () => {
+        swipeStart = null;
+    });
+}
 
 elements.swipeHint.addEventListener("click", () => {
     goToNextQuestion(false);
