@@ -35,7 +35,6 @@ const DEFAULT_PROFILE = {
 
 let currentUser = null;
 let remoteLeaderboardEntries = [];
-let remoteSaveChain = Promise.resolve();
 let authActivationToken = 0;
 let inviteStatus = {
     inviteApproved: false,
@@ -102,9 +101,7 @@ function getUserProfileStorageKey(userId = currentUser && currentUser.id) {
         : PROFILE_STORAGE_KEY;
 }
 
-function saveProfile(options = {}) {
-    const shouldSaveRemote = options.remote !== false;
-
+function saveProfile() {
     try {
         localStorage.setItem(
             getUserProfileStorageKey(),
@@ -113,28 +110,6 @@ function saveProfile(options = {}) {
     } catch {
         // 저장소가 차단된 환경에서는 현재 탭에서만 상태를 유지합니다.
     }
-
-    if (shouldSaveRemote) {
-        queueRemoteProfileSave();
-    }
-}
-
-function toDatabaseProfile() {
-    return {
-        user_id: currentUser.id,
-        display_name: profile.displayName,
-        points: Math.max(0, Math.floor(Number(profile.points) || 0)),
-        level: Math.max(1, Math.floor(Number(profile.level) || 1)),
-        unlocked_lessons: profile.unlockedLessons,
-        last_attendance_date: profile.lastAttendanceDate || null,
-        attendance_count: Math.max(
-            0,
-            Math.floor(Number(profile.attendanceCount) || 0),
-        ),
-        theme: profile.theme === "dark" ? "dark" : "light",
-        default_direction: profile.defaultDirection,
-        legacy_imported: Boolean(profile.legacyImported),
-    };
 }
 
 function fromDatabaseProfile(row) {
@@ -151,65 +126,13 @@ function fromDatabaseProfile(row) {
     });
 }
 
-function hasMeaningfulLocalProfile(localProfile) {
-    return (
-        localProfile.points > 0 ||
-        localProfile.level > 1 ||
-        localProfile.unlockedLessons.length > 1 ||
-        localProfile.attendanceCount > 0 ||
-        localProfile.displayName !== DEFAULT_PROFILE.displayName
-    );
-}
-
-function mergeProfiles(remoteProfile, localProfile) {
-    return normalizeProfile({
-        ...remoteProfile,
-        displayName:
-            remoteProfile.displayName !== DEFAULT_PROFILE.displayName
-                ? remoteProfile.displayName
-                : localProfile.displayName,
-        points: Math.max(remoteProfile.points, localProfile.points),
-        level: Math.max(remoteProfile.level, localProfile.level),
-        unlockedLessons: [
-            ...remoteProfile.unlockedLessons,
-            ...localProfile.unlockedLessons,
-        ],
-        lastAttendanceDate:
-            remoteProfile.lastAttendanceDate > localProfile.lastAttendanceDate
-                ? remoteProfile.lastAttendanceDate
-                : localProfile.lastAttendanceDate,
-        attendanceCount: Math.max(
-            remoteProfile.attendanceCount,
-            localProfile.attendanceCount,
-        ),
-        theme: localProfile.theme || remoteProfile.theme,
-        defaultDirection:
-            localProfile.defaultDirection || remoteProfile.defaultDirection,
-        legacyImported: true,
-    });
-}
-
-function getDisplayNameFromUser(user) {
-    const metadata = user && user.user_metadata ? user.user_metadata : {};
-    const name =
-        metadata.display_name ||
-        metadata.full_name ||
-        metadata.name ||
-        (user.email ? user.email.split("@")[0] : "");
-
-    return String(name || DEFAULT_PROFILE.displayName)
-        .trim()
-        .slice(0, 12) || DEFAULT_PROFILE.displayName;
-}
-
 function getAuthRedirectUrl() {
     return `${window.location.origin}${window.location.pathname}`;
 }
 
-function queueRemoteProfileSave() {
-    if (!supabaseClient || !currentUser) {
-        return remoteSaveChain;
-    }
+function applyServerProfile(serverProfile) {
+    Object.assign(profile, fromDatabaseProfile(serverProfile));
+    saveProfile();
 
     const currentEntry = remoteLeaderboardEntries.find(
         (entry) => entry.isCurrent,
@@ -220,23 +143,6 @@ function queueRemoteProfileSave() {
         currentEntry.points = profile.points;
         currentEntry.level = profile.level;
     }
-
-    remoteSaveChain = remoteSaveChain
-        .then(async () => {
-            const { error } = await supabaseClient
-                .from("profiles")
-                .upsert(toDatabaseProfile(), { onConflict: "user_id" });
-
-            if (error) {
-                throw error;
-            }
-        })
-        .catch((error) => {
-            console.error("profile save failed", error);
-            showToast("서버 저장에 실패했어요. Supabase 설정을 확인해 주세요.");
-        });
-
-    return remoteSaveChain;
 }
 
 // 실제 단어를 받으면 이 데이터만 교체하면 됩니다.
@@ -512,6 +418,7 @@ const lessons = [
 
 const state = {
     lesson: null,
+    quizAttemptId: "",
     mode: "ordered",
     direction: profile.defaultDirection,
     questions: [],
@@ -522,6 +429,7 @@ const state = {
     streak: 0,
     pointsEarned: 0,
     answered: false,
+    isSubmittingAnswer: false,
     canSwipeNext: false,
     isAdvancing: false,
     pendingPurchaseLessonId: null,
@@ -667,11 +575,12 @@ function getNextLockedLesson() {
 }
 
 function getTodayKey(date = new Date()) {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-
-    return `${year}-${month}-${day}`;
+    return new Intl.DateTimeFormat("en-CA", {
+        timeZone: "Asia/Seoul",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+    }).format(date);
 }
 
 function getLevelUpCost(level = profile.level) {
@@ -849,6 +758,12 @@ function showToast(message) {
     }, 2200);
 }
 
+function errorIncludes(error, code) {
+    return String((error && error.message) || "")
+        .toLowerCase()
+        .includes(code.toLowerCase());
+}
+
 function canUseApp() {
     return inviteStatus.inviteApproved || inviteStatus.isAdmin;
 }
@@ -889,7 +804,8 @@ async function refreshInviteStatus() {
 
     if (error) {
         console.error("invite status load failed", error);
-        return setInviteStatus({ invite_approved: true });
+        showToast("접근 권한을 확인하지 못했어요. 잠시 뒤 다시 시도해 주세요.");
+        return setInviteStatus();
     }
 
     return setInviteStatus(data);
@@ -1051,66 +967,23 @@ function showScreen(name) {
     window.scrollTo({ top: 0, behavior: "auto" });
 }
 
-async function loadRemoteProfile(user) {
-    const userCache = loadProfile(getUserProfileStorageKey(user.id));
-    const hasLegacyProfile = Boolean(localStorage.getItem(PROFILE_STORAGE_KEY));
-    const legacyProfile = hasLegacyProfile
-        ? loadProfile(PROFILE_STORAGE_KEY)
-        : { ...DEFAULT_PROFILE };
-    const { data, error } = await supabaseClient
-        .from("profiles")
-        .select(
-            "user_id, display_name, points, level, unlocked_lessons, last_attendance_date, attendance_count, theme, default_direction, legacy_imported",
-        )
-        .eq("user_id", user.id)
-        .maybeSingle();
+async function loadRemoteProfile() {
+    const { data, error } = await supabaseClient.rpc("get_my_profile");
 
     if (error) {
         console.error("profile load failed", error);
-        const fallbackProfile = hasMeaningfulLocalProfile(userCache)
-            ? userCache
-            : normalizeProfile({ displayName: getDisplayNameFromUser(user) });
-        Object.assign(profile, fallbackProfile);
-        saveProfile({ remote: false });
-        showToast("Supabase SQL 설치 후 서버 저장이 시작돼요.");
-        return;
+        Object.assign(profile, normalizeProfile());
+        saveProfile();
+        elements.loginError.textContent =
+            "보안 데이터베이스 설정을 불러오지 못했어요. 관리자에게 문의해 주세요.";
+        return false;
     }
 
-    let nextProfile = data
-        ? fromDatabaseProfile(data)
-        : hasMeaningfulLocalProfile(userCache)
-          ? userCache
-          : normalizeProfile({ displayName: getDisplayNameFromUser(user) });
-    const shouldImportLegacy =
-        !nextProfile.legacyImported &&
-        hasLegacyProfile &&
-        hasMeaningfulLocalProfile(legacyProfile);
-
-    if (shouldImportLegacy) {
-        nextProfile = mergeProfiles(nextProfile, legacyProfile);
-    }
-
-    nextProfile.legacyImported = true;
-    Object.assign(profile, nextProfile);
-    saveProfile({ remote: false });
-
-    if (!data || !data.legacy_imported || shouldImportLegacy) {
-        const { error: saveError } = await supabaseClient
-            .from("profiles")
-            .upsert(toDatabaseProfile(), { onConflict: "user_id" });
-
-        if (saveError) {
-            console.error("initial profile save failed", saveError);
-            showToast("초기 프로필 서버 저장에 실패했어요.");
-        }
-    }
-
-    if (shouldImportLegacy) {
-        localStorage.removeItem(PROFILE_STORAGE_KEY);
-        localStorage.removeItem(LEGACY_LOGIN_STORAGE_KEY);
-        sessionStorage.removeItem("hanja-login");
-        showToast("기존 학습 기록을 서버 계정으로 옮겼어요.");
-    }
+    applyServerProfile(data);
+    localStorage.removeItem(PROFILE_STORAGE_KEY);
+    localStorage.removeItem(LEGACY_LOGIN_STORAGE_KEY);
+    sessionStorage.removeItem("hanja-login");
+    return true;
 }
 
 async function activateSession(session) {
@@ -1121,7 +994,13 @@ async function activateSession(session) {
 
     const activationToken = ++authActivationToken;
     currentUser = session.user;
-    await loadRemoteProfile(currentUser);
+    const profileLoaded = await loadRemoteProfile();
+
+    if (!profileLoaded) {
+        showScreen("login");
+        return;
+    }
+
     await refreshInviteStatus();
 
     if (activationToken !== authActivationToken) {
@@ -1145,6 +1024,7 @@ function handleSignedOut() {
     setInviteStatus();
     Object.assign(profile, normalizeProfile());
     state.lesson = null;
+    state.quizAttemptId = "";
     attendancePromptShown = false;
     closeAttendanceModal();
     closePurchaseModal();
@@ -1315,7 +1195,7 @@ function closePurchaseModal() {
     document.body.classList.remove("modal-open");
 }
 
-function purchaseLesson() {
+async function purchaseLesson() {
     const lesson = lessons.find(
         (item) => item.id === state.pendingPurchaseLessonId,
     );
@@ -1329,18 +1209,32 @@ function purchaseLesson() {
         return;
     }
 
-    if (profile.points < lesson.price) {
-        showToast(`${lesson.price - profile.points}P가 더 필요해요.`);
+    if (!supabaseClient || !currentUser) {
+        showToast("로그인 상태를 다시 확인해 주세요.");
         return;
     }
 
-    profile.points -= lesson.price;
-    profile.unlockedLessons.push(lesson.id);
-    profile.unlockedLessons.sort((first, second) => first - second);
-    saveProfile();
+    elements.confirmPurchaseButton.disabled = true;
+    const { data, error } = await supabaseClient.rpc("purchase_lesson", {
+        lesson_id_input: lesson.id,
+    });
+
+    if (error) {
+        elements.confirmPurchaseButton.disabled = false;
+        if (errorIncludes(error, "insufficient_points")) {
+            showToast("서버 기준으로 포인트가 부족해요.");
+        } else {
+            console.error("lesson purchase failed", error);
+            showToast("단원을 열지 못했어요. 다시 시도해 주세요.");
+        }
+        return;
+    }
+
+    applyServerProfile(data);
     closePurchaseModal();
     renderLessons();
     updateProfileUI();
+    renderLeaderboard();
     showToast(`${lesson.id}과가 열렸어요!`);
 }
 
@@ -1457,24 +1351,6 @@ function normalizeTypedAnswer(value) {
         .replace(/[\s,，·ㆍ.、/()_-]/g, "");
 }
 
-function buildQuestions(words, direction) {
-    if (direction !== "mixed") {
-        return words.map((word) => ({ ...word, direction }));
-    }
-
-    const firstDirection =
-        Math.random() < 0.5 ? "meaning-to-hanja" : "hanja-to-meaning";
-    const secondDirection =
-        firstDirection === "meaning-to-hanja"
-            ? "hanja-to-meaning"
-            : "meaning-to-hanja";
-
-    return words.map((word, index) => ({
-        ...word,
-        direction: index % 2 === 0 ? firstDirection : secondDirection,
-    }));
-}
-
 function buildAnswerOptions(answer, lessonWords) {
     const answerField = getAnswerField(answer.direction);
     const otherLessons = lessons.flatMap((lesson) => lesson.words);
@@ -1518,22 +1394,61 @@ function updateQuizRewardUI() {
     elements.quizPointsEarned.textContent = `+${state.pointsEarned}P`;
 }
 
-function startQuiz() {
-    if (!state.lesson) {
+async function startQuiz() {
+    if (!state.lesson || !supabaseClient || !currentUser) {
         return;
     }
 
-    const words =
-        state.mode === "random"
-            ? shuffle(state.lesson.words)
-            : [...state.lesson.words];
-    state.questions = buildQuestions(words, state.direction);
+    elements.modeButtons.forEach((button) => {
+        button.disabled = true;
+    });
+    const { data, error } = await supabaseClient.rpc("start_quiz_attempt", {
+        lesson_id_input: state.lesson.id,
+        mode_input: state.mode,
+        direction_input: state.direction,
+    });
+    elements.modeButtons.forEach((button) => {
+        button.disabled = false;
+    });
+
+    if (error) {
+        console.error("quiz start failed", error);
+        showToast(
+            errorIncludes(error, "quiz_rate_limit")
+                ? "퀴즈 시작 요청이 너무 많아요. 잠시 뒤 다시 시도해 주세요."
+                : "보안 퀴즈를 시작하지 못했어요.",
+        );
+        return;
+    }
+
+    const questionOrder = Array.isArray(data.question_order)
+        ? data.question_order
+        : [];
+    const questionDirections = Array.isArray(data.question_directions)
+        ? data.question_directions
+        : [];
+
+    if (
+        !data.attempt_id ||
+        questionOrder.length === 0 ||
+        questionOrder.length !== questionDirections.length
+    ) {
+        showToast("서버가 올바른 퀴즈를 반환하지 않았어요.");
+        return;
+    }
+
+    state.quizAttemptId = data.attempt_id;
+    state.questions = questionOrder.map((wordOrder, index) => ({
+        ...state.lesson.words[Number(wordOrder) - 1],
+        direction: questionDirections[index],
+    }));
     state.currentIndex = 0;
     state.correctCount = 0;
     state.wrongAnswers = [];
     state.streak = 0;
     state.pointsEarned = 0;
     state.answered = false;
+    state.isSubmittingAnswer = false;
     state.canSwipeNext = false;
     state.isAdvancing = false;
     showScreen("quiz");
@@ -1609,41 +1524,102 @@ function renderQuestion() {
     }
 }
 
-function finishAnswer(isCorrect, submittedAnswer = "") {
-    if (state.answered) {
+async function finishAnswer(submittedAnswer = "", selectedIndex = null) {
+    if (
+        state.answered ||
+        state.isSubmittingAnswer ||
+        !state.quizAttemptId ||
+        !supabaseClient
+    ) {
+        return;
+    }
+
+    state.isSubmittingAnswer = true;
+    const question = state.questions[state.currentIndex];
+    const { data, error } = await supabaseClient.rpc("submit_quiz_answer", {
+        attempt_id_input: state.quizAttemptId,
+        question_index_input: state.currentIndex + 1,
+        answer_input: String(submittedAnswer),
+    });
+
+    state.isSubmittingAnswer = false;
+
+    if (error) {
+        console.error("quiz answer failed", error);
+        elements.answerList
+            .querySelectorAll(".answer-button")
+            .forEach((button) => {
+                button.disabled = false;
+            });
+        elements.typingAnswerInput.disabled = false;
+        elements.typingAnswerButton.disabled = false;
+        showToast(
+            errorIncludes(error, "quiz_question_out_of_order") ||
+                errorIncludes(error, "quiz_attempt_expired")
+                ? "퀴즈 상태가 만료됐어요. 다시 시작해 주세요."
+                : "답안을 서버에서 확인하지 못했어요.",
+        );
         return;
     }
 
     state.answered = true;
-    const question = state.questions[state.currentIndex];
+    const isCorrect = Boolean(data.is_correct);
+    const expectedHanja = String(data.expected_hanja || question.hanja);
+    const expectedMeaning = String(
+        data.expected_meaning || question.meaning,
+    );
+    const answerField = getAnswerField(question.direction);
+    const expectedAnswer =
+        answerField === "hanja" ? expectedHanja : expectedMeaning;
+    const answerButtons = elements.answerList.querySelectorAll(
+        ".answer-button",
+    );
+
+    answerButtons.forEach((button) => {
+        button.disabled = true;
+        const option = state.answerOptions[Number(button.dataset.answerIndex)];
+
+        if (option && option[answerField] === expectedAnswer) {
+            button.classList.add("correct");
+        } else if (Number(button.dataset.answerIndex) === selectedIndex) {
+            button.classList.add("wrong");
+        }
+    });
+
+    profile.points = Math.max(0, Number(data.points) || 0);
+    state.correctCount = Math.max(0, Number(data.correct_count) || 0);
+    state.streak = Math.max(0, Number(data.streak) || 0);
+    state.pointsEarned = Math.max(0, Number(data.points_earned) || 0);
+    saveProfile();
 
     if (isCorrect) {
-        state.correctCount += 1;
-        state.streak += 1;
-        const reward = getRewardForStreak(state.streak);
-        state.pointsEarned += reward.total;
-        profile.points += reward.total;
-        saveProfile();
         updateProfileUI();
         updateQuizRewardUI();
         elements.currentReward.innerHTML = `
             <span class="point-coin small" aria-hidden="true">P</span>
-            ${reward.total}P 받았어요!
+            ${Number(data.reward) || 0}P 받았어요!
         `;
         elements.currentReward.classList.add("earned");
-        elements.quizHint.textContent = `${question.hanja} · ${question.meaning}`;
+        elements.quizHint.textContent = `${expectedHanja} · ${expectedMeaning}`;
     } else {
-        state.streak = 0;
         state.wrongAnswers.push({
-            hanja: question.hanja,
-            meaning: question.meaning,
+            hanja: expectedHanja,
+            meaning: expectedMeaning,
             direction: question.direction,
             submittedAnswer: String(submittedAnswer).trim(),
         });
         updateQuizRewardUI();
         elements.currentReward.textContent = "이번 문제는 0P";
         elements.currentReward.classList.remove("earned");
-        elements.quizHint.textContent = `정답: ${question.hanja} · ${question.meaning}`;
+        elements.quizHint.textContent = `정답: ${expectedHanja} · ${expectedMeaning}`;
+    }
+
+    elements.typingAnswerForm.classList.add(
+        isCorrect ? "correct" : "wrong",
+    );
+
+    if (data.daily_limit_reached) {
+        showToast("오늘의 퀴즈 포인트 한도에 도달했어요.");
     }
 
     const isTypingQuestion = question.direction === "hanja-to-meaning";
@@ -1663,32 +1639,22 @@ function finishAnswer(isCorrect, submittedAnswer = "") {
 }
 
 function selectAnswer(selectedIndex) {
-    if (state.answered) {
+    if (state.answered || state.isSubmittingAnswer) {
         return;
     }
 
     const question = state.questions[state.currentIndex];
     const answerField = getAnswerField(question.direction);
     const selectedAnswer = state.answerOptions[selectedIndex];
-    const isCorrect =
-        selectedAnswer &&
-        selectedAnswer[answerField] === question[answerField];
     const answerButtons = elements.answerList.querySelectorAll(".answer-button");
 
     answerButtons.forEach((button) => {
         button.disabled = true;
-        const option = state.answerOptions[Number(button.dataset.answerIndex)];
-
-        if (option[answerField] === question[answerField]) {
-            button.classList.add("correct");
-        } else if (Number(button.dataset.answerIndex) === selectedIndex) {
-            button.classList.add("wrong");
-        }
     });
 
-    finishAnswer(
-        isCorrect,
+    void finishAnswer(
         selectedAnswer ? selectedAnswer[answerField] : "",
+        selectedIndex,
     );
 }
 
@@ -1709,17 +1675,10 @@ function submitTypedAnswer(event) {
         return;
     }
 
-    const question = state.questions[state.currentIndex];
-    const isCorrect =
-        typedAnswer === normalizeTypedAnswer(question.meaning);
-
     releaseTypingInputFocus();
     elements.typingAnswerInput.disabled = true;
     elements.typingAnswerButton.disabled = true;
-    elements.typingAnswerForm.classList.add(
-        isCorrect ? "correct" : "wrong",
-    );
-    finishAnswer(isCorrect, elements.typingAnswerInput.value);
+    void finishAnswer(elements.typingAnswerInput.value);
 }
 
 function advanceQuestion() {
@@ -1802,7 +1761,7 @@ function getAuthErrorMessage(error) {
         return "이미 가입된 이메일이에요.";
     }
     if (message.includes("password")) {
-        return "비밀번호는 6자 이상으로 입력해 주세요.";
+        return "비밀번호는 10자 이상으로 입력해 주세요.";
     }
     if (message.includes("provider") || message.includes("unsupported")) {
         return "Supabase에서 해당 로그인 제공자를 먼저 설정해 주세요.";
@@ -1855,9 +1814,9 @@ async function handleSignup() {
             "가입할 이메일과 비밀번호를 입력해 주세요.";
         return;
     }
-    if (password.length < 6) {
+    if (password.length < 10) {
         elements.loginError.textContent =
-            "비밀번호는 6자 이상으로 입력해 주세요.";
+            "비밀번호는 10자 이상으로 입력해 주세요.";
         return;
     }
     if (!supabaseClient) {
@@ -1912,47 +1871,99 @@ async function logout() {
     elements.passwordToggle.textContent = "보기";
 }
 
-function claimAttendanceReward() {
-    const today = getTodayKey();
-
-    if (profile.lastAttendanceDate === today) {
+async function claimAttendanceReward() {
+    if (profile.lastAttendanceDate === getTodayKey()) {
         closeAttendanceModal();
         showToast("오늘 출석 보상은 이미 받았어요.");
         return;
     }
 
-    profile.points += 100;
-    profile.lastAttendanceDate = today;
-    profile.attendanceCount += 1;
-    saveProfile();
+    if (!supabaseClient || !currentUser) {
+        showToast("로그인 상태를 다시 확인해 주세요.");
+        return;
+    }
+
+    elements.attendanceButton.disabled = true;
+    elements.attendanceModalButton.disabled = true;
+    const { data, error } = await supabaseClient.rpc(
+        "claim_attendance_reward",
+    );
+
+    if (error) {
+        console.error("attendance claim failed", error);
+        if (errorIncludes(error, "attendance_already_claimed")) {
+            await loadRemoteProfile();
+            showToast("오늘 출석 보상은 이미 받았어요.");
+        } else {
+            showToast("출석 보상을 받지 못했어요. 다시 시도해 주세요.");
+        }
+        updateProfileUI();
+        return;
+    }
+
+    applyServerProfile(data);
     updateProfileUI();
     renderLeaderboard();
     closeAttendanceModal();
     showToast("출석 완료! 100P를 받았어요.");
 }
 
-function levelUp() {
+async function levelUp() {
     if (!areAllLessonsUnlocked()) {
         showToast("5과까지 모두 열면 레벨업할 수 있어요.");
         return;
     }
 
-    const cost = getLevelUpCost();
-
-    if (profile.points < cost) {
-        showToast(`${cost - profile.points}P가 더 필요해요.`);
+    if (!supabaseClient || !currentUser) {
+        showToast("로그인 상태를 다시 확인해 주세요.");
         return;
     }
 
-    profile.points -= cost;
-    profile.level += 1;
-    saveProfile();
+    elements.levelUpButton.disabled = true;
+    const { data, error } = await supabaseClient.rpc("level_up");
+
+    if (error) {
+        console.error("level up failed", error);
+        showToast(
+            errorIncludes(error, "insufficient_points")
+                ? "서버 기준으로 포인트가 부족해요."
+                : "레벨을 올리지 못했어요. 다시 시도해 주세요.",
+        );
+        updateProfileUI();
+        return;
+    }
+
+    applyServerProfile(data);
     updateProfileUI();
     renderLeaderboard();
     showToast(`레벨 ${profile.level}이 되었어요!`);
 }
 
-function saveProfileName(event) {
+async function saveProfilePreferences() {
+    if (!supabaseClient || !currentUser) {
+        return false;
+    }
+
+    const { data, error } = await supabaseClient.rpc(
+        "update_profile_preferences",
+        {
+            display_name_input: profile.displayName,
+            theme_input: profile.theme,
+            default_direction_input: profile.defaultDirection,
+        },
+    );
+
+    if (error) {
+        console.error("profile preferences save failed", error);
+        showToast("설정을 서버에 저장하지 못했어요.");
+        return false;
+    }
+
+    applyServerProfile(data);
+    return true;
+}
+
+async function saveProfileName(event) {
     event.preventDefault();
     const displayName = elements.profileNameInput.value.trim().slice(0, 12);
 
@@ -1962,8 +1973,15 @@ function saveProfileName(event) {
         return;
     }
 
+    const previousName = profile.displayName;
     profile.displayName = displayName;
-    saveProfile();
+
+    if (!(await saveProfilePreferences())) {
+        profile.displayName = previousName;
+        updateProfileUI();
+        return;
+    }
+
     updateProfileUI();
     renderLeaderboard();
     showToast("이름을 저장했어요.");
@@ -2080,7 +2098,7 @@ elements.modeButtons.forEach((button) => {
     button.addEventListener("click", () => {
         state.mode = button.dataset.mode;
         state.direction = profile.defaultDirection;
-        startQuiz();
+        void startQuiz();
     });
 });
 
@@ -2090,20 +2108,32 @@ elements.viewWordsButton.addEventListener("click", () => {
 });
 
 elements.themeButtons.forEach((button) => {
-    button.addEventListener("click", () => {
+    button.addEventListener("click", async () => {
+        const previousTheme = profile.theme;
         profile.theme = button.dataset.themeOption;
-        saveProfile();
         applyTheme();
         syncSettingsUI();
+
+        if (!(await saveProfilePreferences())) {
+            profile.theme = previousTheme;
+            applyTheme();
+            syncSettingsUI();
+        }
     });
 });
 
 elements.defaultDirectionButtons.forEach((button) => {
-    button.addEventListener("click", () => {
+    button.addEventListener("click", async () => {
+        const previousDirection = profile.defaultDirection;
         profile.defaultDirection = button.dataset.defaultDirection;
         state.direction = profile.defaultDirection;
-        saveProfile();
         syncSettingsUI();
+
+        if (!(await saveProfilePreferences())) {
+            profile.defaultDirection = previousDirection;
+            state.direction = previousDirection;
+            syncSettingsUI();
+        }
     });
 });
 
@@ -2258,7 +2288,7 @@ elements.swipeHint.addEventListener("click", () => {
 elements.quitQuizButton.addEventListener("click", () => {
     showScreen("mode");
 });
-elements.retryButton.addEventListener("click", startQuiz);
+elements.retryButton.addEventListener("click", () => void startQuiz());
 elements.resultHomeButton.addEventListener("click", () => showScreen("home"));
 
 
