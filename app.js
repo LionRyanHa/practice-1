@@ -1618,10 +1618,6 @@ async function finishAnswer(submittedAnswer = "", selectedIndex = null) {
         isCorrect ? "correct" : "wrong",
     );
 
-    if (data.daily_limit_reached) {
-        showToast("오늘의 퀴즈 포인트 한도에 도달했어요.");
-    }
-
     const isTypingQuestion = question.direction === "hanja-to-meaning";
 
     state.canSwipeNext = !isTypingQuestion;

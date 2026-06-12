@@ -862,8 +862,6 @@ declare
     answer_is_correct boolean;
     next_streak integer;
     reward_amount integer := 0;
-    quiz_points_today integer;
-    daily_limit_reached boolean := false;
     question_count integer;
     attempt_completed boolean;
 begin
@@ -952,18 +950,6 @@ begin
         reward_amount :=
             5 + least(greatest(next_streak - 1, 0), 5) * 2;
 
-        select coalesce(sum(amount), 0)
-        into quiz_points_today
-        from private.point_ledger
-        where user_id = profile_row.user_id
-          and event_type = 'quiz_answer'
-          and (created_at at time zone 'Asia/Seoul')::date =
-              (now() at time zone 'Asia/Seoul')::date;
-
-        if quiz_points_today + reward_amount > 2500 then
-            reward_amount := 0;
-            daily_limit_reached := true;
-        end if;
     else
         next_streak := 0;
     end if;
@@ -1034,8 +1020,7 @@ begin
         'points_earned', attempt_row.points_earned,
         'expected_hanja', word_row.hanja,
         'expected_meaning', word_row.meaning,
-        'completed', attempt_completed,
-        'daily_limit_reached', daily_limit_reached
+        'completed', attempt_completed
     );
 end;
 $$;
