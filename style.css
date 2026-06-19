@@ -899,8 +899,8 @@ input:focus-visible {
     left: 50%;
     display: grid;
     width: min(calc(100% - 32px), 398px);
-    grid-template-columns: repeat(3, 1fr);
-    gap: 6px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 5px;
     padding: 7px;
     border: 1px solid color-mix(in srgb, var(--line) 75%, transparent);
     border-radius: 24px;
@@ -911,15 +911,14 @@ input:focus-visible {
 }
 
 .bottom-nav-item {
-    display: flex;
+    display: grid;
     min-height: 52px;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
+    place-items: center;
+    gap: 3px;
     border-radius: 18px;
     color: var(--text-soft);
     background: transparent;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 750;
 }
 
@@ -929,7 +928,7 @@ input:focus-visible {
 }
 
 .bottom-nav-item svg {
-    width: 20px;
+    width: 19px;
     fill: none;
     stroke: currentColor;
     stroke-width: 1.9;
@@ -1257,6 +1256,865 @@ input:focus-visible {
     stroke-linejoin: round;
 }
 
+
+.shop-screen {
+    position: relative;
+    padding-bottom: calc(104px + env(safe-area-inset-bottom));
+    overflow: hidden;
+    color: #effcff;
+    background:
+        linear-gradient(180deg, rgba(14, 21, 55, 0.96), rgba(9, 12, 31, 1)),
+        #090c1f;
+}
+
+.shop-screen::before {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+        linear-gradient(rgba(103, 247, 255, 0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(103, 247, 255, 0.05) 1px, transparent 1px);
+    background-size: 34px 34px;
+    mask-image: linear-gradient(to bottom, #000 0%, transparent 84%);
+    content: "";
+}
+
+.shop-header {
+    position: sticky;
+    z-index: 4;
+    top: 0;
+    color: #effcff;
+    background: rgba(9, 12, 31, 0.82);
+    backdrop-filter: blur(16px);
+}
+
+.shop-header .back-button {
+    color: #9ffdf0;
+    background: rgba(116, 245, 255, 0.09);
+    box-shadow: 0 0 18px rgba(103, 247, 255, 0.12);
+}
+
+.shop-content {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    width: 100%;
+    max-width: 520px;
+    gap: 15px;
+    margin: 0 auto;
+    padding: 20px 18px 30px;
+}
+
+.shop-wallet-panel {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 18px;
+    border: 1px solid rgba(103, 247, 255, 0.24);
+    border-radius: 22px;
+    background: rgba(15, 22, 55, 0.72);
+    box-shadow:
+        0 0 0 1px rgba(171, 131, 255, 0.08) inset,
+        0 16px 42px rgba(0, 0, 0, 0.28);
+}
+
+.shop-wallet-panel > div:first-child {
+    display: grid;
+    gap: 5px;
+}
+
+.shop-wallet-panel span {
+    color: rgba(239, 252, 255, 0.62);
+    font-size: 11px;
+    font-weight: 850;
+}
+
+.shop-wallet-panel h1 {
+    margin: 0;
+    color: #effcff;
+    font-size: 23px;
+}
+
+.shop-balance-pill {
+    display: inline-flex;
+    width: fit-content;
+    min-height: 36px;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 12px 7px 7px;
+    border: 1px solid rgba(255, 211, 106, 0.34);
+    border-radius: 99px;
+    color: #ffe09a;
+    background: rgba(255, 179, 92, 0.12);
+    font-size: 13px;
+}
+
+.shop-view-tabs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 7px;
+    padding: 6px;
+    border: 1px solid rgba(103, 247, 255, 0.18);
+    border-radius: 18px;
+    background: rgba(5, 8, 23, 0.48);
+}
+
+.shop-view-tabs button {
+    min-height: 42px;
+    border-radius: 13px;
+    color: rgba(239, 252, 255, 0.62);
+    background: transparent;
+    font-size: 12px;
+    font-weight: 900;
+}
+
+.shop-view-tabs button.selected {
+    color: #06101f;
+    background: #9ffdf0;
+    box-shadow: 0 0 18px rgba(103, 247, 255, 0.28);
+}
+
+.shop-panel[hidden] {
+    display: none;
+}
+
+
+.shop-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.shop-summary-grid > div {
+    display: grid;
+    gap: 5px;
+    padding: 15px;
+    border: 1px solid rgba(103, 247, 255, 0.18);
+    border-radius: 18px;
+    background: rgba(15, 22, 55, 0.72);
+    box-shadow: 0 0 20px rgba(103, 247, 255, 0.06);
+}
+
+.shop-summary-grid span {
+    color: rgba(239, 252, 255, 0.62);
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.shop-summary-grid strong {
+    overflow: hidden;
+    color: #effcff;
+    font-size: 15px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.shop-section-heading h2 {
+    color: #effcff;
+}
+
+.shop-section-heading span {
+    color: rgba(239, 252, 255, 0.58);
+}
+
+.shop-item-list {
+    display: grid;
+    gap: 10px;
+}
+
+.shop-item-card {
+    position: relative;
+    display: grid;
+    grid-template-columns: 24px 46px 1fr auto;
+    align-items: center;
+    gap: 10px;
+    min-height: 78px;
+    padding: 12px;
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--item-accent) 38%, rgba(255, 255, 255, 0.08));
+    border-radius: 19px;
+    color: #effcff;
+    background:
+        linear-gradient(135deg, rgba(16, 22, 54, 0.94), rgba(12, 15, 37, 0.96)),
+        #101636;
+    box-shadow:
+        0 0 18px color-mix(in srgb, var(--item-accent) 16%, transparent),
+        0 12px 28px rgba(0, 0, 0, 0.22);
+}
+
+.shop-item-card.store {
+    grid-template-columns: 28px 68px minmax(0, 1fr) 118px;
+    grid-template-rows: repeat(2, minmax(44px, 1fr));
+    column-gap: 14px;
+    row-gap: 10px;
+    min-height: 130px;
+    padding: 16px;
+    border-left: 4px solid var(--item-accent);
+    background:
+        linear-gradient(90deg, color-mix(in srgb, var(--item-accent) 16%, transparent), transparent 56%),
+        linear-gradient(135deg, rgba(13, 19, 45, 0.98), rgba(8, 11, 27, 0.98)),
+        #101636;
+}
+
+.shop-item-card.store .shop-item-rank {
+    display: grid;
+    grid-column: 1;
+    grid-row: 1 / 3;
+    width: 28px;
+    height: 68px;
+    place-items: center;
+    align-self: center;
+    border-radius: 11px;
+    color: var(--item-accent);
+    background: rgba(255, 255, 255, 0.06);
+    font-size: 14px;
+    font-weight: 950;
+}
+
+.shop-item-card.store .shop-item-icon {
+    grid-column: 2;
+    grid-row: 1 / 3;
+    width: 68px;
+    height: 68px;
+    align-self: center;
+    font-size: 28px;
+}
+
+.shop-item-card.store .shop-item-copy {
+    grid-column: 3;
+    grid-row: 1 / 3;
+    align-self: center;
+    gap: 5px;
+}
+
+.shop-item-card.store .shop-item-copy strong {
+    font-size: 19px;
+}
+
+.shop-item-card.store .shop-item-copy small {
+    color: rgba(239, 252, 255, 0.68);
+    font-size: 12px;
+    line-height: 1.35;
+}
+
+.shop-item-card.store .shop-item-meta {
+    display: grid;
+    grid-column: 4;
+    grid-row: 1;
+    min-height: 44px;
+    place-items: center;
+    align-self: stretch;
+    padding: 7px 9px;
+    border: 1px solid color-mix(in srgb, var(--item-accent) 35%, rgba(255, 255, 255, 0.1));
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.shop-item-card.store .shop-item-meta b {
+    font-size: 14px;
+    text-align: center;
+}
+
+.shop-item-card.store .shop-item-action {
+    grid-column: 4;
+    grid-row: 2;
+    width: 100%;
+    min-height: 44px;
+    align-self: stretch;
+    border: 1px solid color-mix(in srgb, var(--item-accent) 56%, rgba(255, 255, 255, 0.16));
+    border-radius: 14px;
+    font-size: 14px;
+}
+
+
+.shop-item-card.store > * {
+    position: relative;
+    z-index: 2;
+}
+
+.shop-item-card.store.shop-skin-crimson-nova::before,
+.shop-item-card.store.shop-skin-crimson-nova::after,
+.shop-item-card.store.shop-skin-azure-singularity::before,
+.shop-item-card.store.shop-skin-azure-singularity::after {
+    position: absolute;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.shop-item-card.store.shop-skin-crimson-nova::before {
+    content: "";
+    right: 122px;
+    top: 50%;
+    width: 112px;
+    height: 112px;
+    border-radius: 50%;
+    background:
+        radial-gradient(circle, rgba(255, 250, 196, 0.74) 0 4%, rgba(255, 216, 79, 0.32) 5% 18%, transparent 46%),
+        repeating-conic-gradient(from 8deg, rgba(255, 230, 104, 0.26) 0 4deg, transparent 4deg 17deg);
+    opacity: 0.72;
+    transform: translateY(-50%);
+}
+
+.shop-item-card.store.shop-skin-azure-singularity::before {
+    content: "";
+    right: 118px;
+    top: 50%;
+    width: 126px;
+    height: 78px;
+    background:
+        radial-gradient(ellipse at 20% 65%, rgba(149, 255, 187, 0.58) 0 7%, transparent 8%),
+        radial-gradient(ellipse at 45% 35%, rgba(104, 243, 155, 0.52) 0 9%, transparent 10%),
+        radial-gradient(ellipse at 70% 68%, rgba(67, 220, 128, 0.5) 0 8%, transparent 9%),
+        linear-gradient(164deg, transparent 47%, rgba(116, 255, 171, 0.55) 48% 50%, transparent 51%);
+    opacity: 0.78;
+    transform: translateY(-50%) rotate(-8deg);
+}
+
+.shop-item-card.store.shop-skin-crimson-nova::after {
+    content: "✦  ★  ✧  ·";
+    right: 128px;
+    top: 14px;
+    color: rgba(255, 236, 128, 0.82);
+    font-size: 13px;
+    letter-spacing: 5px;
+    text-shadow: 0 0 15px rgba(255, 216, 79, 0.96);
+}
+
+.shop-item-card.store.shop-skin-azure-singularity::after {
+    content: "❧  ✦  ❧  ◆";
+    right: 126px;
+    bottom: 13px;
+    color: rgba(128, 255, 175, 0.78);
+    font-size: 13px;
+    letter-spacing: 5px;
+    text-shadow: 0 0 15px rgba(55, 214, 122, 0.9);
+}
+
+.shop-item-card.store.shop-skin-cobalt-tide,
+.shop-item-card.store.shop-skin-indigo-depth,
+.shop-item-card.store.shop-skin-violet-orbit {
+    isolation: isolate;
+}
+
+.shop-item-card.store.shop-skin-cobalt-tide::before,
+.shop-item-card.store.shop-skin-cobalt-tide::after,
+.shop-item-card.store.shop-skin-indigo-depth::before,
+.shop-item-card.store.shop-skin-indigo-depth::after,
+.shop-item-card.store.shop-skin-violet-orbit::before,
+.shop-item-card.store.shop-skin-violet-orbit::after {
+    content: "";
+    position: absolute;
+    z-index: 1;
+    display: block;
+    pointer-events: none;
+    will-change: transform, opacity;
+}
+
+.shop-item-card.store.shop-skin-cobalt-tide {
+    background:
+        radial-gradient(circle at 24% 24%, rgba(211, 244, 255, 0.7) 0 2px, transparent 3px),
+        radial-gradient(circle at 58% 66%, rgba(143, 212, 255, 0.52) 0 3px, transparent 4px),
+        radial-gradient(circle at 72% 20%, rgba(211, 244, 255, 0.46) 0 1px, transparent 2px),
+        linear-gradient(120deg, rgba(8, 42, 90, 0.98), rgba(18, 104, 180, 0.72), rgba(5, 29, 72, 0.98));
+    animation: shopBlueCardPulse 2.4s ease-in-out infinite;
+}
+
+.shop-item-card.store.shop-skin-cobalt-tide::before {
+    inset: -55% -25%;
+    background:
+        radial-gradient(circle at 18% 30%, rgba(225, 249, 255, 0.9) 0 2px, transparent 3px),
+        radial-gradient(circle at 42% 72%, rgba(143, 212, 255, 0.78) 0 3px, transparent 4px),
+        radial-gradient(circle at 72% 38%, rgba(225, 249, 255, 0.72) 0 1px, transparent 2px),
+        repeating-linear-gradient(
+            115deg,
+            transparent 0 24px,
+            rgba(126, 220, 255, 0.08) 25px 36px,
+            rgba(72, 180, 255, 0.48) 37px 40px,
+            transparent 41px 66px
+        );
+    animation: shopBlueCurrent 2.2s ease-in-out infinite alternate;
+}
+
+.shop-item-card.store.shop-skin-cobalt-tide::after {
+    left: 20%;
+    bottom: -18px;
+    width: 72%;
+    height: 46px;
+    border: 2px solid rgba(143, 212, 255, 0.46);
+    border-right-color: transparent;
+    border-left-color: transparent;
+    border-radius: 50%;
+    background: radial-gradient(ellipse at 50% 0%, rgba(143, 212, 255, 0.48), transparent 62%);
+    box-shadow:
+        0 -10px 22px rgba(58, 167, 255, 0.42),
+        0 -22px 34px rgba(58, 167, 255, 0.18);
+    animation: shopBlueWave 1.65s ease-in-out infinite alternate;
+}
+
+.shop-item-card.store.shop-skin-indigo-depth {
+    background:
+        radial-gradient(circle at 24% 24%, rgba(229, 233, 255, 0.78) 0 1px, transparent 2px),
+        radial-gradient(circle at 52% 76%, rgba(174, 188, 255, 0.58) 0 2px, transparent 3px),
+        radial-gradient(circle at 72% 18%, rgba(229, 233, 255, 0.5) 0 1px, transparent 2px),
+        linear-gradient(125deg, #090d2d, #25358f 48%, #111744);
+    background-size: 130% 130%;
+    animation: shopIndigoCardPulse 2.8s ease-in-out infinite;
+}
+
+.shop-item-card.store.shop-skin-indigo-depth::before,
+.shop-item-card.store.shop-skin-indigo-depth::after {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    filter: blur(9px);
+    mix-blend-mode: screen;
+}
+
+.shop-item-card.store.shop-skin-indigo-depth::before {
+    left: 23%;
+    top: -55px;
+    background:
+        radial-gradient(circle at 36% 34%, #fff 0 3%, rgba(205, 214, 255, 0.82) 4% 10%, transparent 11%),
+        repeating-radial-gradient(circle, rgba(145, 160, 255, 0.2) 0 6px, rgba(83, 109, 254, 0.34) 7px 13px, transparent 14px 22px);
+    animation: shopIndigoFloatA 2.7s ease-in-out infinite;
+}
+
+.shop-item-card.store.shop-skin-indigo-depth::after {
+    right: 19%;
+    bottom: -65px;
+    background:
+        radial-gradient(circle at 58% 42%, rgba(239, 241, 255, 0.92) 0 3%, rgba(125, 145, 255, 0.7) 4% 11%, transparent 12%),
+        repeating-radial-gradient(circle, rgba(91, 112, 255, 0.24) 0 7px, rgba(54, 70, 210, 0.36) 8px 14px, transparent 15px 23px);
+    animation: shopIndigoFloatB 3.2s ease-in-out infinite;
+}
+
+.shop-item-card.store.shop-skin-violet-orbit {
+    animation: shopPurpleCardPulse 2.2s ease-in-out infinite;
+}
+
+.shop-item-card.store.shop-skin-violet-orbit::before {
+    right: 15%;
+    top: 50%;
+    width: 128px;
+    height: 128px;
+    border-radius: 50%;
+    background: conic-gradient(
+        from 0deg,
+        transparent 0 12%,
+        rgba(244, 214, 255, 0.88) 15%,
+        rgba(180, 92, 255, 0.08) 28%,
+        transparent 42%,
+        rgba(209, 139, 255, 0.72) 58%,
+        transparent 72%
+    );
+    filter: blur(1px);
+    opacity: 0.78;
+    animation: shopPurplePortal 2.4s linear infinite;
+}
+
+.shop-item-card.store.shop-skin-violet-orbit::after {
+    right: calc(15% + 22px);
+    top: 50%;
+    width: 84px;
+    height: 84px;
+    border: 2px solid rgba(220, 168, 255, 0.7);
+    border-radius: 50%;
+    box-shadow:
+        0 0 18px rgba(180, 92, 255, 0.66),
+        0 0 36px rgba(180, 92, 255, 0.4),
+        35px 0 0 -31px #fff,
+        -35px 0 0 -32px #dca8ff;
+    animation: shopPurpleOrbit 1.7s linear infinite reverse;
+}
+
+.shop-item-card.store.shop-skin-prism-crown {
+    isolation: isolate;
+}
+
+.shop-item-card.store.shop-skin-prism-crown::before,
+.shop-item-card.store.shop-skin-prism-crown::after {
+    content: "";
+    position: absolute;
+    z-index: 1;
+    display: block;
+    pointer-events: none;
+    will-change: transform, opacity;
+}
+
+.shop-item-card.store.shop-skin-prism-crown::before {
+    inset: -20% -60%;
+    background: linear-gradient(
+        100deg,
+        rgba(255, 55, 95, 0.5),
+        rgba(255, 164, 64, 0.48),
+        rgba(255, 232, 96, 0.46),
+        rgba(84, 255, 147, 0.44),
+        rgba(67, 225, 255, 0.5),
+        rgba(166, 117, 255, 0.5),
+        rgba(255, 83, 221, 0.48)
+    );
+    opacity: 0.58;
+    animation: shopRainbowLayerSlide 3.6s ease-in-out infinite alternate;
+}
+
+.shop-item-card.store.shop-skin-prism-crown::after {
+    inset: 0;
+    background:
+        radial-gradient(circle at 30% 45%, rgba(255, 255, 255, 0.62), transparent 12%),
+        radial-gradient(circle at 72% 55%, rgba(255, 255, 255, 0.42), transparent 10%);
+    opacity: 0.18;
+    animation: shopRainbowLayerFlash 1.9s ease-in-out infinite;
+}
+
+.shop-item-card.store.shop-skin-prism-crown .shop-item-icon {
+    animation: shopRainbowIconGlow 1.9s ease-in-out infinite;
+}
+
+@keyframes shopBlueCardPulse {
+    0%, 100% {
+        box-shadow: 0 0 20px rgba(58, 167, 255, 0.28), 0 12px 28px rgba(0, 0, 0, 0.22);
+    }
+    50% {
+        box-shadow: 0 0 30px rgba(58, 167, 255, 0.5), 0 0 48px rgba(103, 247, 255, 0.18), 0 12px 28px rgba(0, 0, 0, 0.22);
+    }
+}
+
+@keyframes shopBlueCurrent {
+    from { transform: translateX(-18%) translateY(10%); }
+    to { transform: translateX(18%) translateY(-10%); }
+}
+
+@keyframes shopBlueWave {
+    from { transform: translateX(-16%) scaleX(0.82) scaleY(0.8); opacity: 0.45; }
+    to { transform: translateX(18%) scaleX(1.18) scaleY(1.22); opacity: 1; }
+}
+
+@keyframes shopIndigoCardPulse {
+    0%, 100% {
+        border-color: rgba(83, 109, 254, 0.56);
+        box-shadow: 0 0 20px rgba(83, 109, 254, 0.28), 0 12px 28px rgba(0, 0, 0, 0.22);
+    }
+    50% {
+        border-color: rgba(165, 178, 255, 0.78);
+        box-shadow: 0 0 32px rgba(83, 109, 254, 0.5), 0 0 52px rgba(83, 109, 254, 0.18), 0 12px 28px rgba(0, 0, 0, 0.22);
+    }
+}
+
+@keyframes shopIndigoFloatA {
+    0%, 100% { transform: translate3d(-18px, -6px, 0) scale(0.72); opacity: 0.28; }
+    50% { transform: translate3d(42px, 64px, 0) scale(1.28); opacity: 0.96; }
+}
+
+@keyframes shopIndigoFloatB {
+    0%, 100% { transform: translate3d(18px, 10px, 0) scale(0.8); opacity: 0.32; }
+    50% { transform: translate3d(-54px, -62px, 0) scale(1.22); opacity: 0.88; }
+}
+
+@keyframes shopPurpleCardPulse {
+    0%, 100% {
+        box-shadow: 0 0 18px rgba(180, 92, 255, 0.24), 0 12px 28px rgba(0, 0, 0, 0.22);
+    }
+    50% {
+        box-shadow: 0 0 40px rgba(180, 92, 255, 0.72), 0 0 68px rgba(255, 100, 222, 0.28), 0 12px 28px rgba(0, 0, 0, 0.22);
+    }
+}
+
+@keyframes shopPurplePortal {
+    from { transform: translateY(-50%) rotate(0deg) scale(0.9); }
+    50% { transform: translateY(-50%) rotate(180deg) scale(1.12); }
+    to { transform: translateY(-50%) rotate(360deg) scale(0.9); }
+}
+
+@keyframes shopPurpleOrbit {
+    from { transform: translateY(-50%) rotate(0deg); }
+    to { transform: translateY(-50%) rotate(360deg); }
+}
+
+@keyframes shopRainbowLayerSlide {
+    from { transform: translate3d(-18%, 0, 0); }
+    to { transform: translate3d(18%, 0, 0); }
+}
+
+@keyframes shopRainbowLayerFlash {
+    0%, 100% { opacity: 0.14; }
+    50% { opacity: 0.3; }
+}
+
+@keyframes shopRainbowIconGlow {
+    0%, 100% {
+        box-shadow:
+            0 0 0 2px rgba(255, 255, 255, 0.34) inset,
+            0 0 18px rgba(120, 247, 255, 0.34),
+            0 0 24px rgba(255, 216, 79, 0.18);
+    }
+    50% {
+        box-shadow:
+            0 0 0 2px rgba(255, 255, 255, 0.56) inset,
+            0 0 28px rgba(255, 83, 221, 0.58),
+            0 0 38px rgba(67, 225, 255, 0.36);
+    }
+}
+
+.shop-item-card.store.owned {
+    opacity: 0.72;
+}
+
+.shop-item-card.featured {
+    border-color: rgba(255, 227, 110, 0.62);
+    background:
+        linear-gradient(90deg, rgba(255, 227, 110, 0.16), rgba(103, 247, 255, 0.11), rgba(255, 93, 214, 0.12)),
+        #101636;
+}
+
+.shop-item-card.inventory {
+    grid-template-columns: 22px 42px minmax(0, 1fr) 88px;
+    grid-template-rows: auto auto;
+    min-height: 72px;
+    border-style: solid;
+    background:
+        linear-gradient(135deg, rgba(21, 28, 58, 0.9), rgba(14, 18, 38, 0.96)),
+        #151c3a;
+}
+
+.shop-item-card.inventory .shop-item-rank {
+    color: rgba(239, 252, 255, 0.44);
+    font-size: 12px;
+    font-weight: 900;
+    text-align: center;
+}
+
+.shop-item-card.inventory .shop-item-copy {
+    grid-column: 3;
+    grid-row: 1 / 3;
+}
+
+.shop-item-card.inventory .shop-item-meta {
+    grid-column: 4;
+    grid-row: 1;
+}
+
+.shop-item-card.inventory .shop-item-meta em {
+    color: rgba(159, 253, 240, 0.9);
+}
+
+.shop-item-card.equipped {
+    border-color: rgba(159, 253, 240, 0.66);
+    box-shadow:
+        0 0 0 1px rgba(159, 253, 240, 0.2) inset,
+        0 0 28px rgba(103, 247, 255, 0.23);
+}
+
+.shop-item-card.shop-skin-prism-crown {
+    border-color: rgba(255, 227, 110, 0.58);
+    background:
+        radial-gradient(circle at 12% 28%, rgba(255, 255, 255, 0.16), transparent 19%),
+        linear-gradient(90deg, rgba(255, 45, 85, 0.16), rgba(255, 232, 96, 0.15), rgba(67, 225, 255, 0.14), rgba(166, 117, 255, 0.15)),
+        linear-gradient(135deg, rgba(12, 16, 38, 0.98), rgba(9, 11, 26, 0.98)),
+        #11162b;
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.12) inset,
+        0 0 26px rgba(255, 227, 110, 0.22),
+        0 12px 28px rgba(0, 0, 0, 0.22);
+}
+
+.shop-item-card.shop-skin-prism-crown::before,
+.shop-item-card.shop-skin-prism-crown::after {
+    display: none;
+}
+
+.shop-item-card.shop-skin-prism-crown .shop-item-copy small,
+.shop-item-card.shop-skin-prism-crown .shop-item-meta b {
+    color: rgba(255, 255, 255, 0.78);
+}
+
+.shop-item-icon {
+    display: grid;
+    width: 46px;
+    height: 46px;
+    place-items: center;
+    border-radius: 50%;
+    font-family: Georgia, serif;
+    font-size: 20px;
+    font-weight: 850;
+}
+
+.shop-item-copy {
+    display: grid;
+    min-width: 0;
+    gap: 4px;
+}
+
+.shop-item-copy strong {
+    overflow: hidden;
+    font-size: 14px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.shop-item-copy small {
+    display: -webkit-box;
+    overflow: hidden;
+    color: rgba(239, 252, 255, 0.62);
+    font-size: 10px;
+    line-height: 1.4;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+
+.shop-item-meta {
+    display: grid;
+    justify-items: end;
+    gap: 5px;
+}
+
+.shop-item-meta em {
+    color: var(--item-accent);
+    font-size: 11px;
+    font-style: normal;
+    font-weight: 900;
+    text-shadow: 0 0 10px color-mix(in srgb, var(--item-accent) 62%, transparent);
+}
+
+.shop-item-meta b {
+    color: #ffe09a;
+    font-size: 11px;
+}
+
+.shop-item-action {
+    grid-column: 3 / -1;
+    min-height: 36px;
+    border-radius: 12px;
+    color: #06101f;
+    background: var(--item-accent);
+    box-shadow: 0 0 16px color-mix(in srgb, var(--item-accent) 32%, transparent);
+    font-size: 11px;
+    font-weight: 900;
+}
+
+.shop-item-action:disabled {
+    cursor: not-allowed;
+    color: rgba(239, 252, 255, 0.58);
+    background: rgba(255, 255, 255, 0.09);
+    box-shadow: none;
+}
+
+.shop-item-card.inventory .shop-item-action {
+    grid-column: 4;
+    grid-row: 2;
+    border: 1px solid rgba(232, 241, 255, 0.52);
+    color: #11182f;
+    background: #dbe6f8;
+    box-shadow: 0 0 12px rgba(232, 241, 255, 0.16);
+}
+
+.shop-item-card.inventory .shop-item-action.is-equipped {
+    border-color: rgba(159, 253, 240, 0.86);
+    color: #03131f;
+    background: #8ee8da;
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.16) inset,
+        0 0 18px rgba(103, 247, 255, 0.28);
+}
+
+.shop-item-card.inventory .shop-item-action.is-equipped:disabled {
+    cursor: default;
+    color: #03131f;
+    background: #8ee8da;
+    opacity: 1;
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.16) inset,
+        0 0 18px rgba(103, 247, 255, 0.28);
+}
+
+.profile-avatar.shop-skin-ember-ring,
+.rank-avatar.shop-skin-ember-ring,
+.shop-item-icon.shop-skin-ember-ring {
+    color: #fff;
+    background: #ff4f5e;
+    box-shadow:
+        0 0 0 2px rgba(255, 255, 255, 0.2) inset,
+        0 0 13px rgba(255, 79, 94, 0.34);
+}
+
+.profile-avatar.shop-skin-violet-nebula,
+.rank-avatar.shop-skin-violet-nebula,
+.shop-item-icon.shop-skin-violet-nebula {
+    color: #2a1300;
+    background: #ff9f43;
+    box-shadow:
+        0 0 0 2px rgba(255, 255, 255, 0.22) inset,
+        0 0 13px rgba(255, 159, 67, 0.34);
+}
+
+.profile-avatar.shop-skin-crimson-nova,
+.rank-avatar.shop-skin-crimson-nova,
+.shop-item-icon.shop-skin-crimson-nova {
+    color: #241900;
+    background: #ffd84f;
+    box-shadow:
+        0 0 0 2px rgba(255, 255, 255, 0.26) inset,
+        0 0 15px rgba(255, 216, 79, 0.36);
+}
+
+.profile-avatar.shop-skin-azure-singularity,
+.rank-avatar.shop-skin-azure-singularity,
+.shop-item-icon.shop-skin-azure-singularity {
+    color: #032013;
+    background: #37d67a;
+    box-shadow:
+        0 0 0 2px rgba(255, 255, 255, 0.2) inset,
+        0 0 14px rgba(55, 214, 122, 0.34);
+}
+
+.profile-avatar.shop-skin-cobalt-tide,
+.rank-avatar.shop-skin-cobalt-tide,
+.shop-item-icon.shop-skin-cobalt-tide {
+    color: #fff;
+    background: #3aa7ff;
+    box-shadow:
+        0 0 0 2px rgba(255, 255, 255, 0.2) inset,
+        0 0 15px rgba(58, 167, 255, 0.36);
+}
+
+.profile-avatar.shop-skin-indigo-depth,
+.rank-avatar.shop-skin-indigo-depth,
+.shop-item-icon.shop-skin-indigo-depth {
+    color: #fff;
+    background: #536dfe;
+    box-shadow:
+        0 0 0 2px rgba(255, 255, 255, 0.18) inset,
+        0 0 15px rgba(83, 109, 254, 0.34);
+}
+
+.profile-avatar.shop-skin-violet-orbit,
+.rank-avatar.shop-skin-violet-orbit,
+.shop-item-icon.shop-skin-violet-orbit {
+    color: #fff;
+    background: #b45cff;
+    box-shadow:
+        0 0 0 2px rgba(255, 255, 255, 0.18) inset,
+        0 0 15px rgba(180, 92, 255, 0.36);
+}
+
+.profile-avatar.shop-skin-prism-crown,
+.rank-avatar.shop-skin-prism-crown,
+.shop-item-icon.shop-skin-prism-crown {
+    color: #111827;
+    background: conic-gradient(from 20deg, #ff4f5e, #ff9f43, #ffd84f, #37d67a, #3aa7ff, #b45cff, #ff4f5e);
+    box-shadow:
+        0 0 0 2px rgba(255, 255, 255, 0.34) inset,
+        0 0 18px rgba(120, 247, 255, 0.34),
+        0 0 24px rgba(255, 216, 79, 0.18);
+}
+
+.profile-avatar.shop-skin-classic,
+.rank-avatar.shop-skin-classic,
+.shop-item-icon.shop-skin-classic {
+    color: #fff;
+    background: var(--primary);
+}
+
 .leaderboard-screen {
     position: relative;
     padding-bottom: calc(104px + env(safe-area-inset-bottom));
@@ -1339,6 +2197,1065 @@ input:focus-visible {
     background: color-mix(in srgb, var(--primary-soft) 45%, var(--surface));
 }
 
+.leaderboard-row.me[class*="shop-skin-"] {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    color: #fff;
+}
+
+.leaderboard-row.me[class*="shop-skin-"] > :not(.skin-effects) {
+    position: relative;
+    z-index: 2;
+}
+
+.skin-effects {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    border-radius: inherit;
+    pointer-events: none;
+}
+
+.skin-effects span {
+    position: absolute;
+    display: block;
+    pointer-events: none;
+}
+
+.leaderboard-row.me.shop-skin-ember-ring {
+    border-color: rgba(255, 79, 94, 0.7);
+    background: linear-gradient(110deg, #641521, #310b13 72%);
+    box-shadow:
+        0 0 0 1px rgba(255, 79, 94, 0.18) inset,
+        0 0 24px rgba(255, 79, 94, 0.3),
+        var(--shadow-soft);
+}
+
+.leaderboard-row.me.shop-skin-violet-nebula {
+    border-color: rgba(255, 159, 67, 0.68);
+    background: linear-gradient(110deg, #71350d, #321506 72%);
+    box-shadow:
+        0 0 0 1px rgba(255, 159, 67, 0.16) inset,
+        0 0 24px rgba(255, 159, 67, 0.28),
+        var(--shadow-soft);
+}
+
+.leaderboard-row.me.shop-skin-crimson-nova {
+    border-color: rgba(255, 216, 79, 0.72);
+    background: #241c07;
+    box-shadow:
+        0 0 0 1px rgba(255, 216, 79, 0.18) inset,
+        0 0 28px rgba(255, 216, 79, 0.32),
+        var(--shadow-soft);
+}
+
+.leaderboard-row.me.shop-skin-azure-singularity {
+    border-color: rgba(55, 214, 122, 0.7);
+    background: #071f13;
+    box-shadow:
+        0 0 0 1px rgba(55, 214, 122, 0.16) inset,
+        0 0 28px rgba(55, 214, 122, 0.28),
+        var(--shadow-soft);
+}
+
+.leaderboard-row.me.shop-skin-cobalt-tide {
+    border-color: rgba(58, 167, 255, 0.72);
+    animation: leaderboardBluePulse 2.2s ease-in-out infinite;
+    background: #07172c;
+    box-shadow:
+        0 0 0 1px rgba(58, 167, 255, 0.17) inset,
+        0 0 30px rgba(58, 167, 255, 0.32),
+        var(--shadow-soft);
+}
+
+.leaderboard-row.me.shop-skin-indigo-depth {
+    border-color: rgba(83, 109, 254, 0.72);
+    animation: leaderboardIndigoPulse 2.6s ease-in-out infinite;
+    background: #101332;
+    box-shadow:
+        0 0 0 1px rgba(83, 109, 254, 0.17) inset,
+        0 0 30px rgba(83, 109, 254, 0.3),
+        var(--shadow-soft);
+}
+
+.leaderboard-row.me.shop-skin-violet-orbit {
+    border-color: rgba(180, 92, 255, 0.72);
+    animation: leaderboardPurplePulse 2s ease-in-out infinite;
+    background: #1a0d2d;
+    box-shadow:
+        0 0 0 1px rgba(180, 92, 255, 0.17) inset,
+        0 0 32px rgba(180, 92, 255, 0.32),
+        var(--shadow-soft);
+}
+
+.leaderboard-row.me.shop-skin-prism-crown {
+    border-color: rgba(255, 255, 255, 0.68);
+    background: #101225;
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.18) inset,
+        0 0 34px rgba(120, 247, 255, 0.34),
+        0 0 52px rgba(255, 216, 79, 0.18),
+        var(--shadow-soft);
+}
+
+.effect-fill {
+    inset: 0;
+}
+
+.red-effects .effect-fill {
+    background: linear-gradient(90deg, rgba(255, 45, 68, 0.4), rgba(255, 79, 94, 0.18), rgba(120, 8, 22, 0.26));
+}
+
+.orange-effects .effect-fill {
+    background: linear-gradient(90deg, rgba(255, 119, 35, 0.38), rgba(255, 159, 67, 0.2), rgba(88, 35, 5, 0.25));
+}
+
+.yellow-effects .effect-fill {
+    background:
+        radial-gradient(circle at 66% 50%, rgba(255, 252, 210, 0.68) 0 3%, rgba(255, 216, 79, 0.24) 4% 18%, transparent 38%),
+        repeating-conic-gradient(from 4deg at 66% 50%, rgba(255, 231, 114, 0.18) 0 3deg, transparent 3deg 16deg),
+        linear-gradient(90deg, rgba(255, 190, 36, 0.42), rgba(255, 216, 79, 0.24), rgba(88, 62, 0, 0.24));
+}
+
+.green-effects .effect-fill {
+    background:
+        radial-gradient(ellipse at 62% 68%, rgba(149, 255, 187, 0.34) 0 6%, transparent 7%),
+        radial-gradient(ellipse at 76% 34%, rgba(104, 243, 155, 0.3) 0 7%, transparent 8%),
+        radial-gradient(ellipse at 88% 68%, rgba(67, 220, 128, 0.28) 0 6%, transparent 7%),
+        linear-gradient(164deg, transparent 0 59%, rgba(116, 255, 171, 0.28) 60% 61%, transparent 62%),
+        linear-gradient(90deg, rgba(22, 142, 75, 0.42), rgba(55, 214, 122, 0.22), rgba(5, 62, 31, 0.24));
+}
+
+.blue-effects .effect-fill {
+    background:
+        radial-gradient(circle at 80% 58%, rgba(158, 222, 255, 0.24), transparent 25%),
+        linear-gradient(90deg, rgba(18, 93, 180, 0.58), rgba(58, 167, 255, 0.34), rgba(6, 40, 83, 0.34));
+    background-size: 180% 100%;
+    animation: leaderboardBlueFlow 2.8s ease-in-out infinite alternate;
+}
+
+.indigo-effects .effect-fill {
+    background:
+        radial-gradient(circle at 22% 42%, rgba(167, 181, 255, 0.22), transparent 22%),
+        linear-gradient(90deg, rgba(49, 63, 180, 0.5), rgba(83, 109, 254, 0.38), rgba(14, 20, 80, 0.36));
+    animation: leaderboardIndigoDepth 2.6s ease-in-out infinite;
+}
+
+.purple-effects .effect-fill {
+    background:
+        radial-gradient(circle at 78% 28%, rgba(226, 184, 255, 0.24), transparent 24%),
+        conic-gradient(from 0deg at 78% 50%, rgba(234, 203, 255, 0.36), transparent 20%, rgba(180, 92, 255, 0.4), transparent 56%),
+        linear-gradient(90deg, rgba(103, 47, 176, 0.56), rgba(180, 92, 255, 0.38), rgba(50, 14, 85, 0.38));
+    animation: leaderboardPurplePortal 2.4s linear infinite;
+}
+
+.rainbow-effects .effect-fill {
+    background: linear-gradient(
+        90deg,
+        rgba(255, 55, 95, 0.45),
+        rgba(255, 164, 64, 0.42),
+        rgba(255, 232, 96, 0.44),
+        rgba(84, 255, 147, 0.4),
+        rgba(67, 225, 255, 0.44),
+        rgba(166, 117, 255, 0.44),
+        rgba(255, 83, 221, 0.42)
+    );
+    background-size: 180% 100%;
+    animation: rainbowColorShift 3.4s ease-in-out infinite alternate;
+}
+
+.rainbow-effects::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(circle at 32% 48%, rgba(255, 255, 255, 0.62), transparent 13%),
+        radial-gradient(circle at 74% 52%, rgba(255, 255, 255, 0.38), transparent 11%);
+    opacity: 0.16;
+    pointer-events: none;
+    animation: rainbowLayerFlash 1.9s ease-in-out infinite;
+}
+
+.effect-chip {
+    z-index: 1;
+    font-size: 10px;
+    line-height: 1;
+    text-shadow: 0 0 12px currentColor;
+}
+
+.red-effects .effect-chip { color: #ff6b77; }
+.orange-effects .effect-chip { color: #ffb45d; }
+.yellow-effects .effect-chip { color: #ffe680; }
+.green-effects .effect-chip { color: #6dffa5; }
+.blue-effects .effect-chip { color: #8fd4ff; }
+.indigo-effects .effect-chip { color: #9dacff; }
+.purple-effects .effect-chip { color: #dca8ff; }
+.rainbow-effects .effect-chip { color: #fff; }
+
+.effect-chip.chip-a,
+.effect-chip.leaf-a {
+    left: -22px;
+    top: 14px;
+    animation: chipDriftA 3.4s linear infinite;
+}
+
+.effect-chip.chip-b,
+.effect-chip.leaf-b {
+    left: -22px;
+    top: 42px;
+    animation: chipDriftB 4s linear infinite;
+    animation-delay: 0.7s;
+}
+
+.effect-chip.chip-c,
+.effect-chip.leaf-c {
+    left: -22px;
+    bottom: 12px;
+    animation: chipDriftC 3.2s linear infinite;
+    animation-delay: 1.2s;
+}
+
+.effect-chip.chip-d {
+    left: -22px;
+    top: 25px;
+    animation: chipDriftB 4.4s linear infinite;
+    animation-delay: 1.8s;
+}
+
+.yellow-effects .effect-chip,
+.green-effects .effect-chip {
+    opacity: 0.9;
+    animation: none;
+}
+
+.yellow-effects .chip-a {
+    left: 62%;
+    top: 12px;
+    transform: rotate(-8deg);
+}
+
+.yellow-effects .chip-b {
+    left: 78%;
+    top: 42px;
+    transform: rotate(12deg);
+}
+
+.yellow-effects .chip-c {
+    left: 88%;
+    right: auto;
+    bottom: 10px;
+    transform: rotate(-12deg);
+}
+
+.yellow-effects .chip-d {
+    left: 70%;
+    top: auto;
+    bottom: 8px;
+    transform: rotate(8deg);
+}
+
+.green-effects .leaf-a {
+    left: 62%;
+    top: 10px;
+    transform: rotate(-18deg);
+}
+
+.green-effects .leaf-b {
+    left: 79%;
+    top: 40px;
+    transform: rotate(22deg);
+}
+
+.green-effects .leaf-c {
+    left: 90%;
+    right: auto;
+    bottom: 10px;
+    transform: rotate(-10deg);
+}
+
+.effect-bubble {
+    bottom: -18px;
+    border: 1px solid rgba(211, 244, 255, 0.86);
+    border-radius: 50%;
+    background: rgba(143, 212, 255, 0.12);
+    box-shadow: 0 0 10px rgba(143, 212, 255, 0.72);
+    animation: blueBubbleRise 2.8s ease-in infinite;
+}
+
+.blue-effects .bubble-a {
+    left: 58%;
+    width: 8px;
+    height: 8px;
+}
+
+.blue-effects .bubble-b {
+    left: 72%;
+    width: 13px;
+    height: 13px;
+    animation-delay: -0.9s;
+}
+
+.blue-effects .bubble-c {
+    left: 86%;
+    width: 6px;
+    height: 6px;
+    animation-delay: -1.8s;
+}
+
+.effect-star {
+    z-index: 1;
+    color: #dbe1ff;
+    text-shadow: 0 0 12px #9dacff, 0 0 22px #536dfe;
+    animation: indigoStarTwinkle 1.9s ease-in-out infinite;
+}
+
+.indigo-effects .star-a {
+    left: 58%;
+    top: 13px;
+}
+
+.indigo-effects .star-b {
+    left: 76%;
+    bottom: 12px;
+    animation-delay: -0.65s;
+}
+
+.indigo-effects .star-c {
+    left: 90%;
+    top: 33px;
+    font-size: 18px;
+    animation-delay: -1.2s;
+}
+
+.effect-wave {
+    left: -45%;
+    width: 180%;
+    height: 24px;
+    border-radius: 999px;
+    opacity: 0.42;
+    filter: blur(1px);
+}
+
+.blue-effects .wave-a {
+    bottom: 8px;
+    background: linear-gradient(90deg, transparent, #8fd4ff, transparent);
+    animation: wavePush 3.4s ease-in-out infinite alternate;
+}
+
+.blue-effects .wave-b {
+    bottom: 24px;
+    background: linear-gradient(90deg, transparent, #3aa7ff, transparent);
+    opacity: 0.12;
+    animation: wavePush 4.2s ease-in-out infinite alternate-reverse;
+}
+
+.effect-orb {
+    width: 104px;
+    height: 104px;
+    border-radius: 50%;
+    filter: blur(7px);
+    opacity: 0.58;
+    mix-blend-mode: screen;
+}
+
+.indigo-effects .orb-a {
+    right: 10%;
+    top: -34px;
+    background: rgba(83, 109, 254, 0.42);
+    animation: orbFloat 4s ease-in-out infinite;
+}
+
+.indigo-effects .orb-b {
+    left: 28%;
+    bottom: -58px;
+    background: rgba(150, 166, 255, 0.28);
+    animation: orbFloat 5s ease-in-out infinite reverse;
+}
+
+.effect-orbit {
+    width: 132px;
+    height: 132px;
+    right: -34px;
+    top: -34px;
+    border: 2px solid rgba(220, 168, 255, 0.62);
+    border-radius: 50%;
+    box-shadow: 0 0 28px rgba(180, 92, 255, 0.54);
+    animation: orbitSpin 2.2s linear infinite;
+}
+
+.effect-orbit::before,
+.effect-orbit::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 0 14px #dca8ff, 0 0 26px #b45cff;
+}
+
+.effect-orbit::before {
+    width: 8px;
+    height: 8px;
+    left: 50%;
+    top: -5px;
+}
+
+.effect-orbit::after {
+    width: 5px;
+    height: 5px;
+    right: 8px;
+    bottom: 18px;
+}
+
+.rainbow-sheen {
+    top: -40%;
+    left: -30%;
+    width: 42%;
+    height: 180%;
+    background: linear-gradient(115deg, transparent, rgba(255, 255, 255, 0.38), transparent);
+    transform: translateX(-120%) rotate(12deg);
+    animation: sheenSweep 3.8s ease-in-out infinite;
+}
+
+.leaderboard-row.me[class*="shop-skin-"] .rank-user strong,
+.leaderboard-row.me[class*="shop-skin-"] .rank-level {
+    color: #fff;
+    text-shadow: 0 1px 10px rgba(0, 0, 0, 0.32);
+}
+
+.leaderboard-row.me[class*="shop-skin-"] .rank-user strong {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+}
+
+.leaderboard-row.me[class*="shop-skin-"] .rank-user small {
+    color: rgba(255, 255, 255, 0.72);
+}
+
+.leaderboard-row.me[class*="shop-skin-"] .rank-user em {
+    flex: 0 0 auto;
+    color: #071020;
+    background: rgba(159, 253, 240, 0.86);
+}
+
+.leaderboard-row.me[class*="shop-skin-"] .rank-number {
+    color: #ffe36e;
+    text-shadow: 0 0 12px rgba(255, 227, 110, 0.55);
+}
+
+.rank-skin-badge {
+    flex: 0 0 auto;
+    max-width: 86px;
+    overflow: hidden;
+    padding: 2px 7px;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 7px;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+    font-size: 9px;
+    font-weight: 950;
+    line-height: 1.35;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.rank-skin-badge.shop-skin-ember-ring {
+    background: #ff4f5e;
+}
+
+.rank-skin-badge.shop-skin-violet-nebula {
+    color: #2a1300;
+    background: #ff9f43;
+}
+
+.rank-skin-badge.shop-skin-crimson-nova {
+    color: #241900;
+    background: #ffd84f;
+}
+
+.rank-skin-badge.shop-skin-azure-singularity {
+    color: #032013;
+    background: #37d67a;
+}
+
+.rank-skin-badge.shop-skin-cobalt-tide {
+    background: #3aa7ff;
+}
+
+.rank-skin-badge.shop-skin-indigo-depth {
+    background: #536dfe;
+}
+
+.rank-skin-badge.shop-skin-violet-orbit {
+    background: #b45cff;
+}
+
+.rank-skin-badge.shop-skin-prism-crown {
+    color: #111827;
+    background: linear-gradient(90deg, #ff4f5e, #ff9f43, #ffd84f, #37d67a, #3aa7ff, #b45cff);
+}
+
+@keyframes chipDriftA {
+    0% { transform: translateX(0) translateY(0) rotate(0deg); opacity: 0; }
+    12% { opacity: 1; }
+    84% { opacity: 0.85; }
+    100% { transform: translateX(430px) translateY(7px) rotate(180deg); opacity: 0; }
+}
+
+@keyframes chipDriftB {
+    0% { transform: translateX(0) translateY(0) rotate(0deg); opacity: 0; }
+    12% { opacity: 1; }
+    100% { transform: translateX(420px) translateY(-12px) rotate(260deg); opacity: 0; }
+}
+
+@keyframes chipDriftC {
+    0% { transform: translateX(0) translateY(0) rotate(0deg); opacity: 0; }
+    12% { opacity: 1; }
+    100% { transform: translateX(440px) translateY(-4px) rotate(220deg); opacity: 0; }
+}
+
+@keyframes wavePush {
+    from { transform: translateX(0) scaleY(1); }
+    to { transform: translateX(28%) scaleY(1.22); }
+}
+
+@keyframes orbFloat {
+    0%, 100% { transform: translateY(0) scale(0.96); opacity: 0.28; }
+    50% { transform: translateY(10px) scale(1.06); opacity: 0.5; }
+}
+
+@keyframes orbitSpin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+
+@keyframes blueBubbleRise {
+    0% { transform: translateY(0) scale(0.6); opacity: 0; }
+    18% { opacity: 0.9; }
+    100% { transform: translateY(-82px) translateX(16px) scale(1.25); opacity: 0; }
+}
+
+@keyframes indigoStarTwinkle {
+    0%, 100% { transform: scale(0.55) rotate(0deg); opacity: 0.2; }
+    45% { transform: scale(1.35) rotate(35deg); opacity: 1; }
+    70% { transform: scale(0.85) rotate(70deg); opacity: 0.55; }
+}
+
+@keyframes rainbowColorShift {
+    from { background-position: 0% 50%; }
+    to { background-position: 180% 50%; }
+}
+
+@keyframes rainbowLayerFlash {
+    0%, 100% { opacity: 0.12; }
+    50% { opacity: 0.26; }
+}
+
+@keyframes leaderboardBluePulse {
+    0%, 100% { box-shadow: 0 0 20px rgba(58, 167, 255, 0.34), var(--shadow-soft); }
+    50% { box-shadow: 0 0 34px rgba(58, 167, 255, 0.56), 0 0 52px rgba(103, 247, 255, 0.2), var(--shadow-soft); }
+}
+
+@keyframes leaderboardIndigoPulse {
+    0%, 100% { box-shadow: 0 0 22px rgba(83, 109, 254, 0.34), var(--shadow-soft); }
+    50% { box-shadow: 0 0 36px rgba(83, 109, 254, 0.56), 0 0 54px rgba(157, 172, 255, 0.18), var(--shadow-soft); }
+}
+
+@keyframes leaderboardPurplePulse {
+    0%, 100% { box-shadow: 0 0 20px rgba(180, 92, 255, 0.34), var(--shadow-soft); }
+    50% { box-shadow: 0 0 44px rgba(180, 92, 255, 0.82), 0 0 68px rgba(255, 92, 222, 0.28), var(--shadow-soft); }
+}
+
+@keyframes leaderboardBlueFlow {
+    from { background-position: 0% 50%; opacity: 0.84; }
+    to { background-position: 100% 50%; opacity: 1; }
+}
+
+@keyframes leaderboardIndigoDepth {
+    0%, 100% { opacity: 0.84; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.025); }
+}
+
+@keyframes leaderboardPurplePortal {
+    from { filter: hue-rotate(0deg) brightness(0.95); transform: scale(1) rotate(0deg); }
+    50% { filter: hue-rotate(24deg) brightness(1.35); transform: scale(1.08) rotate(180deg); }
+    to { filter: hue-rotate(0deg) brightness(0.95); transform: scale(1) rotate(360deg); }
+}
+
+/* 파랑과 남색은 안정적인 포털/궤도 기반을 공유합니다. */
+.shop-item-card.store.shop-skin-cobalt-tide {
+    animation: shopBlueCardPulse 2.2s ease-in-out infinite;
+}
+
+.shop-item-card.store.shop-skin-indigo-depth {
+    animation: shopIndigoCardPulse 2.2s ease-in-out infinite;
+}
+
+.shop-item-card.store.shop-skin-cobalt-tide::before,
+.shop-item-card.store.shop-skin-indigo-depth::before {
+    inset: auto;
+    right: 15%;
+    top: 50%;
+    width: 128px;
+    height: 128px;
+    border-radius: 50%;
+    filter: blur(1px);
+    mix-blend-mode: normal;
+    opacity: 0.82;
+    transform-origin: center;
+    animation: shopPurplePortal 2.4s linear infinite;
+}
+
+.shop-item-card.store.shop-skin-cobalt-tide::before {
+    background: conic-gradient(
+        from 0deg,
+        transparent 0 12%,
+        rgba(218, 246, 255, 0.96) 15%,
+        rgba(58, 167, 255, 0.1) 28%,
+        transparent 42%,
+        rgba(84, 211, 255, 0.84) 58%,
+        transparent 72%
+    );
+}
+
+.shop-item-card.store.shop-skin-indigo-depth::before {
+    background: conic-gradient(
+        from 0deg,
+        transparent 0 12%,
+        rgba(235, 239, 255, 0.96) 15%,
+        rgba(83, 109, 254, 0.1) 28%,
+        transparent 42%,
+        rgba(157, 172, 255, 0.84) 58%,
+        transparent 72%
+    );
+}
+
+.shop-item-card.store.shop-skin-cobalt-tide::after,
+.shop-item-card.store.shop-skin-indigo-depth::after {
+    inset: auto;
+    right: calc(15% + 22px);
+    top: 50%;
+    width: 84px;
+    height: 84px;
+    border-width: 2px;
+    border-style: solid;
+    border-radius: 50%;
+    background: transparent;
+    filter: none;
+    mix-blend-mode: normal;
+    transform-origin: center;
+    animation: shopPurpleOrbit 1.7s linear infinite reverse;
+}
+
+.shop-item-card.store.shop-skin-cobalt-tide::after {
+    border-color: rgba(143, 220, 255, 0.78);
+    box-shadow:
+        0 0 18px rgba(58, 167, 255, 0.72),
+        0 0 36px rgba(67, 225, 255, 0.42),
+        35px 0 0 -31px #fff,
+        -35px 0 0 -32px #8fdcff;
+}
+
+.shop-item-card.store.shop-skin-indigo-depth::after {
+    border-color: rgba(174, 188, 255, 0.8);
+    box-shadow:
+        0 0 18px rgba(83, 109, 254, 0.74),
+        0 0 36px rgba(125, 145, 255, 0.44),
+        35px 0 0 -31px #fff,
+        -35px 0 0 -32px #9dacff;
+}
+
+.blue-effects .effect-fill {
+    background:
+        radial-gradient(circle at 78% 28%, rgba(195, 238, 255, 0.28), transparent 24%),
+        conic-gradient(from 0deg at 78% 50%, rgba(203, 241, 255, 0.4), transparent 20%, rgba(58, 167, 255, 0.48), transparent 56%),
+        linear-gradient(90deg, rgba(14, 82, 170, 0.62), rgba(58, 167, 255, 0.42), rgba(4, 31, 74, 0.42));
+    animation: leaderboardPurplePortal 2.4s linear infinite;
+}
+
+.indigo-effects .effect-fill {
+    background:
+        radial-gradient(circle at 78% 28%, rgba(213, 219, 255, 0.28), transparent 24%),
+        conic-gradient(from 0deg at 78% 50%, rgba(226, 230, 255, 0.4), transparent 20%, rgba(83, 109, 254, 0.5), transparent 56%),
+        linear-gradient(90deg, rgba(38, 49, 150, 0.64), rgba(83, 109, 254, 0.44), rgba(11, 16, 65, 0.44));
+    animation: leaderboardPurplePortal 2.4s linear infinite;
+}
+
+.blue-effects .blue-orbit {
+    border-color: rgba(143, 220, 255, 0.72);
+    box-shadow: 0 0 28px rgba(58, 167, 255, 0.62);
+}
+
+.blue-effects .blue-orbit::before,
+.blue-effects .blue-orbit::after {
+    box-shadow: 0 0 14px #bfeeff, 0 0 26px #3aa7ff;
+}
+
+.indigo-effects .indigo-orbit {
+    border-color: rgba(174, 188, 255, 0.74);
+    box-shadow: 0 0 28px rgba(83, 109, 254, 0.64);
+}
+
+.indigo-effects .indigo-orbit::before,
+.indigo-effects .indigo-orbit::after {
+    box-shadow: 0 0 14px #d8deff, 0 0 26px #536dfe;
+}
+
+/* 무지개 칭호는 색층을 불투명하고 고채도로 유지합니다. */
+.shop-item-card.store.shop-skin-prism-crown {
+    border-color: rgba(255, 255, 255, 0.94);
+    background:
+        linear-gradient(90deg, rgba(5, 8, 24, 0.34), rgba(5, 8, 24, 0.08) 52%, rgba(5, 8, 24, 0.3)),
+        linear-gradient(105deg, #f00042 0%, #ff7100 16%, #ffe000 31%, #00d968 47%, #0095ff 64%, #7047ff 81%, #f000cf 100%);
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.34) inset,
+        0 0 34px rgba(0, 229, 255, 0.56),
+        0 0 58px rgba(255, 0, 194, 0.38),
+        0 12px 28px rgba(0, 0, 0, 0.24);
+}
+
+.shop-item-card.store.shop-skin-prism-crown::before {
+    background: linear-gradient(
+        100deg,
+        rgba(255, 0, 62, 0.98),
+        rgba(255, 112, 0, 0.98),
+        rgba(255, 226, 0, 0.98),
+        rgba(0, 224, 99, 0.98),
+        rgba(0, 157, 255, 0.98),
+        rgba(111, 65, 255, 0.98),
+        rgba(255, 0, 207, 0.98)
+    );
+    opacity: 0.9;
+}
+
+.shop-item-card.store.shop-skin-prism-crown::after {
+    background:
+        radial-gradient(circle at 30% 45%, rgba(255, 255, 255, 0.96), transparent 14%),
+        radial-gradient(circle at 72% 55%, rgba(255, 255, 255, 0.76), transparent 12%);
+}
+
+.shop-item-card.store.shop-skin-prism-crown.owned {
+    opacity: 1;
+}
+
+.shop-item-card.store.shop-skin-prism-crown .shop-item-icon {
+    filter: saturate(1.45) contrast(1.08);
+}
+
+.leaderboard-row.me.shop-skin-prism-crown {
+    border-color: rgba(255, 255, 255, 0.94);
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.34) inset,
+        0 0 38px rgba(0, 229, 255, 0.58),
+        0 0 60px rgba(255, 0, 194, 0.4),
+        var(--shadow-soft);
+}
+
+.rainbow-effects .effect-fill {
+    background: linear-gradient(
+        90deg,
+        rgba(255, 0, 62, 0.96),
+        rgba(255, 112, 0, 0.96),
+        rgba(255, 226, 0, 0.96),
+        rgba(0, 224, 99, 0.96),
+        rgba(0, 157, 255, 0.96),
+        rgba(111, 65, 255, 0.96),
+        rgba(255, 0, 207, 0.96)
+    );
+}
+
+.rainbow-effects::before {
+    background:
+        radial-gradient(circle at 32% 48%, rgba(255, 255, 255, 0.98), transparent 15%),
+        radial-gradient(circle at 74% 52%, rgba(255, 255, 255, 0.78), transparent 13%);
+}
+
+.rainbow-sheen {
+    background: linear-gradient(115deg, transparent, rgba(255, 255, 255, 0.78), transparent);
+}
+
+.rank-skin-badge.shop-skin-prism-crown {
+    background: linear-gradient(90deg, #ff003e, #ff7000, #ffe200, #00e063, #009dff, #6f41ff, #ff00cf);
+    box-shadow: 0 0 14px rgba(255, 255, 255, 0.42);
+}
+
+@keyframes shopRainbowLayerFlash {
+    0%, 100% { opacity: 0.42; }
+    50% { opacity: 0.76; }
+}
+
+@keyframes rainbowLayerFlash {
+    0%, 100% { opacity: 0.36; }
+    50% { opacity: 0.66; }
+}
+
+
+/* 최종 칭호 등급: 파랑 < 남색 < 보라 < 무지개 */
+.shop-item-card.store.shop-skin-cobalt-tide::before {
+    right: 18%;
+    width: 104px;
+    height: 104px;
+    opacity: 0.5;
+    animation-duration: 3.2s;
+}
+
+.shop-item-card.store.shop-skin-cobalt-tide::after {
+    right: calc(18% + 20px);
+    width: 64px;
+    height: 64px;
+    border-width: 1px;
+    box-shadow:
+        0 0 12px rgba(58, 167, 255, 0.54),
+        0 0 24px rgba(67, 225, 255, 0.24),
+        27px 0 0 -24px rgba(255, 255, 255, 0.9);
+    animation-duration: 2.8s;
+}
+
+.shop-item-card.store.shop-skin-indigo-depth::before {
+    right: 16%;
+    width: 120px;
+    height: 120px;
+    opacity: 0.7;
+    animation-duration: 2.7s;
+}
+
+.shop-item-card.store.shop-skin-indigo-depth::after {
+    right: calc(16% + 22px);
+    width: 76px;
+    height: 76px;
+    box-shadow:
+        0 0 16px rgba(83, 109, 254, 0.66),
+        0 0 32px rgba(125, 145, 255, 0.34),
+        32px 0 0 -28px #fff,
+        -32px 0 0 -29px #9dacff;
+    animation-duration: 2s;
+}
+
+.shop-item-card.store.shop-skin-violet-orbit::before {
+    inset: auto;
+    right: 12%;
+    top: 50%;
+    width: 148px;
+    height: 148px;
+    background: conic-gradient(
+        from 0deg,
+        transparent 0 8%,
+        rgba(255, 236, 255, 0.98) 12%,
+        rgba(180, 92, 255, 0.12) 25%,
+        transparent 36%,
+        rgba(226, 155, 255, 0.92) 48%,
+        rgba(255, 79, 217, 0.22) 63%,
+        transparent 76%,
+        rgba(200, 125, 255, 0.74) 88%,
+        transparent 100%
+    );
+    opacity: 0.92;
+    animation-duration: 2.1s;
+}
+
+.shop-item-card.store.shop-skin-violet-orbit::after {
+    inset: auto;
+    right: calc(12% + 26px);
+    top: 50%;
+    width: 96px;
+    height: 96px;
+    border-color: rgba(238, 198, 255, 0.86);
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.16) inset,
+        0 0 22px rgba(180, 92, 255, 0.82),
+        0 0 46px rgba(255, 79, 217, 0.5),
+        40px 0 0 -35px #fff,
+        -40px 0 0 -36px #e2a0ff;
+    animation-duration: 1.45s;
+}
+
+.blue-effects .effect-fill {
+    background:
+        radial-gradient(circle at 80% 50%, rgba(128, 211, 255, 0.24), transparent 26%),
+        linear-gradient(90deg, rgba(11, 66, 142, 0.58), rgba(58, 167, 255, 0.34), rgba(4, 29, 67, 0.38));
+    animation: none;
+}
+
+.blue-effects .blue-orbit {
+    top: -13px;
+    right: -20px;
+    width: 96px;
+    height: 96px;
+    border-width: 1px;
+    box-shadow: 0 0 18px rgba(58, 167, 255, 0.48);
+    animation-duration: 3s;
+}
+
+.indigo-effects .effect-fill {
+    animation-duration: 3.2s;
+}
+
+.indigo-effects .indigo-orbit {
+    top: -24px;
+    right: -28px;
+    width: 116px;
+    height: 116px;
+    box-shadow: 0 0 24px rgba(83, 109, 254, 0.58);
+    animation-duration: 2.45s;
+}
+
+.indigo-rune {
+    right: 19%;
+    top: 18px;
+    color: #eef0ff;
+    font-size: 13px;
+    text-shadow: 0 0 12px #9dacff, 0 0 24px #536dfe;
+    opacity: 0.92;
+    animation: stableRuneSpin 3.2s linear infinite;
+}
+
+.purple-effects .effect-fill {
+    background:
+        radial-gradient(circle at 76% 26%, rgba(245, 219, 255, 0.34), transparent 22%),
+        conic-gradient(from 0deg at 78% 50%, rgba(250, 228, 255, 0.5), transparent 16%, rgba(180, 92, 255, 0.58), transparent 42%, rgba(255, 79, 217, 0.38), transparent 70%),
+        linear-gradient(90deg, rgba(91, 37, 167, 0.66), rgba(180, 92, 255, 0.46), rgba(43, 10, 78, 0.46));
+    animation-duration: 2.1s;
+}
+
+.purple-effects .effect-orbit {
+    top: -40px;
+    right: -38px;
+    width: 148px;
+    height: 148px;
+    border-color: rgba(238, 198, 255, 0.78);
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.12) inset,
+        0 0 32px rgba(180, 92, 255, 0.72),
+        0 0 54px rgba(255, 79, 217, 0.34);
+    animation-duration: 1.75s;
+}
+
+/* 무지개는 모든 요소가 계속 보이며 transform만 애니메이션합니다. */
+.shop-item-card.store.shop-skin-prism-crown::after {
+    opacity: 0.62;
+    animation: none;
+}
+
+.shop-item-card.store.shop-skin-prism-crown .shop-item-icon {
+    animation: none;
+    box-shadow:
+        0 0 0 3px rgba(255, 255, 255, 0.62) inset,
+        0 0 24px rgba(0, 229, 255, 0.7),
+        0 0 38px rgba(255, 0, 194, 0.5);
+}
+
+.rainbow-effects::before {
+    opacity: 0.48;
+    animation: none;
+}
+
+.rainbow-effects .effect-fill {
+    animation-duration: 4.2s;
+}
+
+.rainbow-effects .rainbow-orbit {
+    top: -46px;
+    right: -42px;
+    width: 158px;
+    height: 158px;
+    border-color: rgba(255, 255, 255, 0.92);
+    box-shadow:
+        0 0 0 2px rgba(255, 224, 0, 0.28) inset,
+        0 0 26px rgba(0, 229, 255, 0.78),
+        0 0 48px rgba(255, 0, 194, 0.58);
+    animation-duration: 2.2s;
+}
+
+.rainbow-effects .rainbow-orbit::before,
+.rainbow-effects .rainbow-orbit::after {
+    opacity: 1;
+    box-shadow:
+        0 0 12px #fff,
+        0 0 24px #00e5ff,
+        0 0 34px #ff00c2;
+}
+
+.rainbow-orbit-inner {
+    top: -17px;
+    right: -9px;
+    width: 104px;
+    height: 104px;
+    border: 2px solid rgba(255, 255, 255, 0.84);
+    border-top-color: #ffe200;
+    border-right-color: #00e063;
+    border-bottom-color: #009dff;
+    border-left-color: #ff00cf;
+    border-radius: 50%;
+    box-shadow:
+        0 0 18px rgba(255, 255, 255, 0.52),
+        0 0 30px rgba(111, 65, 255, 0.42);
+    opacity: 1;
+    animation: orbitSpin 3.1s linear infinite reverse;
+}
+
+.rainbow-star {
+    z-index: 1;
+    color: #fff;
+    font-size: 13px;
+    line-height: 1;
+    text-shadow:
+        0 0 8px #fff,
+        0 0 16px #00e5ff,
+        0 0 24px #ff00c2;
+    opacity: 1;
+    animation: rainbowStarRotate 2.8s linear infinite;
+}
+
+.rainbow-effects .rainbow-star.star-a {
+    right: 18px;
+    top: 9px;
+}
+
+.rainbow-effects .rainbow-star.star-b {
+    right: 38px;
+    bottom: 10px;
+    font-size: 10px;
+    animation-direction: reverse;
+}
+
+.rainbow-effects .rainbow-star.star-c {
+    right: 62px;
+    top: 31px;
+    font-size: 9px;
+    animation-duration: 3.6s;
+}
+
+@keyframes stableRuneSpin {
+    from { transform: rotate(0deg) scale(0.92); }
+    to { transform: rotate(360deg) scale(0.92); }
+}
+
+@keyframes rainbowStarRotate {
+    from { transform: rotate(0deg) scale(1); }
+    to { transform: rotate(360deg) scale(1); }
+}
+
+@keyframes shopPurpleCardPulse {
+    0%, 100% {
+        box-shadow: 0 0 24px rgba(180, 92, 255, 0.36), 0 12px 28px rgba(0, 0, 0, 0.22);
+    }
+    50% {
+        box-shadow: 0 0 46px rgba(180, 92, 255, 0.78), 0 0 72px rgba(255, 79, 217, 0.34), 0 12px 28px rgba(0, 0, 0, 0.22);
+    }
+}
+
+
+@keyframes sheenSweep {
+    0%, 100% { transform: translateX(-120%) rotate(12deg); opacity: 0; }
+    12% { opacity: 0.95; }
+    55% { transform: translateX(360%) rotate(12deg); opacity: 0.95; }
+    80% { opacity: 0; }
+}
+
 .rank-number {
     color: var(--text-soft);
     font-size: 13px;
@@ -1372,8 +3289,19 @@ input:focus-visible {
 }
 
 .rank-user strong {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: 6px;
     overflow: hidden;
     font-size: 13px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.rank-name-text {
+    min-width: 0;
+    overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
@@ -2844,6 +4772,1334 @@ input:focus-visible {
     background: #30291f;
 }
 
+/* ===== 고급 칭호 효과 시스템 v4: 비소멸·비필터 애니메이션 ===== */
+.shop-title-effects {
+    position: absolute;
+    inset: 0;
+    z-index: 1 !important;
+    overflow: hidden;
+    border-radius: inherit;
+    pointer-events: none;
+    isolation: isolate;
+}
+
+.shop-title-effects span,
+.skin-effects .ocean-current,
+.skin-effects .ocean-foam,
+.skin-effects .depth-beam,
+.skin-effects .crystal-shard,
+.skin-effects .arcane-ray,
+.skin-effects .arcane-prism,
+.skin-effects .arcane-rune,
+.skin-effects .legend-beam,
+.skin-effects .legend-crown,
+.skin-effects .legend-core,
+.skin-effects .legend-star {
+    position: absolute;
+    display: block;
+    backface-visibility: hidden;
+    pointer-events: none;
+}
+
+.shop-item-card.store > .shop-title-effects {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+}
+
+.shop-item-card.store.shop-skin-cobalt-tide::before,
+.shop-item-card.store.shop-skin-cobalt-tide::after,
+.shop-item-card.store.shop-skin-indigo-depth::before,
+.shop-item-card.store.shop-skin-indigo-depth::after,
+.shop-item-card.store.shop-skin-violet-orbit::before,
+.shop-item-card.store.shop-skin-violet-orbit::after,
+.shop-item-card.store.shop-skin-prism-crown::before,
+.shop-item-card.store.shop-skin-prism-crown::after,
+.blue-effects::before,
+.indigo-effects::before,
+.purple-effects::before,
+.rainbow-effects::before {
+    display: none;
+}
+
+.shop-item-card.store.shop-skin-cobalt-tide,
+.shop-item-card.store.shop-skin-indigo-depth,
+.shop-item-card.store.shop-skin-violet-orbit,
+.shop-item-card.store.shop-skin-prism-crown,
+.leaderboard-row.me.shop-skin-cobalt-tide,
+.leaderboard-row.me.shop-skin-indigo-depth,
+.leaderboard-row.me.shop-skin-violet-orbit,
+.leaderboard-row.me.shop-skin-prism-crown {
+    animation: none;
+}
+
+/* 5단계 파랑 — 깊이가 얕은 두 겹 해류 */
+.shop-item-card.store.shop-skin-cobalt-tide {
+    border-color: rgba(104, 211, 255, 0.72);
+    background:
+        linear-gradient(125deg, rgba(5, 24, 59, 0.98), rgba(8, 83, 153, 0.94) 52%, rgba(4, 37, 82, 0.98)),
+        #061f48;
+    box-shadow:
+        0 0 0 1px rgba(129, 220, 255, 0.12) inset,
+        0 0 24px rgba(58, 167, 255, 0.32),
+        0 12px 28px rgba(0, 0, 0, 0.22);
+}
+
+.leaderboard-row.me.shop-skin-cobalt-tide {
+    border-color: rgba(104, 211, 255, 0.7);
+    background: #061f48;
+    box-shadow:
+        0 0 0 1px rgba(129, 220, 255, 0.14) inset,
+        0 0 25px rgba(58, 167, 255, 0.34),
+        var(--shadow-soft);
+}
+
+.blue-effects .effect-fill {
+    inset: 0;
+    background:
+        radial-gradient(ellipse at 78% 16%, rgba(205, 244, 255, 0.28), transparent 30%),
+        linear-gradient(120deg, rgba(5, 32, 75, 0.72), rgba(9, 114, 184, 0.58), rgba(3, 39, 87, 0.7));
+    animation: none;
+}
+
+.ocean-current {
+    left: -14%;
+    width: 128%;
+    border-radius: 50%;
+    will-change: transform;
+}
+
+.ocean-current.current-a {
+    bottom: 10%;
+    height: 28%;
+    border-top: 2px solid rgba(196, 241, 255, 0.82);
+    background: linear-gradient(180deg, rgba(91, 205, 255, 0.42), rgba(28, 135, 217, 0.08) 55%, transparent);
+    box-shadow: 0 -9px 24px rgba(75, 198, 255, 0.3);
+    animation: oceanCurrentA 3.8s ease-in-out infinite alternate;
+}
+
+.ocean-current.current-b {
+    bottom: 34%;
+    height: 18%;
+    border-top: 1px solid rgba(142, 221, 255, 0.58);
+    background: linear-gradient(180deg, rgba(45, 165, 235, 0.24), transparent 72%);
+    animation: oceanCurrentB 4.6s ease-in-out infinite alternate;
+}
+
+.ocean-foam {
+    border: 1px solid rgba(218, 247, 255, 0.9);
+    border-radius: 50%;
+    background: rgba(124, 216, 255, 0.22);
+    box-shadow: 0 0 8px rgba(126, 220, 255, 0.7);
+    opacity: 0.86;
+    will-change: transform;
+}
+
+.ocean-foam.foam-a {
+    right: 13%;
+    bottom: 23%;
+    width: 7px;
+    height: 7px;
+    animation: oceanFoamA 2.6s ease-in-out infinite alternate;
+}
+
+.ocean-foam.foam-b {
+    right: 24%;
+    bottom: 15%;
+    width: 11px;
+    height: 11px;
+    animation: oceanFoamB 3.2s ease-in-out infinite alternate;
+}
+
+.ocean-foam.foam-c {
+    right: 34%;
+    bottom: 31%;
+    width: 5px;
+    height: 5px;
+    animation: oceanFoamA 3.7s ease-in-out infinite alternate-reverse;
+}
+
+/* 6단계 남색 — 심해 수정 군집 */
+.shop-item-card.store.shop-skin-indigo-depth {
+    border-color: rgba(134, 151, 255, 0.78);
+    background:
+        radial-gradient(circle at 72% 20%, rgba(119, 142, 255, 0.2), transparent 30%),
+        linear-gradient(125deg, #080d2e, #18256f 52%, #090e36);
+    box-shadow:
+        0 0 0 1px rgba(174, 188, 255, 0.14) inset,
+        0 0 28px rgba(83, 109, 254, 0.4),
+        0 12px 28px rgba(0, 0, 0, 0.24);
+}
+
+.leaderboard-row.me.shop-skin-indigo-depth {
+    border-color: rgba(134, 151, 255, 0.76);
+    background: #0b123d;
+    box-shadow:
+        0 0 0 1px rgba(174, 188, 255, 0.16) inset,
+        0 0 29px rgba(83, 109, 254, 0.42),
+        var(--shadow-soft);
+}
+
+.indigo-effects .effect-fill {
+    inset: 0;
+    background:
+        radial-gradient(circle at 72% 34%, rgba(139, 157, 255, 0.3), transparent 26%),
+        linear-gradient(118deg, rgba(7, 12, 47, 0.78), rgba(36, 52, 143, 0.58), rgba(8, 14, 54, 0.76));
+    animation: none;
+}
+
+.depth-beam {
+    top: -48%;
+    right: 5%;
+    width: 35%;
+    height: 205%;
+    background: linear-gradient(90deg, transparent, rgba(151, 170, 255, 0.34), transparent);
+    clip-path: polygon(38% 0, 62% 0, 100% 100%, 0 100%);
+    opacity: 0.72;
+    will-change: transform;
+    animation: depthBeamSway 5s ease-in-out infinite alternate;
+}
+
+.crystal-shard {
+    clip-path: polygon(50% 0, 100% 24%, 78% 100%, 22% 100%, 0 24%);
+    background:
+        linear-gradient(135deg, rgba(246, 247, 255, 0.95), rgba(122, 145, 255, 0.86) 42%, rgba(42, 58, 177, 0.92) 74%, rgba(185, 196, 255, 0.88));
+    box-shadow: 0 0 20px rgba(112, 137, 255, 0.62);
+    opacity: 0.9;
+    will-change: transform;
+}
+
+.crystal-shard::after {
+    content: "";
+    position: absolute;
+    inset: 8% 43%;
+    background: rgba(255, 255, 255, 0.58);
+    transform: skewX(-8deg);
+}
+
+.crystal-shard.shard-a {
+    right: 12%;
+    top: 12%;
+    width: 36px;
+    height: 62px;
+    animation: crystalFloatA 3.4s ease-in-out infinite alternate;
+}
+
+.crystal-shard.shard-b {
+    right: 25%;
+    bottom: -6%;
+    width: 28px;
+    height: 49px;
+    animation: crystalFloatB 4s ease-in-out infinite alternate;
+}
+
+.crystal-shard.shard-c {
+    right: 35%;
+    top: 20%;
+    width: 19px;
+    height: 34px;
+    background: linear-gradient(135deg, #eef0ff, #7389ff 52%, #263694);
+    opacity: 0.78;
+    animation: crystalFloatC 3.7s ease-in-out infinite alternate;
+}
+
+/* 7단계 보라 — 고대 문자와 마력 결정 */
+.shop-item-card.store.shop-skin-violet-orbit {
+    border-color: rgba(224, 155, 255, 0.84);
+    background:
+        radial-gradient(circle at 72% 42%, rgba(221, 140, 255, 0.24), transparent 32%),
+        linear-gradient(125deg, #190a2f, #5d208b 52%, #250d43);
+    box-shadow:
+        0 0 0 1px rgba(239, 196, 255, 0.18) inset,
+        0 0 32px rgba(180, 92, 255, 0.48),
+        0 0 52px rgba(255, 79, 217, 0.2),
+        0 12px 28px rgba(0, 0, 0, 0.24);
+}
+
+.leaderboard-row.me.shop-skin-violet-orbit {
+    border-color: rgba(224, 155, 255, 0.82);
+    background: #25103f;
+    box-shadow:
+        0 0 0 1px rgba(239, 196, 255, 0.18) inset,
+        0 0 34px rgba(180, 92, 255, 0.5),
+        0 0 52px rgba(255, 79, 217, 0.2),
+        var(--shadow-soft);
+}
+
+.purple-effects .effect-fill {
+    inset: 0;
+    background:
+        radial-gradient(circle at 72% 44%, rgba(236, 188, 255, 0.31), transparent 27%),
+        linear-gradient(118deg, rgba(32, 10, 58, 0.74), rgba(115, 39, 161, 0.58), rgba(41, 12, 70, 0.74));
+    animation: none;
+}
+
+.arcane-ray {
+    right: 22%;
+    top: -32%;
+    width: 4px;
+    height: 165%;
+    border-radius: 999px;
+    background: linear-gradient(180deg, transparent, rgba(241, 190, 255, 0.82), transparent);
+    box-shadow: 0 0 12px rgba(214, 132, 255, 0.72);
+    opacity: 0.76;
+    transform-origin: center;
+    will-change: transform;
+}
+
+.arcane-ray.ray-a {
+    animation: arcaneRayA 4.4s ease-in-out infinite alternate;
+}
+
+.arcane-ray.ray-b {
+    right: 31%;
+    opacity: 0.5;
+    animation: arcaneRayB 5.2s ease-in-out infinite alternate;
+}
+
+.arcane-prism {
+    right: 11%;
+    top: 3%;
+    width: 78px;
+    height: 82px;
+    clip-path: polygon(50% 0, 91% 24%, 91% 72%, 50% 100%, 9% 72%, 9% 24%);
+    background:
+        conic-gradient(from 30deg, #f6d6ff, #bd6aff, #67219b, #ff58d7, #f6d6ff);
+    box-shadow: 0 0 30px rgba(209, 116, 255, 0.7);
+    opacity: 0.92;
+    will-change: transform;
+    animation: arcanePrismSpin 6s linear infinite;
+}
+
+.shop-title-effects .arcane-prism {
+    right: 14%;
+    top: 8%;
+    width: 104px;
+    height: 108px;
+}
+
+.arcane-rune {
+    color: #fff2ff;
+    font-family: Georgia, "Times New Roman", serif;
+    font-weight: 900;
+    line-height: 1;
+    text-shadow:
+        0 0 8px #fff,
+        0 0 18px #d478ff,
+        0 0 30px #a631dc;
+    opacity: 0.94;
+    will-change: transform;
+}
+
+.arcane-rune.rune-a {
+    right: 9%;
+    top: 14%;
+    font-size: 15px;
+    animation: arcaneRuneA 3s ease-in-out infinite alternate;
+}
+
+.arcane-rune.rune-b {
+    right: 31%;
+    bottom: 12%;
+    font-size: 12px;
+    animation: arcaneRuneB 3.8s ease-in-out infinite alternate;
+}
+
+.arcane-rune.rune-c {
+    right: 24%;
+    top: 16%;
+    font-size: 10px;
+    animation: arcaneRuneSpin 4s linear infinite;
+}
+
+/* 8단계 무지개 — 전설 프리즘 왕관 */
+.shop-item-card.store.shop-skin-prism-crown {
+    border-color: rgba(255, 255, 255, 0.96);
+    background:
+        linear-gradient(90deg, rgba(6, 7, 24, 0.3), rgba(6, 7, 24, 0.04) 55%, rgba(6, 7, 24, 0.24)),
+        linear-gradient(112deg, #ff003e, #ff7200 16%, #ffe100 31%, #00dc68 47%, #009dff 64%, #7145ff 81%, #ff00cf);
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.4) inset,
+        0 0 38px rgba(0, 229, 255, 0.62),
+        0 0 64px rgba(255, 0, 194, 0.46),
+        0 12px 30px rgba(0, 0, 0, 0.24);
+}
+
+.leaderboard-row.me.shop-skin-prism-crown {
+    border-color: rgba(255, 255, 255, 0.96);
+    background: #171229;
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.4) inset,
+        0 0 40px rgba(0, 229, 255, 0.64),
+        0 0 66px rgba(255, 0, 194, 0.46),
+        var(--shadow-soft);
+}
+
+.rainbow-effects .effect-fill {
+    inset: -3%;
+    background: linear-gradient(
+        102deg,
+        #ff003e,
+        #ff7200 16%,
+        #ffe100 31%,
+        #00dc68 47%,
+        #009dff 64%,
+        #7145ff 81%,
+        #ff00cf
+    );
+    background-size: 180% 100%;
+    opacity: 0.88;
+    animation: legendSpectrum 5.4s ease-in-out infinite alternate;
+}
+
+.legend-beam {
+    top: -44%;
+    width: 24%;
+    height: 210%;
+    clip-path: polygon(43% 0, 57% 0, 100% 100%, 0 100%);
+    transform-origin: 50% 50%;
+    opacity: 0.5;
+    will-change: transform;
+}
+
+.legend-beam.beam-a {
+    right: 4%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.86), transparent);
+    animation: legendBeamA 5s ease-in-out infinite alternate;
+}
+
+.legend-beam.beam-b {
+    right: 22%;
+    background: linear-gradient(90deg, transparent, rgba(0, 237, 255, 0.72), transparent);
+    animation: legendBeamB 6.2s ease-in-out infinite alternate;
+}
+
+.legend-beam.beam-c {
+    right: 39%;
+    width: 18%;
+    background: linear-gradient(90deg, transparent, rgba(255, 231, 64, 0.66), transparent);
+    animation: legendBeamC 5.7s ease-in-out infinite alternate;
+}
+
+.legend-crown {
+    right: 7%;
+    top: 7%;
+    width: 128px;
+    height: 70px;
+    clip-path: polygon(0 78%, 7% 18%, 29% 56%, 50% 0, 71% 56%, 93% 18%, 100% 78%, 88% 100%, 12% 100%);
+    background:
+        linear-gradient(130deg, #fff7b2, #ffe100 18%, #ff7b00 38%, #ff31ca 58%, #6d62ff 76%, #bff9ff);
+    box-shadow:
+        0 0 24px rgba(255, 242, 139, 0.86),
+        0 0 42px rgba(255, 49, 202, 0.56);
+    opacity: 0.96;
+    will-change: transform;
+    animation: legendCrownFloat 3.4s ease-in-out infinite alternate;
+}
+
+.shop-title-effects .legend-crown {
+    right: 12%;
+    top: 16%;
+    width: 154px;
+    height: 84px;
+}
+
+.legend-core {
+    right: 19%;
+    top: 30%;
+    width: 34px;
+    height: 34px;
+    border: 2px solid rgba(255, 255, 255, 0.92);
+    background: conic-gradient(from 45deg, #fff, #00e5ff, #7047ff, #ff00cf, #ffe100, #fff);
+    box-shadow:
+        0 0 16px #fff,
+        0 0 30px rgba(0, 229, 255, 0.78),
+        0 0 42px rgba(255, 0, 207, 0.62);
+    opacity: 1;
+    will-change: transform;
+    animation: legendCoreSpin 4.2s linear infinite;
+}
+
+.shop-title-effects .legend-core {
+    right: 25%;
+    top: 37%;
+    width: 42px;
+    height: 42px;
+}
+
+.legend-star {
+    z-index: 1;
+    color: #fff;
+    line-height: 1;
+    text-shadow:
+        0 0 8px #fff,
+        0 0 18px #00e5ff,
+        0 0 28px #ff00cf;
+    opacity: 1;
+    will-change: transform;
+}
+
+.legend-star.star-a {
+    right: 5%;
+    top: 9%;
+    font-size: 14px;
+    animation: legendStarSpin 3.1s linear infinite;
+}
+
+.legend-star.star-b {
+    right: 34%;
+    top: 13%;
+    font-size: 11px;
+    animation: legendStarFloatA 3.4s ease-in-out infinite alternate;
+}
+
+.legend-star.star-c {
+    right: 9%;
+    bottom: 10%;
+    font-size: 10px;
+    animation: legendStarFloatB 4.1s ease-in-out infinite alternate;
+}
+
+.legend-star.star-d {
+    right: 43%;
+    bottom: 14%;
+    font-size: 8px;
+    animation: legendStarSpin 4.6s linear infinite reverse;
+}
+
+.shop-item-card.store.shop-skin-cobalt-tide.owned,
+.shop-item-card.store.shop-skin-indigo-depth.owned,
+.shop-item-card.store.shop-skin-violet-orbit.owned {
+    opacity: 0.9;
+}
+
+.shop-item-card.store.shop-skin-prism-crown.owned {
+    opacity: 1;
+}
+
+.shop-item-card.store.shop-skin-prism-crown .shop-item-icon {
+    animation: none;
+    filter: saturate(1.5) contrast(1.08);
+    box-shadow:
+        0 0 0 3px rgba(255, 255, 255, 0.66) inset,
+        0 0 25px rgba(0, 229, 255, 0.74),
+        0 0 42px rgba(255, 0, 207, 0.58);
+}
+
+/* 모든 루프는 같은 화면으로 이어지거나 alternate로 왕복합니다. */
+@keyframes oceanCurrentA {
+    from { transform: translate3d(-4%, 2px, 0) skewX(-8deg) scaleY(0.92); }
+    to { transform: translate3d(4%, -4px, 0) skewX(8deg) scaleY(1.08); }
+}
+
+@keyframes oceanCurrentB {
+    from { transform: translate3d(5%, -2px, 0) skewX(7deg) scaleY(1.04); }
+    to { transform: translate3d(-5%, 4px, 0) skewX(-7deg) scaleY(0.9); }
+}
+
+@keyframes oceanFoamA {
+    from { transform: translate3d(0, 2px, 0) scale(0.92); }
+    to { transform: translate3d(3px, -8px, 0) scale(1.08); }
+}
+
+@keyframes oceanFoamB {
+    from { transform: translate3d(0, 3px, 0) scale(1.04); }
+    to { transform: translate3d(-4px, -10px, 0) scale(0.94); }
+}
+
+@keyframes depthBeamSway {
+    from { transform: rotate(12deg) translate3d(-8px, 0, 0); }
+    to { transform: rotate(20deg) translate3d(10px, 0, 0); }
+}
+
+@keyframes crystalFloatA {
+    from { transform: translate3d(0, -3px, 0) rotate(-7deg); }
+    to { transform: translate3d(5px, 7px, 0) rotate(7deg); }
+}
+
+@keyframes crystalFloatB {
+    from { transform: translate3d(0, 5px, 0) rotate(8deg); }
+    to { transform: translate3d(-6px, -5px, 0) rotate(-6deg); }
+}
+
+@keyframes crystalFloatC {
+    from { transform: translate3d(0, -2px, 0) rotate(-12deg); }
+    to { transform: translate3d(4px, 5px, 0) rotate(10deg); }
+}
+
+@keyframes arcaneRayA {
+    from { transform: rotate(-24deg) translate3d(-7px, 0, 0); }
+    to { transform: rotate(-10deg) translate3d(8px, 0, 0); }
+}
+
+@keyframes arcaneRayB {
+    from { transform: rotate(24deg) translate3d(6px, 0, 0); }
+    to { transform: rotate(9deg) translate3d(-7px, 0, 0); }
+}
+
+@keyframes arcanePrismSpin {
+    from { transform: rotate(0deg) scale(0.96); }
+    to { transform: rotate(360deg) scale(0.96); }
+}
+
+@keyframes arcaneRuneA {
+    from { transform: translate3d(0, -3px, 0) rotate(-6deg); }
+    to { transform: translate3d(4px, 6px, 0) rotate(8deg); }
+}
+
+@keyframes arcaneRuneB {
+    from { transform: translate3d(2px, 4px, 0) rotate(7deg); }
+    to { transform: translate3d(-4px, -5px, 0) rotate(-8deg); }
+}
+
+@keyframes arcaneRuneSpin {
+    from { transform: rotate(0deg) scale(0.96); }
+    to { transform: rotate(360deg) scale(0.96); }
+}
+
+@keyframes legendSpectrum {
+    from { background-position: 0% 50%; }
+    to { background-position: 100% 50%; }
+}
+
+@keyframes legendBeamA {
+    from { transform: rotate(-14deg) translate3d(-8px, 0, 0); }
+    to { transform: rotate(-3deg) translate3d(9px, 0, 0); }
+}
+
+@keyframes legendBeamB {
+    from { transform: rotate(7deg) translate3d(8px, 0, 0); }
+    to { transform: rotate(18deg) translate3d(-8px, 0, 0); }
+}
+
+@keyframes legendBeamC {
+    from { transform: rotate(-2deg) translate3d(-5px, 0, 0); }
+    to { transform: rotate(9deg) translate3d(7px, 0, 0); }
+}
+
+@keyframes legendCrownFloat {
+    from { transform: translate3d(0, -3px, 0) scale(0.98); }
+    to { transform: translate3d(5px, 6px, 0) scale(1.03); }
+}
+
+@keyframes legendCoreSpin {
+    from { transform: rotate(45deg) scale(0.94); }
+    to { transform: rotate(405deg) scale(0.94); }
+}
+
+@keyframes legendStarSpin {
+    from { transform: rotate(0deg) scale(1); }
+    to { transform: rotate(360deg) scale(1); }
+}
+
+@keyframes legendStarFloatA {
+    from { transform: translate3d(0, -3px, 0) rotate(-8deg); }
+    to { transform: translate3d(4px, 5px, 0) rotate(9deg); }
+}
+
+@keyframes legendStarFloatB {
+    from { transform: translate3d(3px, 4px, 0) rotate(8deg); }
+    to { transform: translate3d(-4px, -5px, 0) rotate(-9deg); }
+}
+
+
+/* ===== 고급 칭호 효과 시스템 v5: 형태 분리와 보라 포털 복원 ===== */
+.violet-portal,
+.violet-orbit,
+.violet-spark {
+    position: absolute;
+    display: block;
+    backface-visibility: hidden;
+    pointer-events: none;
+}
+
+.violet-portal {
+    right: -18px;
+    top: -38px;
+    width: 144px;
+    height: 144px;
+    border-radius: 50%;
+    background: conic-gradient(
+        from 0deg,
+        #fff 0 3%,
+        #df9cff 7%,
+        transparent 15% 25%,
+        #b45cff 31%,
+        #ff5bd8 40%,
+        transparent 48% 63%,
+        #dca8ff 70%,
+        #7b2dcc 79%,
+        transparent 88% 100%
+    );
+    -webkit-mask: radial-gradient(circle, transparent 0 36%, #000 38% 68%, transparent 70%);
+    mask: radial-gradient(circle, transparent 0 36%, #000 38% 68%, transparent 70%);
+    opacity: 0.92;
+    will-change: transform;
+    animation: violetPortalSpin 2.8s linear infinite;
+}
+
+.shop-title-effects .violet-portal {
+    right: 9%;
+    top: -14px;
+    width: 158px;
+    height: 158px;
+}
+
+.violet-orbit {
+    right: 4px;
+    top: -16px;
+    width: 100px;
+    height: 100px;
+    border: 2px solid rgba(232, 188, 255, 0.86);
+    border-right-color: rgba(255, 91, 216, 0.72);
+    border-bottom-color: rgba(180, 92, 255, 0.24);
+    border-radius: 50%;
+    box-shadow:
+        0 0 18px rgba(220, 168, 255, 0.72),
+        0 0 38px rgba(180, 92, 255, 0.55);
+    opacity: 0.94;
+    will-change: transform;
+    animation: violetOrbitSpin 1.7s linear infinite reverse;
+}
+
+.shop-title-effects .violet-orbit {
+    right: calc(9% + 29px);
+    top: 15px;
+    width: 100px;
+    height: 100px;
+}
+
+.violet-orbit::before,
+.violet-orbit::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow:
+        0 0 10px #fff,
+        0 0 20px #df9cff,
+        0 0 30px #b45cff;
+}
+
+.violet-orbit::before {
+    left: 49%;
+    top: -5px;
+    width: 8px;
+    height: 8px;
+}
+
+.violet-orbit::after {
+    right: 3px;
+    bottom: 16px;
+    width: 5px;
+    height: 5px;
+}
+
+.violet-spark {
+    z-index: 1;
+    color: #fff;
+    line-height: 1;
+    text-shadow:
+        0 0 8px #fff,
+        0 0 18px #d478ff,
+        0 0 28px #b45cff;
+    opacity: 0.96;
+    will-change: transform;
+}
+
+.violet-spark.spark-a {
+    right: 7%;
+    top: 10%;
+    font-size: 13px;
+    animation: violetSparkA 2.6s ease-in-out infinite alternate;
+}
+
+.violet-spark.spark-b {
+    right: 33%;
+    bottom: 12%;
+    font-size: 10px;
+    animation: violetSparkB 3.2s ease-in-out infinite alternate;
+}
+
+.violet-spark.spark-c {
+    right: 26%;
+    top: 17%;
+    font-size: 18px;
+    animation: violetSparkSpin 3.6s linear infinite;
+}
+
+.purple-effects .effect-fill {
+    background:
+        radial-gradient(circle at 76% 46%, rgba(236, 188, 255, 0.34), transparent 28%),
+        linear-gradient(118deg, rgba(32, 10, 58, 0.78), rgba(115, 39, 161, 0.58), rgba(41, 12, 70, 0.76));
+}
+
+/* 움직임은 커졌지만 모든 반복 경계는 여전히 연속적입니다. */
+@keyframes oceanCurrentA {
+    from { transform: translate3d(-8%, 5px, 0) skewX(-13deg) scaleY(0.86); }
+    to { transform: translate3d(8%, -9px, 0) skewX(13deg) scaleY(1.14); }
+}
+
+@keyframes oceanCurrentB {
+    from { transform: translate3d(9%, -5px, 0) skewX(12deg) scaleY(1.1); }
+    to { transform: translate3d(-9%, 8px, 0) skewX(-12deg) scaleY(0.86); }
+}
+
+@keyframes oceanFoamA {
+    from { transform: translate3d(0, 4px, 0) scale(0.88); }
+    to { transform: translate3d(6px, -15px, 0) scale(1.14); }
+}
+
+@keyframes oceanFoamB {
+    from { transform: translate3d(0, 5px, 0) scale(1.08); }
+    to { transform: translate3d(-7px, -17px, 0) scale(0.9); }
+}
+
+@keyframes depthBeamSway {
+    from { transform: rotate(7deg) translate3d(-14px, 0, 0); }
+    to { transform: rotate(25deg) translate3d(15px, 0, 0); }
+}
+
+@keyframes crystalFloatA {
+    from { transform: translate3d(-4px, -8px, 0) rotate(-15deg); }
+    to { transform: translate3d(10px, 11px, 0) rotate(14deg); }
+}
+
+@keyframes crystalFloatB {
+    from { transform: translate3d(5px, 10px, 0) rotate(15deg); }
+    to { transform: translate3d(-11px, -9px, 0) rotate(-13deg); }
+}
+
+@keyframes crystalFloatC {
+    from { transform: translate3d(-3px, -7px, 0) rotate(-18deg); }
+    to { transform: translate3d(8px, 10px, 0) rotate(17deg); }
+}
+
+@keyframes violetPortalSpin {
+    from { transform: rotate(0deg) scale(0.96); }
+    to { transform: rotate(360deg) scale(0.96); }
+}
+
+@keyframes violetOrbitSpin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes violetSparkA {
+    from { transform: translate3d(0, -5px, 0) rotate(-10deg) scale(0.9); }
+    to { transform: translate3d(7px, 8px, 0) rotate(12deg) scale(1.12); }
+}
+
+@keyframes violetSparkB {
+    from { transform: translate3d(5px, 7px, 0) rotate(12deg) scale(1.08); }
+    to { transform: translate3d(-7px, -8px, 0) rotate(-12deg) scale(0.9); }
+}
+
+@keyframes violetSparkSpin {
+    from { transform: rotate(0deg) scale(0.96); }
+    to { transform: rotate(360deg) scale(0.96); }
+}
+
+@keyframes legendBeamA {
+    from { transform: rotate(-20deg) translate3d(-14px, 0, 0); }
+    to { transform: rotate(1deg) translate3d(15px, 0, 0); }
+}
+
+@keyframes legendBeamB {
+    from { transform: rotate(3deg) translate3d(13px, 0, 0); }
+    to { transform: rotate(24deg) translate3d(-14px, 0, 0); }
+}
+
+@keyframes legendBeamC {
+    from { transform: rotate(-8deg) translate3d(-10px, 0, 0); }
+    to { transform: rotate(15deg) translate3d(12px, 0, 0); }
+}
+
+@keyframes legendCrownFloat {
+    from { transform: translate3d(-5px, -8px, 0) scale(0.96); }
+    to { transform: translate3d(9px, 11px, 0) scale(1.05); }
+}
+
+
+/* ===== 칭호 1~4 디테일 및 6단계 남색 보강 v6 ===== */
+/* 1단계 빨강: 요소 없이 배경 재질만 추가 */
+.shop-item-card.store.shop-skin-ember-ring {
+    border-color: rgba(255, 103, 116, 0.72);
+    background:
+        radial-gradient(circle at 82% 18%, rgba(255, 139, 148, 0.2), transparent 28%),
+        radial-gradient(circle at 18% 82%, rgba(255, 48, 73, 0.18), transparent 34%),
+        repeating-linear-gradient(128deg, rgba(255, 255, 255, 0.035) 0 1px, transparent 1px 14px),
+        linear-gradient(120deg, #651522, #391018 54%, #210a10);
+    box-shadow:
+        0 0 0 1px rgba(255, 126, 136, 0.12) inset,
+        0 0 22px rgba(255, 79, 94, 0.28),
+        0 12px 28px rgba(0, 0, 0, 0.22);
+}
+
+.leaderboard-row.me.shop-skin-ember-ring {
+    background:
+        radial-gradient(circle at 84% 18%, rgba(255, 139, 148, 0.18), transparent 30%),
+        repeating-linear-gradient(128deg, rgba(255, 255, 255, 0.03) 0 1px, transparent 1px 13px),
+        linear-gradient(110deg, #651522, #310b13 72%);
+}
+
+/* 2단계 주황: 요소 없이 빛 번짐과 결만 추가 */
+.shop-item-card.store.shop-skin-violet-nebula {
+    border-color: rgba(255, 181, 98, 0.76);
+    background:
+        radial-gradient(ellipse at 76% 24%, rgba(255, 220, 151, 0.25), transparent 30%),
+        radial-gradient(ellipse at 26% 74%, rgba(255, 112, 28, 0.2), transparent 36%),
+        repeating-linear-gradient(32deg, rgba(255, 255, 255, 0.035) 0 2px, transparent 2px 18px),
+        linear-gradient(120deg, #7a370a, #4a2107 54%, #281104);
+    box-shadow:
+        0 0 0 1px rgba(255, 203, 129, 0.13) inset,
+        0 0 24px rgba(255, 159, 67, 0.3),
+        0 12px 28px rgba(0, 0, 0, 0.22);
+}
+
+.leaderboard-row.me.shop-skin-violet-nebula {
+    background:
+        radial-gradient(ellipse at 78% 22%, rgba(255, 220, 151, 0.23), transparent 32%),
+        repeating-linear-gradient(32deg, rgba(255, 255, 255, 0.03) 0 2px, transparent 2px 17px),
+        linear-gradient(110deg, #75370d, #321506 72%);
+}
+
+/* 3단계 노랑: 태양·광선·별 요소 추가, 애니메이션 없음 */
+.shop-item-card.store.shop-skin-crimson-nova {
+    border-color: rgba(255, 228, 112, 0.84);
+    background:
+        radial-gradient(circle at 72% 50%, rgba(255, 231, 111, 0.22), transparent 34%),
+        linear-gradient(120deg, #5f4708, #2f2508 55%, #1e1806);
+    box-shadow:
+        0 0 0 1px rgba(255, 243, 184, 0.16) inset,
+        0 0 28px rgba(255, 216, 79, 0.38),
+        0 12px 28px rgba(0, 0, 0, 0.22);
+}
+
+.shop-item-card.store.shop-skin-crimson-nova::before {
+    right: 118px;
+    width: 132px;
+    height: 132px;
+    background:
+        radial-gradient(circle, rgba(255, 255, 230, 0.92) 0 3%, rgba(255, 227, 93, 0.5) 4% 17%, transparent 36%),
+        repeating-conic-gradient(from 7deg, rgba(255, 235, 129, 0.36) 0 3deg, transparent 3deg 14deg);
+    opacity: 0.86;
+}
+
+.shop-item-card.store.shop-skin-crimson-nova::after {
+    content: "✦  ★  ✧  ·  ✦";
+    right: 121px;
+    top: 12px;
+    color: rgba(255, 244, 166, 0.94);
+    font-size: 13px;
+    letter-spacing: 6px;
+    text-shadow:
+        0 0 10px rgba(255, 255, 220, 0.96),
+        0 0 20px rgba(255, 216, 79, 0.86);
+}
+
+.leaderboard-row.me.shop-skin-crimson-nova {
+    background:
+        radial-gradient(circle at 70% 50%, rgba(255, 249, 196, 0.22), transparent 31%),
+        #271f08;
+}
+
+.yellow-effects .effect-fill {
+    background:
+        radial-gradient(circle at 68% 50%, rgba(255, 255, 228, 0.82) 0 3%, rgba(255, 224, 74, 0.38) 4% 17%, transparent 34%),
+        repeating-conic-gradient(from 4deg at 68% 50%, rgba(255, 235, 126, 0.28) 0 3deg, transparent 3deg 14deg),
+        linear-gradient(90deg, rgba(255, 187, 28, 0.5), rgba(255, 216, 79, 0.27), rgba(88, 62, 0, 0.28));
+}
+
+.yellow-effects::after {
+    content: "✦";
+    position: absolute;
+    right: 8%;
+    top: 11%;
+    color: #fff8bd;
+    font-size: 12px;
+    text-shadow: 0 0 9px #fff, 0 0 18px #ffd84f;
+}
+
+/* 4단계 초록: 잎·덩굴·씨앗 요소 추가, 애니메이션 없음 */
+.shop-item-card.store.shop-skin-azure-singularity {
+    border-color: rgba(112, 239, 161, 0.82);
+    background:
+        radial-gradient(ellipse at 72% 68%, rgba(80, 224, 138, 0.2), transparent 35%),
+        linear-gradient(120deg, #0b4a28, #092d1b 54%, #061b10);
+    box-shadow:
+        0 0 0 1px rgba(164, 255, 197, 0.14) inset,
+        0 0 28px rgba(55, 214, 122, 0.34),
+        0 12px 28px rgba(0, 0, 0, 0.22);
+}
+
+.shop-item-card.store.shop-skin-azure-singularity::before {
+    right: 112px;
+    width: 142px;
+    height: 88px;
+    background:
+        radial-gradient(ellipse at 12% 68%, rgba(184, 255, 208, 0.76) 0 6%, transparent 7%),
+        radial-gradient(ellipse at 31% 36%, rgba(129, 248, 175, 0.68) 0 8%, transparent 9%),
+        radial-gradient(ellipse at 52% 69%, rgba(84, 226, 141, 0.62) 0 7%, transparent 8%),
+        radial-gradient(ellipse at 75% 33%, rgba(158, 255, 193, 0.6) 0 8%, transparent 9%),
+        radial-gradient(circle at 90% 64%, rgba(216, 255, 229, 0.72) 0 3%, transparent 4%),
+        linear-gradient(165deg, transparent 46%, rgba(142, 255, 184, 0.65) 47% 49%, transparent 50%);
+    opacity: 0.9;
+}
+
+.shop-item-card.store.shop-skin-azure-singularity::after {
+    content: "❧  ✦  ❧  ◆  ·";
+    right: 118px;
+    bottom: 11px;
+    color: rgba(167, 255, 199, 0.92);
+    font-size: 13px;
+    letter-spacing: 6px;
+    text-shadow:
+        0 0 10px rgba(218, 255, 230, 0.9),
+        0 0 20px rgba(55, 214, 122, 0.76);
+}
+
+.leaderboard-row.me.shop-skin-azure-singularity {
+    background:
+        radial-gradient(ellipse at 72% 68%, rgba(80, 224, 138, 0.2), transparent 33%),
+        #082416;
+}
+
+.green-effects .effect-fill {
+    background:
+        radial-gradient(ellipse at 58% 70%, rgba(178, 255, 205, 0.48) 0 6%, transparent 7%),
+        radial-gradient(ellipse at 72% 30%, rgba(118, 245, 166, 0.43) 0 8%, transparent 9%),
+        radial-gradient(ellipse at 86% 67%, rgba(79, 222, 137, 0.4) 0 7%, transparent 8%),
+        radial-gradient(circle at 92% 28%, rgba(213, 255, 228, 0.48) 0 2%, transparent 3%),
+        linear-gradient(164deg, transparent 0 56%, rgba(135, 255, 181, 0.4) 57% 59%, transparent 60%),
+        linear-gradient(90deg, rgba(18, 139, 71, 0.5), rgba(55, 214, 122, 0.25), rgba(5, 62, 31, 0.28));
+}
+
+.green-effects::after {
+    content: "❧";
+    position: absolute;
+    right: 7%;
+    bottom: 9%;
+    color: #c7ffda;
+    font-size: 14px;
+    transform: rotate(-18deg);
+    text-shadow: 0 0 10px #a7ffc7, 0 0 20px #37d67a;
+}
+
+.shop-item-card.store.shop-skin-ember-ring.owned,
+.shop-item-card.store.shop-skin-violet-nebula.owned {
+    opacity: 0.84;
+}
+
+.shop-item-card.store.shop-skin-crimson-nova.owned,
+.shop-item-card.store.shop-skin-azure-singularity.owned {
+    opacity: 0.9;
+}
+
+/* 6단계 남색: 수정 면·굴절광·추가 광점 보강 */
+.shop-item-card.store.shop-skin-indigo-depth {
+    box-shadow:
+        0 0 0 1px rgba(195, 204, 255, 0.2) inset,
+        0 0 32px rgba(83, 109, 254, 0.5),
+        0 0 48px rgba(96, 125, 255, 0.2),
+        0 12px 28px rgba(0, 0, 0, 0.24);
+}
+
+.leaderboard-row.me.shop-skin-indigo-depth {
+    box-shadow:
+        0 0 0 1px rgba(195, 204, 255, 0.2) inset,
+        0 0 34px rgba(83, 109, 254, 0.52),
+        0 0 48px rgba(96, 125, 255, 0.2),
+        var(--shadow-soft);
+}
+
+.depth-caustic {
+    left: 42%;
+    bottom: -8%;
+    width: 64%;
+    height: 42%;
+    border-radius: 50%;
+    background:
+        repeating-linear-gradient(112deg, transparent 0 12px, rgba(174, 188, 255, 0.22) 13px 15px, transparent 16px 27px),
+        radial-gradient(ellipse at 50% 100%, rgba(112, 135, 255, 0.34), transparent 70%);
+    opacity: 0.72;
+    will-change: transform;
+    animation: depthCausticShift 5.4s ease-in-out infinite alternate;
+}
+
+.crystal-shard::before {
+    content: "";
+    position: absolute;
+    inset: 18% 12% 12% 54%;
+    clip-path: polygon(0 0, 100% 18%, 72% 100%, 0 76%);
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.72), rgba(174, 188, 255, 0.12));
+}
+
+.crystal-shard.shard-d {
+    right: 43%;
+    bottom: 8%;
+    width: 14px;
+    height: 25px;
+    background: linear-gradient(135deg, #f7f8ff, #8195ff 56%, #3546a8);
+    opacity: 0.72;
+    animation: crystalFloatD 4.4s ease-in-out infinite alternate;
+}
+
+.crystal-glint {
+    z-index: 2;
+    color: #fff;
+    line-height: 1;
+    text-shadow:
+        0 0 8px #fff,
+        0 0 16px #b9c4ff,
+        0 0 25px #536dfe;
+    opacity: 0.94;
+    will-change: transform;
+}
+
+.crystal-glint.glint-a {
+    right: 8%;
+    top: 9%;
+    font-size: 11px;
+    animation: crystalGlintSpin 3.4s linear infinite;
+}
+
+.crystal-glint.glint-b {
+    right: 33%;
+    top: 13%;
+    font-size: 18px;
+    animation: crystalGlintFloat 3.8s ease-in-out infinite alternate;
+}
+
+@keyframes depthCausticShift {
+    from { transform: translate3d(-6px, 2px, 0) skewX(-5deg) scaleX(0.94); }
+    to { transform: translate3d(8px, -4px, 0) skewX(5deg) scaleX(1.08); }
+}
+
+@keyframes crystalFloatD {
+    from { transform: translate3d(-2px, 4px, 0) rotate(12deg); }
+    to { transform: translate3d(6px, -8px, 0) rotate(-13deg); }
+}
+
+@keyframes crystalGlintSpin {
+    from { transform: rotate(0deg) scale(0.96); }
+    to { transform: rotate(360deg) scale(0.96); }
+}
+
+@keyframes crystalGlintFloat {
+    from { transform: translate3d(0, -4px, 0) rotate(-8deg); }
+    to { transform: translate3d(5px, 7px, 0) rotate(10deg); }
+}
+
+
+/* ===== 4단계 초록 v7: 정적 보태니컬 레이어 ===== */
+.shop-item-card.store.shop-skin-azure-singularity::before,
+.shop-item-card.store.shop-skin-azure-singularity::after,
+.green-effects::after {
+    display: none;
+}
+
+.shop-item-card.store.shop-skin-azure-singularity {
+    border-color: rgba(139, 255, 184, 0.88);
+    background:
+        radial-gradient(circle at 78% 22%, rgba(190, 255, 214, 0.18), transparent 27%),
+        radial-gradient(ellipse at 72% 78%, rgba(48, 202, 112, 0.24), transparent 38%),
+        repeating-linear-gradient(145deg, rgba(171, 255, 201, 0.035) 0 1px, transparent 1px 16px),
+        linear-gradient(120deg, #0b542d, #07351f 53%, #041b10);
+    box-shadow:
+        0 0 0 1px rgba(187, 255, 211, 0.2) inset,
+        0 0 31px rgba(55, 214, 122, 0.42),
+        0 0 48px rgba(83, 241, 145, 0.14),
+        0 12px 28px rgba(0, 0, 0, 0.22);
+}
+
+.leaderboard-row.me.shop-skin-azure-singularity {
+    border-color: rgba(139, 255, 184, 0.84);
+    background:
+        radial-gradient(circle at 79% 20%, rgba(190, 255, 214, 0.16), transparent 29%),
+        radial-gradient(ellipse at 72% 80%, rgba(48, 202, 112, 0.22), transparent 38%),
+        linear-gradient(110deg, #0a4628, #061f13 72%);
+    box-shadow:
+        0 0 0 1px rgba(187, 255, 211, 0.18) inset,
+        0 0 31px rgba(55, 214, 122, 0.4),
+        var(--shadow-soft);
+}
+
+.green-effects .effect-fill {
+    inset: 0;
+    background:
+        radial-gradient(circle at 79% 21%, rgba(208, 255, 225, 0.24), transparent 24%),
+        radial-gradient(ellipse at 72% 78%, rgba(74, 229, 135, 0.28), transparent 35%),
+        repeating-linear-gradient(145deg, rgba(174, 255, 203, 0.04) 0 1px, transparent 1px 14px),
+        linear-gradient(105deg, rgba(10, 114, 55, 0.52), rgba(30, 175, 91, 0.28), rgba(4, 55, 29, 0.42));
+    animation: none;
+}
+
+.botanical-vine,
+.botanical-leaf,
+.botanical-seed,
+.botanical-bloom {
+    position: absolute;
+    display: block;
+    pointer-events: none;
+}
+
+.botanical-vine {
+    right: 7%;
+    top: 8%;
+    width: 46%;
+    height: 78%;
+    border-bottom: 2px solid rgba(137, 255, 181, 0.68);
+    border-left: 2px solid rgba(109, 236, 157, 0.58);
+    border-radius: 0 0 0 78%;
+    box-shadow:
+        -3px 4px 10px rgba(55, 214, 122, 0.25),
+        0 0 16px rgba(55, 214, 122, 0.18);
+    opacity: 0.9;
+    transform: rotate(-7deg);
+}
+
+.botanical-vine::before,
+.botanical-vine::after {
+    content: "";
+    position: absolute;
+    height: 2px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, rgba(137, 255, 181, 0.72), transparent);
+    transform-origin: left center;
+}
+
+.botanical-vine::before {
+    left: 12%;
+    bottom: 32%;
+    width: 38%;
+    transform: rotate(-31deg);
+}
+
+.botanical-vine::after {
+    left: 34%;
+    bottom: 13%;
+    width: 34%;
+    transform: rotate(22deg);
+}
+
+.botanical-leaf {
+    width: 27px;
+    height: 14px;
+    border: 1px solid rgba(200, 255, 220, 0.4);
+    border-radius: 100% 0 100% 0;
+    background:
+        linear-gradient(145deg, rgba(210, 255, 225, 0.92), rgba(73, 226, 133, 0.92) 42%, rgba(17, 132, 67, 0.94));
+    box-shadow:
+        0 0 10px rgba(112, 245, 163, 0.52),
+        0 0 18px rgba(55, 214, 122, 0.22);
+    opacity: 0.96;
+}
+
+.botanical-leaf::after {
+    content: "";
+    position: absolute;
+    left: 12%;
+    top: 49%;
+    width: 76%;
+    height: 1px;
+    background: rgba(228, 255, 237, 0.7);
+    transform: rotate(-8deg);
+    transform-origin: left center;
+}
+
+.botanical-leaf.leaf-one {
+    right: 33%;
+    top: 13%;
+    transform: rotate(-30deg);
+}
+
+.botanical-leaf.leaf-two {
+    right: 13%;
+    top: 34%;
+    border-radius: 0 100% 0 100%;
+    transform: rotate(24deg);
+}
+
+.botanical-leaf.leaf-three {
+    right: 29%;
+    bottom: 10%;
+    transform: rotate(20deg);
+}
+
+.botanical-leaf.leaf-four {
+    right: 4%;
+    bottom: 24%;
+    border-radius: 0 100% 0 100%;
+    transform: rotate(-18deg);
+}
+
+.shop-title-effects .botanical-leaf {
+    width: 33px;
+    height: 17px;
+}
+
+.botanical-seed {
+    width: 7px;
+    height: 7px;
+    border: 1px solid rgba(229, 255, 237, 0.72);
+    border-radius: 50%;
+    background: #7affad;
+    box-shadow:
+        0 0 8px rgba(209, 255, 226, 0.9),
+        0 0 16px rgba(55, 214, 122, 0.68);
+    opacity: 0.92;
+}
+
+.botanical-seed.seed-a {
+    right: 8%;
+    top: 14%;
+}
+
+.botanical-seed.seed-b {
+    right: 41%;
+    bottom: 20%;
+    width: 5px;
+    height: 5px;
+}
+
+.botanical-bloom {
+    right: 21%;
+    top: 17%;
+    color: #effff4;
+    font-size: 12px;
+    line-height: 1;
+    text-shadow:
+        0 0 8px #fff,
+        0 0 17px #9dffc1,
+        0 0 25px #37d67a;
+    opacity: 0.98;
+}
+
+.shop-title-effects .botanical-bloom {
+    font-size: 15px;
+}
+
+.shop-item-card.store.shop-skin-azure-singularity.owned {
+    opacity: 0.94;
+}
+
+.shop-item-icon.shop-skin-azure-singularity,
+.profile-avatar.shop-skin-azure-singularity,
+.rank-avatar.shop-skin-azure-singularity {
+    box-shadow:
+        0 0 0 2px rgba(228, 255, 237, 0.3) inset,
+        0 0 17px rgba(55, 214, 122, 0.5),
+        0 0 27px rgba(109, 255, 165, 0.18);
+}
+
+.rank-skin-badge.shop-skin-azure-singularity {
+    border-color: rgba(222, 255, 234, 0.42);
+    background: linear-gradient(135deg, #5ff099, #24b968);
+    box-shadow: 0 0 12px rgba(55, 214, 122, 0.4);
+}
+
+
 @media (max-width: 360px) {
     .top-bar {
         align-items: flex-start;
@@ -2911,6 +6167,106 @@ input:focus-visible {
         grid-template-columns: 92px 1fr;
         gap: 14px;
         padding: 14px;
+    }
+
+    .shop-content {
+        padding-inline: 14px;
+    }
+
+    .shop-wallet-panel {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .shop-view-tabs button {
+        min-height: 40px;
+    }
+
+    .shop-item-card {
+        grid-template-columns: 20px 42px 1fr auto;
+        gap: 8px;
+        padding: 10px;
+    }
+
+    .shop-item-icon {
+        width: 42px;
+        height: 42px;
+    }
+
+    .shop-item-copy strong {
+        font-size: 13px;
+    }
+
+    .shop-item-card.store {
+        grid-template-columns: 22px 56px minmax(0, 1fr) 92px;
+        grid-template-rows: repeat(2, minmax(40px, 1fr));
+        column-gap: 9px;
+        row-gap: 8px;
+        min-height: 112px;
+        padding: 12px;
+    }
+
+    .shop-item-card.store .shop-item-rank {
+        width: 22px;
+        height: 56px;
+        border-radius: 9px;
+        font-size: 12px;
+    }
+
+    .shop-item-card.store .shop-item-icon {
+        width: 56px;
+        height: 56px;
+        font-size: 24px;
+    }
+
+    .shop-item-card.store .shop-item-copy strong {
+        font-size: 16px;
+    }
+
+    .shop-item-card.store .shop-item-copy small {
+        font-size: 11px;
+    }
+
+    .shop-item-card.store .shop-item-meta,
+    .shop-item-card.store .shop-item-action {
+        min-height: 40px;
+        border-radius: 12px;
+    }
+
+    .shop-item-card.store .shop-item-meta {
+        padding: 5px 6px;
+    }
+
+    .shop-item-card.store .shop-item-meta b {
+        font-size: 12px;
+    }
+
+    .shop-item-card.store .shop-item-action {
+        font-size: 13px;
+    }
+
+    .shop-item-card.store.shop-skin-crimson-nova::after,
+    .shop-item-card.store.shop-skin-azure-singularity::after {
+        right: 96px;
+        font-size: 10px;
+        letter-spacing: 2px;
+    }
+
+    .shop-item-card.store.shop-skin-cobalt-tide::after {
+        left: 30%;
+        width: 46%;
+    }
+
+    .shop-item-card.store.shop-skin-indigo-depth::after {
+        right: 28%;
+        width: 68px;
+        height: 68px;
+    }
+
+    .shop-item-card.store.shop-skin-violet-orbit::after {
+        right: 25%;
+        width: 64px;
+        height: 64px;
     }
 
     .book-meta h2 {
@@ -3141,11 +6497,12 @@ input:focus-visible {
 }
 
 @media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
+    :root:not([data-shop-preview="true"]) *,
+    :root:not([data-shop-preview="true"]) *::before,
+    :root:not([data-shop-preview="true"]) *::after {
         scroll-behavior: auto !important;
         animation-duration: 0.01ms !important;
         transition-duration: 0.01ms !important;
     }
+
 }

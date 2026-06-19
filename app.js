@@ -21,6 +21,98 @@ const supabaseClient =
 const PROFILE_STORAGE_KEY = "hanja-profile-v1";
 const LEGACY_LOGIN_STORAGE_KEY = "hanja-login-v2";
 const USER_PROFILE_STORAGE_PREFIX = "hanja-profile-v2:";
+const DEFAULT_SHOP_ITEM_ID = "classic";
+const DEFAULT_SHOP_ITEM = {
+    id: DEFAULT_SHOP_ITEM_ID,
+    name: "기본 프레임",
+    symbol: "한",
+    summary: "효과를 끈 기본 상태",
+    accent: "#6558e8",
+    skinClass: "shop-skin-classic",
+};
+const shopItems = [
+    {
+        id: "ember-ring",
+        rank: 1,
+        name: "빨강",
+        price: 500,
+        symbol: "赤",
+        summary: "배경만 바뀝니다.",
+        accent: "#ff4f5e",
+        skinClass: "shop-skin-ember-ring",
+    },
+    {
+        id: "violet-nebula",
+        rank: 2,
+        name: "주황",
+        price: 1100,
+        symbol: "橙",
+        summary: "배경만 바뀝니다.",
+        accent: "#ff9f43",
+        skinClass: "shop-skin-violet-nebula",
+    },
+    {
+        id: "crimson-nova",
+        rank: 3,
+        name: "노랑",
+        price: 2200,
+        symbol: "黃",
+        summary: "요소가 추가됩니다.",
+        accent: "#ffd84f",
+        skinClass: "shop-skin-crimson-nova",
+    },
+    {
+        id: "azure-singularity",
+        rank: 4,
+        name: "초록",
+        price: 2600,
+        symbol: "綠",
+        summary: "요소가 추가됩니다.",
+        accent: "#37d67a",
+        skinClass: "shop-skin-azure-singularity",
+    },
+    {
+        id: "cobalt-tide",
+        rank: 5,
+        name: "파랑",
+        price: 3000,
+        symbol: "靑",
+        summary: "애니메이션이 추가됩니다.",
+        accent: "#3aa7ff",
+        skinClass: "shop-skin-cobalt-tide",
+    },
+    {
+        id: "indigo-depth",
+        rank: 6,
+        name: "남색",
+        price: 3400,
+        symbol: "藍",
+        summary: "애니메이션이 추가됩니다.",
+        accent: "#536dfe",
+        skinClass: "shop-skin-indigo-depth",
+    },
+    {
+        id: "violet-orbit",
+        rank: 7,
+        name: "보라",
+        price: 3900,
+        symbol: "紫",
+        summary: "애니메이션이 추가됩니다.",
+        accent: "#b45cff",
+        skinClass: "shop-skin-violet-orbit",
+    },
+    {
+        id: "prism-crown",
+        rank: 8,
+        name: "무지개",
+        price: 4500,
+        symbol: "虹",
+        summary: "무지개",
+        accent: "#78f7ff",
+        skinClass: "shop-skin-prism-crown",
+    },
+];
+
 const DEFAULT_PROFILE = {
     displayName: "한자 학습자",
     points: 0,
@@ -30,6 +122,8 @@ const DEFAULT_PROFILE = {
     attendanceCount: 0,
     theme: "light",
     defaultDirection: "meaning-to-hanja",
+    ownedShopItems: [DEFAULT_SHOP_ITEM_ID],
+    equippedShopItem: DEFAULT_SHOP_ITEM_ID,
     legacyImported: false,
 };
 
@@ -55,6 +149,27 @@ function normalizeProfile(savedProfile = {}) {
     ].includes(savedProfile.defaultDirection)
         ? savedProfile.defaultDirection
         : DEFAULT_PROFILE.defaultDirection;
+    const validShopItemIds = new Set([DEFAULT_SHOP_ITEM_ID, ...shopItems.map((item) => item.id)]);
+    const rawOwnedShopItems = Array.isArray(savedProfile.ownedShopItems)
+        ? savedProfile.ownedShopItems
+        : Array.isArray(savedProfile.owned_shop_items)
+          ? savedProfile.owned_shop_items
+          : DEFAULT_PROFILE.ownedShopItems;
+    const ownedShopItems = Array.from(
+        new Set([
+            DEFAULT_SHOP_ITEM_ID,
+            ...rawOwnedShopItems.map((itemId) => String(itemId)),
+        ]),
+    ).filter((itemId) => validShopItemIds.has(itemId));
+    const savedEquippedShopItem =
+        typeof savedProfile.equippedShopItem === "string"
+            ? savedProfile.equippedShopItem
+            : typeof savedProfile.equipped_shop_item === "string"
+              ? savedProfile.equipped_shop_item
+              : DEFAULT_SHOP_ITEM_ID;
+    const equippedShopItem = ownedShopItems.includes(savedEquippedShopItem)
+        ? savedEquippedShopItem
+        : DEFAULT_SHOP_ITEM_ID;
 
     return {
         ...DEFAULT_PROFILE,
@@ -78,6 +193,8 @@ function normalizeProfile(savedProfile = {}) {
         ),
         theme: savedProfile.theme === "dark" ? "dark" : "light",
         defaultDirection,
+        ownedShopItems,
+        equippedShopItem,
         legacyImported: Boolean(savedProfile.legacyImported),
     };
 }
@@ -122,6 +239,8 @@ function fromDatabaseProfile(row) {
         attendanceCount: row.attendance_count,
         theme: row.theme,
         defaultDirection: row.default_direction,
+        ownedShopItems: row.owned_shop_items,
+        equippedShopItem: row.equipped_shop_item,
         legacyImported: row.legacy_imported,
     });
 }
@@ -214,7 +333,7 @@ const lessons = [
             { hanja: "然", meaning: "그러할 연" },
             { hanja: "物", meaning: "물건 물" },
             { hanja: "月", meaning: "달 월" },
-            { hanja: "山", meaning: "멧 산" },
+            { hanja: "山", meaning: "메 산" },
             { hanja: "上", meaning: "위 상" },
             { hanja: "下", meaning: "아래 하" },
             { hanja: "魚", meaning: "물고기 어" },
@@ -293,7 +412,7 @@ const lessons = [
             { hanja: "叔", meaning: "아저씨 숙" },
             { hanja: "童", meaning: "아이 동" },
             { hanja: "皇", meaning: "임금 황" },
-            { hanja: "大", meaning: "클 대" },
+            { hanja: "太", meaning: "클 태" },
             { hanja: "必", meaning: "반드시 필" },
             { hanja: "須", meaning: "모름지기 수" },
             { hanja: "文", meaning: "글월 문" },
@@ -429,11 +548,13 @@ const state = {
     streak: 0,
     pointsEarned: 0,
     answered: false,
+    isStartingQuiz: false,
     isSubmittingAnswer: false,
     canSwipeNext: false,
     isAdvancing: false,
     pendingPurchaseLessonId: null,
     wordPreviewIndex: 0,
+    shopView: "store",
 };
 
 const elements = {
@@ -519,6 +640,14 @@ const elements = {
     myRank: document.querySelector("#my-rank"),
     myRankSummary: document.querySelector("#my-rank-summary"),
     leaderboardList: document.querySelector("#leaderboard-list"),
+    shopPoints: document.querySelector("#shop-points"),
+    shopOwnedCount: document.querySelector("#shop-owned-count"),
+    shopEquippedName: document.querySelector("#shop-equipped-name"),
+    shopItemList: document.querySelector("#shop-item-list"),
+    shopInventoryList: document.querySelector("#shop-inventory-list"),
+    shopViewButtons: document.querySelectorAll("[data-shop-view]"),
+    shopStorePanel: document.querySelector("#shop-store-panel"),
+    shopInventoryPanel: document.querySelector("#shop-inventory-panel"),
     purchaseModal: document.querySelector("#purchase-modal"),
     purchaseSymbol: document.querySelector("#purchase-symbol"),
     purchaseTitle: document.querySelector("#purchase-title"),
@@ -600,6 +729,341 @@ function escapeHTML(value) {
         .replaceAll("'", "&#039;");
 }
 
+
+function getShopItem(itemId = profile.equippedShopItem) {
+    return shopItems.find((item) => item.id === itemId) || DEFAULT_SHOP_ITEM;
+}
+
+function isShopItemOwned(itemId) {
+    return profile.ownedShopItems.includes(itemId);
+}
+
+function getPreviousShopItem(itemId) {
+    const itemIndex = shopItems.findIndex((item) => item.id === itemId);
+    return itemIndex > 0 ? shopItems[itemIndex - 1] : null;
+}
+
+function hasShopPurchasePrerequisite(itemId) {
+    const previousItem = getPreviousShopItem(itemId);
+    return !previousItem || isShopItemOwned(previousItem.id);
+}
+
+function getEquippedShopSkinClass() {
+    return getShopItem(profile.equippedShopItem).skinClass;
+}
+
+function getEquippedLeaderboardSkinClass() {
+    return profile.equippedShopItem === DEFAULT_SHOP_ITEM_ID
+        ? ""
+        : getEquippedShopSkinClass();
+}
+
+function getAdvancedSkinEffectMarkup(itemId, rootClass = "skin-effects") {
+    switch (itemId) {
+        case "azure-singularity":
+            return `<span class="${rootClass} green-effects" aria-hidden="true"><span class="effect-fill"></span><span class="botanical-vine"></span><span class="botanical-leaf leaf-one"></span><span class="botanical-leaf leaf-two"></span><span class="botanical-leaf leaf-three"></span><span class="botanical-leaf leaf-four"></span><span class="botanical-seed seed-a"></span><span class="botanical-seed seed-b"></span><span class="botanical-bloom">✦</span></span>`;
+        case "cobalt-tide":
+            return `<span class="${rootClass} blue-effects" aria-hidden="true"><span class="effect-fill"></span><span class="ocean-current current-a"></span><span class="ocean-current current-b"></span><span class="ocean-foam foam-a"></span><span class="ocean-foam foam-b"></span><span class="ocean-foam foam-c"></span></span>`;
+        case "indigo-depth":
+            return `<span class="${rootClass} indigo-effects" aria-hidden="true"><span class="effect-fill"></span><span class="depth-beam"></span><span class="depth-caustic"></span><span class="crystal-shard shard-a"></span><span class="crystal-shard shard-b"></span><span class="crystal-shard shard-c"></span><span class="crystal-shard shard-d"></span><span class="crystal-glint glint-a">✦</span><span class="crystal-glint glint-b">·</span></span>`;
+        case "violet-orbit":
+            return `<span class="${rootClass} purple-effects" aria-hidden="true"><span class="effect-fill"></span><span class="violet-portal"></span><span class="violet-orbit"></span><span class="violet-spark spark-a">✦</span><span class="violet-spark spark-b">✧</span><span class="violet-spark spark-c">·</span></span>`;
+        case "prism-crown":
+            return `<span class="${rootClass} rainbow-effects" aria-hidden="true"><span class="effect-fill"></span><span class="legend-beam beam-a"></span><span class="legend-beam beam-b"></span><span class="legend-beam beam-c"></span><span class="legend-crown"></span><span class="legend-core"></span><span class="legend-star star-a">✦</span><span class="legend-star star-b">✧</span><span class="legend-star star-c">✦</span><span class="legend-star star-d">◆</span></span>`;
+        default:
+            return "";
+    }
+}
+
+function getShopSkinEffectMarkup(itemId) {
+    return getAdvancedSkinEffectMarkup(itemId, "shop-title-effects");
+}
+
+
+function getLeaderboardSkinEffectMarkup(itemId) {
+    switch (itemId) {
+        case "ember-ring":
+        case "violet-nebula":
+            return "";
+        case "crimson-nova":
+            return `<span class="skin-effects yellow-effects" aria-hidden="true"><span class="effect-fill"></span><span class="effect-chip chip-a">★</span><span class="effect-chip chip-b">✦</span><span class="effect-chip chip-c">✧</span><span class="effect-chip chip-d">★</span></span>`;
+        case "azure-singularity":
+            return getAdvancedSkinEffectMarkup(itemId);
+        case "cobalt-tide":
+        case "indigo-depth":
+        case "violet-orbit":
+        case "prism-crown":
+            return getAdvancedSkinEffectMarkup(itemId);
+        default:
+            return "";
+    }
+}
+
+function getLeaderboardSkinBadgeMarkup(item) {
+    if (!item || item.id === DEFAULT_SHOP_ITEM_ID) {
+        return "";
+    }
+
+    return `<span class="rank-skin-badge ${item.skinClass}">${escapeHTML(item.name)}</span>`;
+}
+
+function setAvatarSkin(element, itemId = profile.equippedShopItem) {
+    if (!element) {
+        return;
+    }
+
+    [DEFAULT_SHOP_ITEM, ...shopItems].forEach((item) => {
+        element.classList.remove(item.skinClass);
+    });
+    element.classList.add(getShopItem(itemId).skinClass);
+}
+
+function renderShop() {
+    const equippedItem = getShopItem();
+    const profileInitial = escapeHTML(profile.displayName.trim().charAt(0) || "한");
+    const ownedShopItemCount = shopItems.filter((item) =>
+        isShopItemOwned(item.id),
+    ).length;
+
+    elements.shopPoints.textContent = Math.floor(profile.points);
+    elements.shopOwnedCount.textContent = `${ownedShopItemCount}/${shopItems.length}`;
+    elements.shopEquippedName.textContent = equippedItem.name;
+    elements.shopViewButtons.forEach((button) => {
+        const isSelected = button.dataset.shopView === state.shopView;
+        button.classList.toggle("selected", isSelected);
+        button.setAttribute("aria-selected", String(isSelected));
+    });
+    elements.shopStorePanel.hidden = state.shopView !== "store";
+    elements.shopInventoryPanel.hidden = state.shopView !== "inventory";
+    elements.shopItemList.innerHTML = shopItems
+        .map((item) => {
+            const isOwned = isShopItemOwned(item.id);
+            const previousItem = getPreviousShopItem(item.id);
+            const hasPrerequisite = hasShopPurchasePrerequisite(item.id);
+            const canAfford = profile.points >= item.price;
+            const isDisabled = isOwned || !hasPrerequisite || !canAfford;
+            const buttonText = isOwned
+                ? "구매 완료"
+                : !hasPrerequisite
+                  ? "잠금"
+                  : canAfford
+                    ? `${item.price}P 구매`
+                    : `${item.price - profile.points}P 부족`;
+
+            return `
+                <article class="shop-item-card store ${item.skinClass} ${item.id === "prism-crown" ? "featured" : ""} ${isOwned ? "owned" : ""}" style="--item-accent: ${item.accent};">
+                    ${getShopSkinEffectMarkup(item.id)}
+                    <span class="shop-item-rank">${item.rank}</span>
+                    <span class="shop-item-icon ${item.skinClass}" aria-hidden="true">${profileInitial}</span>
+                    <span class="shop-item-copy">
+                        <strong>${escapeHTML(item.name)}</strong>
+                        <small>${escapeHTML(item.summary)}</small>
+                    </span>
+                    <span class="shop-item-meta">
+                        <b>${item.price}P</b>
+                    </span>
+                    <button class="shop-item-action" type="button" data-shop-item-id="${item.id}" data-shop-action="purchase" ${isDisabled ? "disabled" : ""}>${buttonText}</button>
+                </article>
+            `;
+        })
+        .join("");
+
+    const inventoryItems = [
+        DEFAULT_SHOP_ITEM,
+        ...shopItems.filter((item) => isShopItemOwned(item.id)),
+    ];
+    elements.shopInventoryList.innerHTML = inventoryItems
+        .map((item) => {
+            const isDefaultItem = item.id === DEFAULT_SHOP_ITEM_ID;
+            const isEquipped = profile.equippedShopItem === item.id;
+            const action = isEquipped
+                ? isDefaultItem
+                    ? "equipped"
+                    : "unequip"
+                : "equip";
+            const buttonText = isEquipped
+                ? isDefaultItem
+                    ? "기본 사용 중"
+                    : "사용 안함"
+                : isDefaultItem
+                  ? "기본으로"
+                  : "사용";
+
+            return `
+                <article class="shop-item-card inventory ${item.skinClass} ${isEquipped ? "equipped" : ""}" style="--item-accent: ${item.accent};">
+                    <span class="shop-item-rank">${isDefaultItem ? "-" : item.rank}</span>
+                    <span class="shop-item-icon ${item.skinClass}" aria-hidden="true">${profileInitial}</span>
+                    <span class="shop-item-copy">
+                        <strong>${escapeHTML(item.name)}</strong>
+                        <small>${escapeHTML(item.summary)}</small>
+                    </span>
+                    <span class="shop-item-meta">
+                        <em>${isEquipped ? "사용 중" : "보유"}</em>
+                        <b>${isDefaultItem ? "기본" : `${item.rank}단계`}</b>
+                    </span>
+                    <button class="shop-item-action inventory-action ${isEquipped ? "is-equipped" : ""}" type="button" data-shop-item-id="${item.id}" data-shop-action="${action}" ${action === "equipped" ? "disabled" : ""}>${buttonText}</button>
+                </article>
+            `;
+        })
+        .join("");
+}
+
+function setShopActionsBusy(isBusy) {
+    [elements.shopItemList, elements.shopInventoryList].forEach((list) => {
+        list.querySelectorAll("button").forEach((button) => {
+            button.disabled = isBusy || button.dataset.shopAction === "equipped";
+        });
+    });
+}
+
+function setShopView(view) {
+    state.shopView = view === "inventory" ? "inventory" : "store";
+    renderShop();
+}
+
+async function purchaseShopItem(itemId) {
+    const item = getShopItem(itemId);
+    const previousItem = getPreviousShopItem(item.id);
+
+    if (isShopItemOwned(item.id)) {
+        state.shopView = "inventory";
+        renderShop();
+        showToast("이미 보유 중이에요. 보관함에서 사용할 수 있어요.");
+        return;
+    }
+
+    if (previousItem && !isShopItemOwned(previousItem.id)) {
+        showToast(`${previousItem.name} 칭호를 먼저 구매해 주세요.`);
+        renderShop();
+        return;
+    }
+
+    if (isShopPreviewMode()) {
+        profile.points = Math.max(0, profile.points - item.price);
+        profile.ownedShopItems = Array.from(
+            new Set([...profile.ownedShopItems, item.id]),
+        );
+        saveProfile();
+        updateProfileUI();
+        renderShop();
+        showToast(`${item.name} 구매 완료!`);
+        return;
+    }
+
+
+    if (!supabaseClient || !currentUser) {
+        showToast("로그인 상태를 다시 확인해 주세요.");
+        return;
+    }
+
+    setShopActionsBusy(true);
+    const { data, error } = await supabaseClient.rpc("purchase_shop_item", {
+        item_id_input: item.id,
+    });
+
+    if (error) {
+        console.error("shop purchase failed", error);
+        if (errorIncludes(error, "insufficient_points")) {
+            showToast("서버 기준으로 포인트가 부족해요.");
+        } else if (errorIncludes(error, "shop_previous_item_required")) {
+            showToast(`${previousItem?.name || "이전"} 칭호를 먼저 구매해 주세요.`);
+        } else if (errorIncludes(error, "shop_item_already_owned")) {
+            await loadRemoteProfile();
+            showToast("이미 보유한 아이템이에요.");
+        } else {
+            showToast("상점 구매를 완료하지 못했어요.");
+        }
+        updateProfileUI();
+        renderShop();
+        return;
+    }
+
+    applyServerProfile(data);
+    updateProfileUI();
+    renderShop();
+    renderLeaderboard();
+    showToast(`${item.name} 구매 완료!`);
+}
+
+async function equipShopItem(itemId) {
+    const item = getShopItem(itemId);
+
+    if (profile.equippedShopItem === item.id) {
+        renderShop();
+        return;
+    }
+
+    if (isShopPreviewMode()) {
+        if (!isShopItemOwned(item.id)) {
+            showToast("먼저 구매해야 사용할 수 있어요.");
+            return;
+        }
+        profile.equippedShopItem = item.id;
+        saveProfile();
+        updateProfileUI();
+        renderShop();
+        renderLeaderboard();
+        showToast(
+            item.id === DEFAULT_SHOP_ITEM_ID
+                ? "효과를 사용하지 않아요."
+                : `${item.name} 사용 중!`,
+        );
+        return;
+    }
+
+    if (!supabaseClient || !currentUser) {
+        showToast("로그인 상태를 다시 확인해 주세요.");
+        return;
+    }
+
+    setShopActionsBusy(true);
+    const { data, error } = await supabaseClient.rpc("equip_shop_item", {
+        item_id_input: item.id,
+    });
+
+    if (error) {
+        console.error("shop equip failed", error);
+        showToast(
+            errorIncludes(error, "shop_item_not_owned")
+                ? "먼저 구매해야 장착할 수 있어요."
+                : "아이템을 장착하지 못했어요.",
+        );
+        updateProfileUI();
+        renderShop();
+        return;
+    }
+
+    applyServerProfile(data);
+    updateProfileUI();
+    renderShop();
+    renderLeaderboard();
+    showToast(`${item.name} 장착 완료!`);
+}
+
+function handleShopItemAction(event) {
+    const button = event.target.closest("[data-shop-item-id]");
+
+    if (!button || button.disabled) {
+        return;
+    }
+
+    const itemId = button.dataset.shopItemId;
+
+    if (button.dataset.shopAction === "purchase") {
+        void purchaseShopItem(itemId);
+        return;
+    }
+
+    if (button.dataset.shopAction === "equip") {
+        void equipShopItem(itemId);
+        return;
+    }
+
+    if (button.dataset.shopAction === "unequip") {
+        void equipShopItem(DEFAULT_SHOP_ITEM_ID);
+    }
+}
+
 function getLeaderboardEntries() {
     const entries = remoteLeaderboardEntries.length
         ? remoteLeaderboardEntries.map((entry) => ({ ...entry }))
@@ -634,13 +1098,31 @@ function renderLeaderboard() {
             const medal = rank <= 3 ? ["gold", "silver", "bronze"][index] : "";
             const safeName = escapeHTML(entry.name);
             const initial = escapeHTML(entry.name.trim().charAt(0) || "한");
+            const equippedItem = entry.isCurrent
+                ? getShopItem(profile.equippedShopItem)
+                : null;
+            const hasEquippedSkin = Boolean(
+                equippedItem && equippedItem.id !== DEFAULT_SHOP_ITEM_ID,
+            );
+            const rowClass = entry.isCurrent
+                ? ["me", hasEquippedSkin ? equippedItem.skinClass : ""]
+                      .filter(Boolean)
+                      .join(" ")
+                : "";
+            const skinEffects = hasEquippedSkin
+                ? getLeaderboardSkinEffectMarkup(equippedItem.id)
+                : "";
+            const skinBadge = hasEquippedSkin
+                ? getLeaderboardSkinBadgeMarkup(equippedItem)
+                : "";
 
             return `
-                <article class="leaderboard-row ${entry.isCurrent ? "me" : ""}">
+                <article class="leaderboard-row ${rowClass}">
+                    ${skinEffects}
                     <span class="rank-number ${medal}">${rank}</span>
-                    <span class="rank-avatar" aria-hidden="true">${initial}</span>
+                    <span class="rank-avatar ${entry.isCurrent ? getEquippedShopSkinClass() : ""}" aria-hidden="true">${initial}</span>
                     <span class="rank-user">
-                        <strong>${safeName}${entry.isCurrent ? " <em>나</em>" : ""}</strong>
+                        <strong><span class="rank-name-text">${safeName}</span>${skinBadge}${entry.isCurrent ? " <em>나</em>" : ""}</strong>
                         <small>${entry.points}P 보유</small>
                     </span>
                     <span class="rank-level">Lv.${entry.level}</span>
@@ -686,9 +1168,11 @@ function updateProfileUI() {
     const attendanceClaimed = profile.lastAttendanceDate === today;
     const levelUpCost = getLevelUpCost();
     const allLessonsUnlocked = areAllLessonsUnlocked();
+    const equippedShopItem = getShopItem();
 
     elements.profileAvatar.textContent =
         profile.displayName.trim().charAt(0) || "한";
+    setAvatarSkin(elements.profileAvatar);
     elements.homeProfileName.textContent = profile.displayName;
     elements.homeLevel.textContent = profile.level;
     elements.homePoints.textContent = points;
@@ -696,6 +1180,9 @@ function updateProfileUI() {
     elements.settingsLevel.textContent = profile.level;
     elements.unlockedCount.textContent = `${unlockedTotal}/${lessons.length}과 열림`;
     elements.resultTotalPoints.textContent = `${points}P`;
+    elements.shopPoints.textContent = points;
+    elements.shopOwnedCount.textContent = `${shopItems.filter((item) => isShopItemOwned(item.id)).length}/${shopItems.length}`;
+    elements.shopEquippedName.textContent = equippedShopItem.name;
     elements.profileNameInput.value = profile.displayName;
 
     elements.attendanceButton.disabled = attendanceClaimed;
@@ -952,6 +1439,9 @@ function showScreen(name) {
         ) {
             window.setTimeout(openAttendanceModal, 180);
         }
+    } else if (name === "shop") {
+        updateProfileUI();
+        renderShop();
     } else if (name === "settings") {
         updateProfileUI();
         syncSettingsUI();
@@ -1395,21 +1885,41 @@ function updateQuizRewardUI() {
 }
 
 async function startQuiz() {
-    if (!state.lesson || !supabaseClient || !currentUser) {
+    if (
+        !state.lesson ||
+        !supabaseClient ||
+        !currentUser ||
+        state.isStartingQuiz
+    ) {
         return;
     }
 
+    state.isStartingQuiz = true;
     elements.modeButtons.forEach((button) => {
         button.disabled = true;
     });
-    const { data, error } = await supabaseClient.rpc("start_quiz_attempt", {
-        lesson_id_input: state.lesson.id,
-        mode_input: state.mode,
-        direction_input: state.direction,
-    });
-    elements.modeButtons.forEach((button) => {
-        button.disabled = false;
-    });
+    elements.retryButton.disabled = true;
+
+    let data = null;
+    let error = null;
+
+    try {
+        const response = await supabaseClient.rpc("start_quiz_attempt", {
+            lesson_id_input: state.lesson.id,
+            mode_input: state.mode,
+            direction_input: state.direction,
+        });
+        data = response.data;
+        error = response.error;
+    } catch (requestError) {
+        error = requestError;
+    } finally {
+        state.isStartingQuiz = false;
+        elements.modeButtons.forEach((button) => {
+            button.disabled = false;
+        });
+        elements.retryButton.disabled = false;
+    }
 
     if (error) {
         console.error("quiz start failed", error);
@@ -2036,6 +2546,12 @@ elements.screenLinkButtons.forEach((button) => {
     });
 });
 
+elements.shopItemList.addEventListener("click", handleShopItemAction);
+elements.shopInventoryList.addEventListener("click", handleShopItemAction);
+elements.shopViewButtons.forEach((button) => {
+    button.addEventListener("click", () => setShopView(button.dataset.shopView));
+});
+
 elements.lessonWordsList.addEventListener("click", (event) => {
     const wordCard = event.target.closest("[data-word-index]");
 
@@ -2288,10 +2804,38 @@ elements.retryButton.addEventListener("click", () => void startQuiz());
 elements.resultHomeButton.addEventListener("click", () => showScreen("home"));
 
 
-applyTheme();
-syncSettingsUI();
-updateProfileUI();
-renderLessons();
-closePurchaseModal();
-showScreen("login");
-void initializeAuth();
+function isShopPreviewMode() {
+    return new URLSearchParams(window.location.search).get("preview") === "shop";
+}
+
+function startApp() {
+    applyTheme();
+    syncSettingsUI();
+    updateProfileUI();
+    renderLessons();
+    renderShop();
+    closePurchaseModal();
+
+    if (isShopPreviewMode()) {
+        document.documentElement.dataset.shopPreview = "true";
+        const previewShopBudget = shopItems.reduce(
+            (total, item) => total + item.price,
+            0,
+        );
+
+        profile.ownedShopItems = [DEFAULT_SHOP_ITEM_ID];
+        profile.equippedShopItem = DEFAULT_SHOP_ITEM_ID;
+        profile.points = Math.max(profile.points, previewShopBudget);
+        state.shopView = "store";
+        saveProfile();
+        updateProfileUI();
+        renderShop();
+        showScreen("shop");
+        return;
+    }
+
+    showScreen("login");
+    void initializeAuth();
+}
+
+startApp();

@@ -34,6 +34,8 @@ create table if not exists public.profiles (
             'hanja-to-meaning',
             'mixed'
         )),
+    owned_shop_items text[] not null default array['classic'],
+    equipped_shop_item text not null default 'classic',
     legacy_imported boolean not null default false,
     invite_approved boolean not null default false,
     is_admin boolean not null default false,
@@ -41,6 +43,8 @@ create table if not exists public.profiles (
 );
 
 alter table public.profiles
+    add column if not exists owned_shop_items text[] default array['classic'],
+    add column if not exists equipped_shop_item text default 'classic',
     add column if not exists invite_approved boolean,
     add column if not exists is_admin boolean;
 
@@ -50,9 +54,48 @@ set
     is_admin = coalesce(is_admin, false),
     points = greatest(coalesce(points, 0), 0),
     level = greatest(coalesce(level, 1), 1),
-    unlocked_lessons = coalesce(unlocked_lessons, array[1]);
+    unlocked_lessons = coalesce(unlocked_lessons, array[1]),
+    owned_shop_items = coalesce((
+        select array_agg(distinct owned_item.item_id order by owned_item.item_id)
+        from unnest(
+            array['classic'] || coalesce(owned_shop_items, array[]::text[])
+        ) as owned_item(item_id)
+        where owned_item.item_id in (
+            'classic',
+            'ember-ring',
+            'violet-nebula',
+            'crimson-nova',
+            'azure-singularity',
+            'cobalt-tide',
+            'indigo-depth',
+            'violet-orbit',
+            'prism-crown'
+        )
+    ), array['classic']),
+    equipped_shop_item = case
+        when coalesce(equipped_shop_item, 'classic') in (
+            'classic',
+            'ember-ring',
+            'violet-nebula',
+            'crimson-nova',
+            'azure-singularity',
+            'cobalt-tide',
+            'indigo-depth',
+            'violet-orbit',
+            'prism-crown'
+        )
+        and coalesce(equipped_shop_item, 'classic') = any(
+            coalesce(owned_shop_items, array['classic'])
+        )
+            then coalesce(equipped_shop_item, 'classic')
+        else 'classic'
+    end;
 
 alter table public.profiles
+    alter column owned_shop_items set default array['classic'],
+    alter column owned_shop_items set not null,
+    alter column equipped_shop_item set default 'classic',
+    alter column equipped_shop_item set not null,
     alter column invite_approved set default false,
     alter column invite_approved set not null,
     alter column is_admin set default false,
@@ -331,6 +374,8 @@ as $$
         'attendance_count', profile_row.attendance_count,
         'theme', profile_row.theme,
         'default_direction', profile_row.default_direction,
+        'owned_shop_items', profile_row.owned_shop_items,
+        'equipped_shop_item', profile_row.equipped_shop_item,
         'legacy_imported', profile_row.legacy_imported,
         'invite_approved', profile_row.invite_approved,
         'is_admin', profile_row.is_admin,
@@ -656,6 +701,174 @@ begin
 end;
 $$;
 
+create or replace function private.shop_item_price(item_id_input text)
+returns integer
+language sql
+immutable
+security definer
+set search_path = ''
+as $$
+    select case item_id_input
+        when 'classic' then 0
+        when 'ember-ring' then 500
+        when 'violet-nebula' then 1100
+        when 'crimson-nova' then 2200
+        when 'azure-singularity' then 2600
+        when 'cobalt-tide' then 3000
+        when 'indigo-depth' then 3400
+        when 'violet-orbit' then 3900
+        when 'prism-crown' then 4500
+        else null
+    end;
+$$;
+
+create or replace function private.shop_item_previous_id(item_id_input text)
+returns text
+language sql
+immutable
+security definer
+set search_path = ''
+as $$
+    select case item_id_input
+        when 'violet-nebula' then 'ember-ring'
+        when 'crimson-nova' then 'violet-nebula'
+        when 'azure-singularity' then 'crimson-nova'
+        when 'cobalt-tide' then 'azure-singularity'
+        when 'indigo-depth' then 'cobalt-tide'
+        when 'violet-orbit' then 'indigo-depth'
+        when 'prism-crown' then 'violet-orbit'
+        else null
+    end;
+$$;
+
+create or replace function public.equip_shop_item(item_id_input text)
+returns jsonb
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+    profile_row public.profiles%rowtype;
+    normalized_item_id text;
+    item_price integer;
+begin
+    if auth.uid() is null then
+        raise exception 'not_authenticated';
+    end if;
+
+    normalized_item_id := lower(trim(coalesce(item_id_input, '')));
+    item_price := private.shop_item_price(normalized_item_id);
+
+    if item_price is null then
+        raise exception 'invalid_shop_item';
+    end if;
+
+    select *
+    into profile_row
+    from public.profiles
+    where user_id = auth.uid()
+    for update;
+
+    if not found then
+        raise exception 'profile_not_found';
+    end if;
+
+    if not (profile_row.invite_approved or profile_row.is_admin) then
+        raise exception 'access_not_approved';
+    end if;
+
+    if not (normalized_item_id = any(profile_row.owned_shop_items)) then
+        raise exception 'shop_item_not_owned';
+    end if;
+
+    update public.profiles
+    set equipped_shop_item = normalized_item_id
+    where user_id = profile_row.user_id
+    returning * into profile_row;
+
+    return private.profile_payload(profile_row);
+end;
+$$;
+
+create or replace function public.purchase_shop_item(item_id_input text)
+returns jsonb
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+    profile_row public.profiles%rowtype;
+    normalized_item_id text;
+    item_price integer;
+    previous_item_id text;
+begin
+    if auth.uid() is null then
+        raise exception 'not_authenticated';
+    end if;
+
+    normalized_item_id := lower(trim(coalesce(item_id_input, '')));
+    item_price := private.shop_item_price(normalized_item_id);
+    previous_item_id := private.shop_item_previous_id(normalized_item_id);
+
+    if item_price is null or item_price = 0 then
+        raise exception 'invalid_shop_item';
+    end if;
+
+    select *
+    into profile_row
+    from public.profiles
+    where user_id = auth.uid()
+    for update;
+
+    if not found then
+        raise exception 'profile_not_found';
+    end if;
+
+    if not (profile_row.invite_approved or profile_row.is_admin) then
+        raise exception 'access_not_approved';
+    end if;
+
+    if normalized_item_id = any(profile_row.owned_shop_items) then
+        raise exception 'shop_item_already_owned';
+    end if;
+
+    if previous_item_id is not null
+        and not (previous_item_id = any(profile_row.owned_shop_items)) then
+        raise exception 'shop_previous_item_required';
+    end if;
+
+    if profile_row.points < item_price then
+        raise exception 'insufficient_points';
+    end if;
+
+    update public.profiles
+    set
+        points = points - item_price,
+        owned_shop_items = array_append(owned_shop_items, normalized_item_id)
+    where user_id = profile_row.user_id
+    returning * into profile_row;
+
+    insert into private.point_ledger (
+        user_id,
+        event_type,
+        reference_key,
+        amount,
+        balance_after
+    )
+    values (
+        profile_row.user_id,
+        'shop_purchase',
+        normalized_item_id,
+        -item_price,
+        profile_row.points
+    );
+
+    return private.profile_payload(profile_row);
+end;
+$$;
+
+drop function if exists private.shop_item_required_level(text);
+
 create or replace function public.level_up()
 returns jsonb
 language plpgsql
@@ -772,15 +985,6 @@ begin
         'mixed'
     ) then
         raise exception 'invalid_direction';
-    end if;
-
-    if (
-        select count(*)
-        from private.quiz_attempts
-        where user_id = profile_row.user_id
-          and created_at >= now() - interval '1 hour'
-    ) >= 10 then
-        raise exception 'quiz_rate_limit';
     end if;
 
     if mode_input = 'random' then
@@ -1087,6 +1291,10 @@ grant execute on function public.update_profile_preferences(text, text, text)
 grant execute on function public.claim_attendance_reward()
     to authenticated;
 grant execute on function public.purchase_lesson(integer)
+    to authenticated;
+grant execute on function public.purchase_shop_item(text)
+    to authenticated;
+grant execute on function public.equip_shop_item(text)
     to authenticated;
 grant execute on function public.level_up() to authenticated;
 grant execute on function public.start_quiz_attempt(integer, text, text)
