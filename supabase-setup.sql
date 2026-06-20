@@ -1236,6 +1236,7 @@ returns table (
     display_name text,
     level integer,
     points integer,
+    equipped_shop_item text,
     is_current boolean
 )
 language plpgsql
@@ -1253,6 +1254,7 @@ begin
             p.display_name,
             p.level,
             p.points,
+            p.equipped_shop_item,
             row_number() over (
                 order by
                     p.level desc,
@@ -1268,6 +1270,7 @@ begin
         ranked_profiles.display_name,
         ranked_profiles.level,
         ranked_profiles.points,
+        ranked_profiles.equipped_shop_item,
         ranked_profiles.user_id = auth.uid()
     from ranked_profiles
     order by ranked_profiles.profile_rank

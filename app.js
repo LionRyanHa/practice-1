@@ -261,6 +261,7 @@ function applyServerProfile(serverProfile) {
         currentEntry.displayName = profile.displayName;
         currentEntry.points = profile.points;
         currentEntry.level = profile.level;
+        currentEntry.equippedShopItem = profile.equippedShopItem;
     }
 }
 
@@ -1074,6 +1075,7 @@ function getLeaderboardEntries() {
             name: profile.displayName,
             level: profile.level,
             points: profile.points,
+            equippedShopItem: profile.equippedShopItem,
             isCurrent: true,
         });
     }
@@ -1098,17 +1100,16 @@ function renderLeaderboard() {
             const medal = rank <= 3 ? ["gold", "silver", "bronze"][index] : "";
             const safeName = escapeHTML(entry.name);
             const initial = escapeHTML(entry.name.trim().charAt(0) || "한");
-            const equippedItem = entry.isCurrent
-                ? getShopItem(profile.equippedShopItem)
-                : null;
+            const equippedItem = getShopItem(entry.equippedShopItem);
             const hasEquippedSkin = Boolean(
                 equippedItem && equippedItem.id !== DEFAULT_SHOP_ITEM_ID,
             );
-            const rowClass = entry.isCurrent
-                ? ["me", hasEquippedSkin ? equippedItem.skinClass : ""]
-                      .filter(Boolean)
-                      .join(" ")
-                : "";
+            const rowClass = [
+                entry.isCurrent ? "me" : "",
+                hasEquippedSkin ? equippedItem.skinClass : "",
+            ]
+                .filter(Boolean)
+                .join(" ");
             const skinEffects = hasEquippedSkin
                 ? getLeaderboardSkinEffectMarkup(equippedItem.id)
                 : "";
@@ -1120,7 +1121,7 @@ function renderLeaderboard() {
                 <article class="leaderboard-row ${rowClass}">
                     ${skinEffects}
                     <span class="rank-number ${medal}">${rank}</span>
-                    <span class="rank-avatar ${entry.isCurrent ? getEquippedShopSkinClass() : ""}" aria-hidden="true">${initial}</span>
+                    <span class="rank-avatar ${equippedItem.skinClass}" aria-hidden="true">${initial}</span>
                     <span class="rank-user">
                         <strong><span class="rank-name-text">${safeName}</span>${skinBadge}${entry.isCurrent ? " <em>나</em>" : ""}</strong>
                         <small>${entry.points}P 보유</small>
@@ -1153,6 +1154,10 @@ async function refreshLeaderboard() {
         name: entry.display_name || DEFAULT_PROFILE.displayName,
         level: Math.max(1, Number(entry.level) || 1),
         points: Math.max(0, Number(entry.points) || 0),
+        equippedShopItem:
+            typeof entry.equipped_shop_item === "string"
+                ? entry.equipped_shop_item
+                : DEFAULT_SHOP_ITEM_ID,
         isCurrent: Boolean(entry.is_current),
     }));
     renderLeaderboard();
