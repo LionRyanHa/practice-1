@@ -69,7 +69,10 @@ set
             'cobalt-tide',
             'indigo-depth',
             'violet-orbit',
-            'prism-crown'
+            'prism-crown',
+            'earth-horizon',
+            'solar-flare',
+            'black-hole'
         )
     ), array['classic']),
     equipped_shop_item = case
@@ -82,7 +85,10 @@ set
             'cobalt-tide',
             'indigo-depth',
             'violet-orbit',
-            'prism-crown'
+            'prism-crown',
+            'earth-horizon',
+            'solar-flare',
+            'black-hole'
         )
         and coalesce(equipped_shop_item, 'classic') = any(
             coalesce(owned_shop_items, array['classic'])
@@ -718,6 +724,9 @@ as $$
         when 'indigo-depth' then 3400
         when 'violet-orbit' then 3900
         when 'prism-crown' then 4500
+        when 'earth-horizon' then 5200
+        when 'solar-flare' then 6000
+        when 'black-hole' then 7200
         else null
     end;
 $$;
@@ -737,6 +746,9 @@ as $$
         when 'indigo-depth' then 'cobalt-tide'
         when 'violet-orbit' then 'indigo-depth'
         when 'prism-crown' then 'violet-orbit'
+        when 'earth-horizon' then 'prism-crown'
+        when 'solar-flare' then 'earth-horizon'
+        when 'black-hole' then 'solar-flare'
         else null
     end;
 $$;

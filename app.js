@@ -21,6 +21,8 @@ const supabaseClient =
 const PROFILE_STORAGE_KEY = "hanja-profile-v1";
 const LEGACY_LOGIN_STORAGE_KEY = "hanja-login-v2";
 const USER_PROFILE_STORAGE_PREFIX = "hanja-profile-v2:";
+const TITLE_UPDATE_NOTICE_STORAGE_KEY = "hanja-title-update-notice-v1";
+const TITLE_UPDATE_NOTICE_VERSION = "cosmic-titles-20260626";
 const DEFAULT_SHOP_ITEM_ID = "classic";
 const DEFAULT_SHOP_ITEM = {
     id: DEFAULT_SHOP_ITEM_ID,
@@ -110,6 +112,36 @@ const shopItems = [
         summary: "무지개",
         accent: "#78f7ff",
         skinClass: "shop-skin-prism-crown",
+    },
+    {
+        id: "earth-horizon",
+        rank: 9,
+        name: "지구",
+        price: 5200,
+        symbol: "地",
+        summary: "지구",
+        accent: "#35d0a8",
+        skinClass: "shop-skin-earth-horizon",
+    },
+    {
+        id: "solar-flare",
+        rank: 10,
+        name: "태양",
+        price: 6000,
+        symbol: "日",
+        summary: "태양",
+        accent: "#ffbd3e",
+        skinClass: "shop-skin-solar-flare",
+    },
+    {
+        id: "black-hole",
+        rank: 11,
+        name: "블랙홀",
+        price: 7200,
+        symbol: "黑",
+        summary: "블랙홀",
+        accent: "#8b5cf6",
+        skinClass: "shop-skin-black-hole",
     },
 ];
 
@@ -666,6 +698,10 @@ const elements = {
     closeAttendanceButtons: document.querySelectorAll(
         "[data-close-attendance]",
     ),
+    titleUpdateModal: document.querySelector("#title-update-modal"),
+    closeTitleUpdateButtons: document.querySelectorAll(
+        "[data-close-title-update]",
+    ),
     wordPreviewModal: document.querySelector("#word-preview-modal"),
     closeWordPreviewButton: document.querySelector(
         "#close-word-preview-button",
@@ -771,6 +807,12 @@ function getAdvancedSkinEffectMarkup(itemId, rootClass = "skin-effects") {
             return `<span class="${rootClass} purple-effects" aria-hidden="true"><span class="effect-fill"></span><span class="violet-portal"></span><span class="violet-orbit"></span><span class="violet-spark spark-a">✦</span><span class="violet-spark spark-b">✧</span><span class="violet-spark spark-c">·</span></span>`;
         case "prism-crown":
             return `<span class="${rootClass} rainbow-effects" aria-hidden="true"><span class="effect-fill"></span><span class="legend-beam beam-a"></span><span class="legend-beam beam-b"></span><span class="legend-beam beam-c"></span><span class="legend-crown"></span><span class="legend-core"></span><span class="legend-star star-a">✦</span><span class="legend-star star-b">✧</span><span class="legend-star star-c">✦</span><span class="legend-star star-d">◆</span></span>`;
+        case "earth-horizon":
+            return `<span class="${rootClass} cosmic-earth-effects" aria-hidden="true"><span class="effect-fill"></span><span class="earth-planet"></span><span class="earth-atmosphere"></span><span class="earth-orbit orbit-a"></span><span class="earth-orbit orbit-b"></span><span class="earth-cloud cloud-a"></span><span class="earth-cloud cloud-b"></span><span class="earth-cloud cloud-c"></span><span class="earth-moon"></span><span class="earth-star star-a">✦</span><span class="earth-star star-b">✧</span></span>`;
+        case "solar-flare":
+            return `<span class="${rootClass} cosmic-sun-effects" aria-hidden="true"><span class="effect-fill"></span><span class="solar-corona"></span><span class="solar-core"></span><span class="solar-ring ring-a"></span><span class="solar-ring ring-b"></span><span class="solar-flame flame-a"></span><span class="solar-flame flame-b"></span><span class="solar-flame flame-c"></span><span class="solar-spark spark-a">✦</span><span class="solar-spark spark-b">✧</span><span class="solar-spark spark-c">✦</span></span>`;
+        case "black-hole":
+            return `<span class="${rootClass} cosmic-black-hole-effects" aria-hidden="true"><span class="effect-fill"></span><span class="blackhole-lens"></span><span class="blackhole-disc disc-a"></span><span class="blackhole-disc disc-b"></span><span class="blackhole-core"></span><span class="blackhole-shadow"></span><span class="blackhole-ring ring-a"></span><span class="blackhole-ring ring-b"></span><span class="blackhole-jet jet-a"></span><span class="blackhole-jet jet-b"></span><span class="blackhole-star star-a">✦</span><span class="blackhole-star star-b">✧</span><span class="blackhole-star star-c">✦</span><span class="blackhole-star star-d">·</span></span>`;
         default:
             return "";
     }
@@ -794,6 +836,9 @@ function getLeaderboardSkinEffectMarkup(itemId) {
         case "indigo-depth":
         case "violet-orbit":
         case "prism-crown":
+        case "earth-horizon":
+        case "solar-flare":
+        case "black-hole":
             return getAdvancedSkinEffectMarkup(itemId);
         default:
             return "";
@@ -1240,6 +1285,77 @@ function syncSettingsUI() {
 
 let toastTimer = null;
 let attendancePromptShown = false;
+let titleUpdateNoticeDismissedThisSession = false;
+
+function hasSeenTitleUpdateNotice() {
+    if (titleUpdateNoticeDismissedThisSession) {
+        return true;
+    }
+
+    try {
+        return (
+            localStorage.getItem(TITLE_UPDATE_NOTICE_STORAGE_KEY) ===
+            TITLE_UPDATE_NOTICE_VERSION
+        );
+    } catch (error) {
+        return false;
+    }
+}
+
+function markTitleUpdateNoticeSeen() {
+    titleUpdateNoticeDismissedThisSession = true;
+
+    try {
+        localStorage.setItem(
+            TITLE_UPDATE_NOTICE_STORAGE_KEY,
+            TITLE_UPDATE_NOTICE_VERSION,
+        );
+    } catch (error) {
+        // Storage can be unavailable in restricted browsers; keep this session quiet.
+    }
+}
+
+function isTitleUpdateNoticeOpen() {
+    return Boolean(
+        elements.titleUpdateModal && !elements.titleUpdateModal.hidden,
+    );
+}
+
+function hideTitleUpdateNotice() {
+    if (elements.titleUpdateModal) {
+        elements.titleUpdateModal.hidden = true;
+    }
+
+    if (elements.purchaseModal.hidden && elements.attendanceModal.hidden) {
+        document.body.classList.remove("modal-open");
+    }
+}
+
+function shouldPromptAttendance() {
+    return (
+        document.querySelector("#home-screen")?.classList.contains("active") &&
+        !attendancePromptShown &&
+        profile.lastAttendanceDate !== getTodayKey()
+    );
+}
+
+function maybeShowTitleUpdateNotice() {
+    if (!elements.titleUpdateModal || hasSeenTitleUpdateNotice()) {
+        return;
+    }
+
+    elements.titleUpdateModal.hidden = false;
+    document.body.classList.add("modal-open");
+}
+
+function closeTitleUpdateNotice() {
+    markTitleUpdateNoticeSeen();
+    hideTitleUpdateNotice();
+
+    if (shouldPromptAttendance()) {
+        window.setTimeout(openAttendanceModal, 180);
+    }
+}
 
 function showToast(message) {
     elements.appToast.textContent = message;
@@ -1438,10 +1554,7 @@ function showScreen(name) {
         renderLessons();
         updateProfileUI();
 
-        if (
-            !attendancePromptShown &&
-            profile.lastAttendanceDate !== getTodayKey()
-        ) {
+        if (shouldPromptAttendance() && !isTitleUpdateNoticeOpen()) {
             window.setTimeout(openAttendanceModal, 180);
         }
     } else if (name === "shop") {
@@ -1523,6 +1636,7 @@ function handleSignedOut() {
     attendancePromptShown = false;
     closeAttendanceModal();
     closePurchaseModal();
+    hideTitleUpdateNotice();
     closeWordPreview();
     applyTheme();
     syncSettingsUI();
@@ -1670,7 +1784,7 @@ function openPurchaseModal(lessonId) {
 }
 
 function openAttendanceModal() {
-    if (profile.lastAttendanceDate === getTodayKey()) {
+    if (profile.lastAttendanceDate === getTodayKey() || isTitleUpdateNoticeOpen()) {
         return;
     }
 
@@ -2526,6 +2640,9 @@ elements.attendanceModalButton.addEventListener(
 elements.closeAttendanceButtons.forEach((button) => {
     button.addEventListener("click", closeAttendanceModal);
 });
+elements.closeTitleUpdateButtons.forEach((button) => {
+    button.addEventListener("click", closeTitleUpdateNotice);
+});
 elements.levelUpButton.addEventListener("click", levelUp);
 elements.profileNameForm.addEventListener("submit", saveProfileName);
 
@@ -2836,10 +2953,12 @@ function startApp() {
         updateProfileUI();
         renderShop();
         showScreen("shop");
+        maybeShowTitleUpdateNotice();
         return;
     }
 
     showScreen("login");
+    maybeShowTitleUpdateNotice();
     void initializeAuth();
 }
 

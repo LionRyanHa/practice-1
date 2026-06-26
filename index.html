@@ -8,7 +8,7 @@
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://yyvyogubmmfwwwekxulu.supabase.co wss://yyvyogubmmfwwwekxulu.supabase.co; img-src 'self' data:; font-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; upgrade-insecure-requests">
     <meta name="description" content="매일 가볍게 익히는 모바일 한자 학습 앱">
     <title>한걸음 - 한자 학습</title>
-    <link rel="stylesheet" href="style.css?v=20260620-1">
+    <link rel="stylesheet" href="style.css?v=20260626-3">
 </head>
 <body>
     <main id="app" class="app-shell">
@@ -326,7 +326,7 @@
                 <section class="shop-summary-grid" aria-label="상점 상태">
                     <div>
                         <span>보유 아이템</span>
-                        <strong id="shop-owned-count">0/8</strong>
+                        <strong id="shop-owned-count">0/11</strong>
                     </div>
                     <div>
                         <span>장착 중</span>
@@ -642,6 +642,22 @@
             </section>
         </div>
 
+        <div id="title-update-modal" class="purchase-modal title-update-modal" hidden>
+            <button class="purchase-backdrop" type="button" data-close-title-update aria-label="칭호 업데이트 알림 닫기"></button>
+            <section class="purchase-sheet title-update-sheet" role="dialog" aria-modal="true" aria-labelledby="title-update-title">
+                <div class="title-update-icon" aria-hidden="true">黑</div>
+                <span class="purchase-kicker">칭호 업데이트</span>
+                <h2 id="title-update-title">새 우주 칭호가 도착했어요</h2>
+                <p>지구, 태양, 블랙홀 칭호가 추가됐어요. 상점에서 더 강한 애니메이션 칭호를 확인해 보세요.</p>
+                <div class="title-update-preview" aria-hidden="true">
+                    <span class="shop-skin-earth-horizon">地</span>
+                    <span class="shop-skin-solar-flare">日</span>
+                    <span class="shop-skin-black-hole">黑</span>
+                </div>
+                <button class="primary-button title-update-confirm" type="button" data-close-title-update>확인했어요</button>
+            </section>
+        </div>
+
         <div id="word-preview-modal" class="word-preview-modal" hidden>
             <section class="word-preview-shell" role="dialog" aria-modal="true" aria-labelledby="word-preview-hanja">
                 <header class="word-preview-header">
@@ -679,6 +695,6 @@
 
     <script src="vendor/supabase-2.108.1.js" integrity="sha384-EjUdIVmzWliPzdzhxZ9ZoO0etXLKWuUPUftAGxP6qH6Lm4oLwoLaJR0Ba4pIDiDL"></script>
     <script src="supabase-config.js"></script>
-    <script src="app.js?v=20260620-1"></script>
+    <script src="app.js?v=20260626-3"></script>
 </body>
 </html>

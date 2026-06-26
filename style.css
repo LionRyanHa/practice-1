@@ -2108,6 +2108,43 @@ input:focus-visible {
         0 0 24px rgba(255, 216, 79, 0.18);
 }
 
+.profile-avatar.shop-skin-earth-horizon,
+.rank-avatar.shop-skin-earth-horizon,
+.shop-item-icon.shop-skin-earth-horizon {
+    color: #06251c;
+    background:
+        radial-gradient(circle at 35% 28%, #74d9ff 0 20%, transparent 21%),
+        radial-gradient(circle at 64% 62%, #39d98a 0 24%, transparent 25%),
+        linear-gradient(135deg, #2f8cff, #35d0a8);
+    box-shadow:
+        0 0 0 2px rgba(255, 255, 255, 0.24) inset,
+        0 0 18px rgba(53, 208, 168, 0.36);
+}
+
+.profile-avatar.shop-skin-solar-flare,
+.rank-avatar.shop-skin-solar-flare,
+.shop-item-icon.shop-skin-solar-flare {
+    color: #2d1600;
+    background: radial-gradient(circle, #fff5a8 0 19%, #ffbd3e 42%, #ff6f3c 100%);
+    box-shadow:
+        0 0 0 2px rgba(255, 255, 255, 0.24) inset,
+        0 0 19px rgba(255, 189, 62, 0.42),
+        0 0 30px rgba(255, 111, 60, 0.2);
+}
+
+.profile-avatar.shop-skin-black-hole,
+.rank-avatar.shop-skin-black-hole,
+.shop-item-icon.shop-skin-black-hole {
+    color: #fff;
+    background:
+        radial-gradient(circle, #05010c 0 34%, transparent 35%),
+        conic-gradient(from 20deg, #2dd4bf, #8b5cf6, #f472b6, #2dd4bf);
+    box-shadow:
+        0 0 0 2px rgba(255, 255, 255, 0.18) inset,
+        0 0 20px rgba(139, 92, 246, 0.4),
+        0 0 34px rgba(45, 212, 191, 0.18);
+}
+
 .profile-avatar.shop-skin-classic,
 .rank-avatar.shop-skin-classic,
 .shop-item-icon.shop-skin-classic {
@@ -2297,6 +2334,34 @@ input:focus-visible {
         0 0 0 1px rgba(255, 255, 255, 0.18) inset,
         0 0 34px rgba(120, 247, 255, 0.34),
         0 0 52px rgba(255, 216, 79, 0.18),
+        var(--shadow-soft);
+}
+
+.leaderboard-row.shop-skin-earth-horizon {
+    border-color: rgba(53, 208, 168, 0.72);
+    background: linear-gradient(110deg, #07342c, #0b1f3f 72%);
+    box-shadow:
+        0 0 0 1px rgba(53, 208, 168, 0.17) inset,
+        0 0 30px rgba(53, 208, 168, 0.3),
+        var(--shadow-soft);
+}
+
+.leaderboard-row.shop-skin-solar-flare {
+    border-color: rgba(255, 189, 62, 0.76);
+    background: linear-gradient(110deg, #5a2708, #261101 72%);
+    box-shadow:
+        0 0 0 1px rgba(255, 189, 62, 0.2) inset,
+        0 0 32px rgba(255, 189, 62, 0.34),
+        var(--shadow-soft);
+}
+
+.leaderboard-row.shop-skin-black-hole {
+    border-color: rgba(139, 92, 246, 0.76);
+    background: radial-gradient(circle at 18% 50%, rgba(45, 212, 191, 0.18), transparent 28%), #090713;
+    box-shadow:
+        0 0 0 1px rgba(139, 92, 246, 0.18) inset,
+        0 0 34px rgba(139, 92, 246, 0.34),
+        0 0 46px rgba(45, 212, 191, 0.16),
         var(--shadow-soft);
 }
 
@@ -2696,6 +2761,20 @@ input:focus-visible {
 .rank-skin-badge.shop-skin-prism-crown {
     color: #111827;
     background: linear-gradient(90deg, #ff4f5e, #ff9f43, #ffd84f, #37d67a, #3aa7ff, #b45cff);
+}
+
+.rank-skin-badge.shop-skin-earth-horizon {
+    color: #06251c;
+    background: linear-gradient(90deg, #74d9ff, #35d0a8);
+}
+
+.rank-skin-badge.shop-skin-solar-flare {
+    color: #2d1600;
+    background: linear-gradient(90deg, #fff5a8, #ffbd3e, #ff6f3c);
+}
+
+.rank-skin-badge.shop-skin-black-hole {
+    background: linear-gradient(90deg, #05010c, #8b5cf6, #2dd4bf);
 }
 
 @keyframes chipDriftA {
@@ -4578,6 +4657,81 @@ input:focus-visible {
 
 .modal-open {
     overflow: hidden;
+}
+
+.title-update-sheet {
+    overflow: hidden;
+    border: 1px solid rgba(221, 214, 254, 0.34);
+    color: #f8fbff;
+    background:
+        radial-gradient(circle at 50% -10%, rgba(255, 255, 255, 0.2), transparent 24%),
+        radial-gradient(circle at 78% 24%, rgba(139, 92, 246, 0.34), transparent 34%),
+        linear-gradient(145deg, #04050a, #101326 58%, #07080f);
+    box-shadow:
+        0 -24px 70px rgba(0, 0, 0, 0.34),
+        0 0 46px rgba(139, 92, 246, 0.38);
+}
+
+.title-update-sheet::before {
+    position: absolute;
+    inset: -30% -20% auto auto;
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    background: conic-gradient(from 0deg, transparent, rgba(45, 212, 191, 0.52), rgba(139, 92, 246, 0.78), rgba(244, 114, 182, 0.44), transparent);
+    -webkit-mask: radial-gradient(circle, transparent 0 44%, #000 46% 62%, transparent 64%);
+    mask: radial-gradient(circle, transparent 0 44%, #000 46% 62%, transparent 64%);
+    content: "";
+    animation: blackholeLensSpin 5.4s linear infinite;
+}
+
+.title-update-sheet > * {
+    position: relative;
+    z-index: 1;
+}
+
+.title-update-sheet .purchase-kicker,
+.title-update-sheet p {
+    color: rgba(248, 251, 255, 0.74);
+}
+
+.title-update-icon {
+    display: grid;
+    width: 76px;
+    height: 76px;
+    margin: 0 auto 12px;
+    place-items: center;
+    border-radius: 50%;
+    color: #fff;
+    background:
+        radial-gradient(circle, #000 0 46%, #050507 47% 67%, #141020 68% 100%);
+    box-shadow:
+        0 0 0 2px rgba(255, 255, 255, 0.2) inset,
+        0 0 24px rgba(139, 92, 246, 0.66),
+        0 0 44px rgba(45, 212, 191, 0.22);
+    font-size: 28px;
+    font-weight: 950;
+}
+
+.title-update-preview {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin: 18px 0;
+}
+
+.title-update-preview span {
+    display: grid;
+    width: 54px;
+    height: 54px;
+    place-items: center;
+    border-radius: 50%;
+    font-size: 20px;
+    font-weight: 950;
+}
+
+.title-update-confirm {
+    width: 100%;
 }
 
 .app-toast {
@@ -6494,6 +6648,863 @@ input:focus-visible {
     .swipe-hint:not(.ready) {
         display: none;
     }
+}
+
+
+/* ===== 우주 칭호 효과 시스템 v7: 지구 < 태양 < 블랙홀 ===== */
+.cosmic-earth-effects span,
+.cosmic-sun-effects span,
+.cosmic-black-hole-effects span {
+    position: absolute;
+    display: block;
+    backface-visibility: hidden;
+    pointer-events: none;
+}
+
+.shop-item-card.store.shop-skin-earth-horizon,
+.shop-item-card.store.shop-skin-solar-flare,
+.shop-item-card.store.shop-skin-black-hole,
+.leaderboard-row.shop-skin-earth-horizon,
+.leaderboard-row.shop-skin-solar-flare,
+.leaderboard-row.shop-skin-black-hole {
+    animation: none;
+}
+
+.cosmic-earth-effects .effect-fill,
+.cosmic-sun-effects .effect-fill,
+.cosmic-black-hole-effects .effect-fill {
+    z-index: 0;
+}
+
+.earth-orbit,
+.solar-ring,
+.solar-flame,
+.blackhole-lens,
+.blackhole-disc,
+.blackhole-ring,
+.blackhole-jet {
+    z-index: 1;
+}
+
+.earth-planet,
+.solar-corona {
+    z-index: 2;
+}
+
+.earth-atmosphere,
+.earth-cloud,
+.solar-core {
+    z-index: 3;
+}
+
+.earth-moon,
+.earth-star,
+.solar-spark,
+.blackhole-star {
+    z-index: 4;
+}
+
+.blackhole-core,
+.blackhole-shadow {
+    z-index: 5;
+}
+
+.shop-item-card.store.shop-skin-earth-horizon {
+    border-color: rgba(104, 255, 211, 0.9);
+    background:
+        radial-gradient(circle at 78% 43%, rgba(75, 219, 255, 0.3), transparent 32%),
+        linear-gradient(118deg, #031626, #064244 54%, #032b34);
+    box-shadow:
+        0 0 0 1px rgba(151, 255, 226, 0.22) inset,
+        0 0 36px rgba(53, 208, 168, 0.52),
+        0 0 58px rgba(79, 183, 255, 0.24),
+        0 13px 30px rgba(0, 0, 0, 0.24);
+}
+
+.shop-item-card.store.shop-skin-solar-flare {
+    border-color: rgba(255, 235, 138, 0.96);
+    background:
+        radial-gradient(circle at 75% 42%, rgba(255, 246, 177, 0.32), transparent 29%),
+        linear-gradient(116deg, #2d0900, #8f2c03 43%, #361000 78%);
+    box-shadow:
+        0 0 0 1px rgba(255, 239, 170, 0.28) inset,
+        0 0 42px rgba(255, 189, 62, 0.7),
+        0 0 70px rgba(255, 75, 35, 0.44),
+        0 13px 32px rgba(0, 0, 0, 0.25);
+}
+
+.shop-item-card.store.shop-skin-black-hole {
+    border-color: rgba(221, 214, 254, 0.94);
+    color: #f8fbff;
+    background:
+        radial-gradient(circle at 77% 44%, #000 0 15%, rgba(0, 0, 0, 0.96) 16% 22%, rgba(23, 18, 39, 0.72) 23% 34%, transparent 35%),
+        radial-gradient(circle at 78% 45%, rgba(139, 92, 246, 0.28), transparent 43%),
+        radial-gradient(circle at 12% 20%, rgba(125, 249, 255, 0.1), transparent 24%),
+        linear-gradient(118deg, #010102, #050509 52%, #090613 100%);
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.28) inset,
+        0 0 48px rgba(139, 92, 246, 0.66),
+        0 0 82px rgba(45, 212, 191, 0.26),
+        0 13px 34px rgba(0, 0, 0, 0.32);
+}
+
+.shop-item-card.inventory.shop-skin-earth-horizon {
+    background:
+        radial-gradient(circle at 84% 34%, rgba(116, 217, 255, 0.22), transparent 29%),
+        linear-gradient(135deg, #062137, #05362d);
+}
+
+.shop-item-card.inventory.shop-skin-solar-flare {
+    background:
+        radial-gradient(circle at 82% 35%, rgba(255, 245, 168, 0.24), transparent 29%),
+        linear-gradient(135deg, #3b1000, #6a2403);
+}
+
+.shop-item-card.inventory.shop-skin-black-hole {
+    background:
+        radial-gradient(circle at 82% 34%, rgba(0, 0, 0, 0.94) 0 19%, rgba(139, 92, 246, 0.18) 20% 34%, transparent 35%),
+        linear-gradient(135deg, #010102, #070611);
+}
+
+.leaderboard-row.shop-skin-earth-horizon {
+    border-color: rgba(104, 255, 211, 0.88);
+    background: linear-gradient(110deg, #042034, #05382e 74%);
+    box-shadow:
+        0 0 0 1px rgba(151, 255, 226, 0.22) inset,
+        0 0 36px rgba(53, 208, 168, 0.52),
+        0 0 54px rgba(79, 183, 255, 0.2),
+        var(--shadow-soft);
+}
+
+.leaderboard-row.shop-skin-solar-flare {
+    border-color: rgba(255, 235, 138, 0.94);
+    background: linear-gradient(110deg, #3b1000, #6b2100 74%);
+    box-shadow:
+        0 0 0 1px rgba(255, 239, 170, 0.28) inset,
+        0 0 42px rgba(255, 189, 62, 0.66),
+        0 0 64px rgba(255, 75, 35, 0.36),
+        var(--shadow-soft);
+}
+
+.leaderboard-row.shop-skin-black-hole {
+    border-color: rgba(221, 214, 254, 0.94);
+    background:
+        radial-gradient(circle at 17% 50%, #000 0 13%, rgba(139, 92, 246, 0.14) 14% 30%, transparent 31%),
+        linear-gradient(110deg, #010102, #070611 74%);
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.26) inset,
+        0 0 46px rgba(139, 92, 246, 0.68),
+        0 0 78px rgba(45, 212, 191, 0.24),
+        var(--shadow-soft);
+}
+
+.profile-avatar.shop-skin-earth-horizon,
+.rank-avatar.shop-skin-earth-horizon,
+.shop-item-icon.shop-skin-earth-horizon {
+    color: #f8fffc;
+    background:
+        radial-gradient(circle at 35% 30%, #d9fff6 0 7%, transparent 8%),
+        radial-gradient(circle at 38% 43%, #2f8cff 0 30%, transparent 31%),
+        conic-gradient(from 18deg, #67e8f9, #34d399, #0ea5e9, #2dd4bf, #67e8f9);
+    box-shadow:
+        0 0 0 2px rgba(255, 255, 255, 0.34) inset,
+        0 0 20px rgba(53, 208, 168, 0.58),
+        0 0 32px rgba(59, 130, 246, 0.24);
+    animation: cosmicEarthIconTurn 7s linear infinite;
+}
+
+.profile-avatar.shop-skin-solar-flare,
+.rank-avatar.shop-skin-solar-flare,
+.shop-item-icon.shop-skin-solar-flare {
+    color: #351200;
+    background:
+        radial-gradient(circle, #fff9be 0 18%, #ffbd3e 36%, #ff6f3c 62%, #9a2500 100%);
+    box-shadow:
+        0 0 0 2px rgba(255, 255, 255, 0.42) inset,
+        0 0 24px rgba(255, 189, 62, 0.82),
+        0 0 42px rgba(255, 80, 35, 0.44);
+    animation: cosmicSunIconPulse 2.8s ease-in-out infinite alternate;
+}
+
+.profile-avatar.shop-skin-black-hole,
+.rank-avatar.shop-skin-black-hole,
+.shop-item-icon.shop-skin-black-hole {
+    color: #fff;
+    background:
+        radial-gradient(circle, #000 0 46%, #050507 47% 67%, #141020 68% 100%);
+    box-shadow:
+        0 0 0 2px rgba(255, 255, 255, 0.22) inset,
+        0 0 24px rgba(139, 92, 246, 0.66),
+        0 0 44px rgba(45, 212, 191, 0.22);
+    animation: cosmicBlackHoleIconPull 4.8s linear infinite;
+}
+
+.rank-skin-badge.shop-skin-earth-horizon {
+    color: #052018;
+    background: linear-gradient(90deg, #d9fff6, #67e8f9 28%, #35d0a8 68%, #0ea5e9);
+    box-shadow: 0 0 12px rgba(53, 208, 168, 0.38);
+}
+
+.rank-skin-badge.shop-skin-solar-flare {
+    color: #351200;
+    background: linear-gradient(90deg, #fff9be, #ffbd3e 42%, #ff6f3c 78%, #ff4b23);
+    box-shadow: 0 0 14px rgba(255, 189, 62, 0.46);
+}
+
+.rank-skin-badge.shop-skin-black-hole {
+    color: #fff;
+    background: linear-gradient(90deg, #000, #050507 38%, #2b174f 72%, #050507);
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.18) inset,
+        0 0 16px rgba(139, 92, 246, 0.5);
+}
+
+.cosmic-earth-effects .effect-fill {
+    inset: -4%;
+    background:
+        radial-gradient(circle at 16% 18%, rgba(255, 255, 255, 0.28), transparent 1.5%, transparent 8%),
+        radial-gradient(circle at 44% 78%, rgba(255, 255, 255, 0.2), transparent 1.2%, transparent 7%),
+        linear-gradient(112deg, rgba(7, 30, 61, 0.74), rgba(16, 117, 103, 0.5), rgba(8, 34, 70, 0.74));
+    background-size: 100% 100%, 100% 100%, 190% 100%;
+    animation: cosmicEarthSkyShift 7.6s ease-in-out infinite alternate;
+}
+
+.earth-planet {
+    right: 7%;
+    top: 6%;
+    width: 116px;
+    height: 116px;
+    border-radius: 50%;
+    background:
+        radial-gradient(circle at 33% 25%, rgba(255, 255, 255, 0.9) 0 5%, transparent 6%),
+        radial-gradient(circle at 30% 38%, #34d399 0 12%, transparent 13%),
+        radial-gradient(circle at 68% 58%, #22c55e 0 14%, transparent 15%),
+        radial-gradient(circle at 48% 67%, #16a34a 0 9%, transparent 10%),
+        linear-gradient(135deg, #7dd3fc, #1d4ed8 58%, #0f766e);
+    box-shadow:
+        0 0 0 2px rgba(255, 255, 255, 0.42) inset,
+        0 0 24px rgba(125, 211, 252, 0.68),
+        0 0 42px rgba(45, 212, 191, 0.38);
+    will-change: transform;
+    animation: earthPlanetTurn 8.8s linear infinite;
+}
+
+.shop-title-effects .earth-planet {
+    right: 11%;
+    top: 3%;
+    width: 132px;
+    height: 132px;
+}
+
+.earth-atmosphere {
+    right: calc(7% - 10px);
+    top: calc(6% - 10px);
+    width: 136px;
+    height: 136px;
+    border-radius: 50%;
+    border: 2px solid rgba(176, 245, 255, 0.76);
+    box-shadow:
+        0 0 22px rgba(125, 211, 252, 0.72),
+        0 0 40px rgba(45, 212, 191, 0.32);
+    will-change: transform;
+    animation: earthAtmosphereBreathe 3.8s ease-in-out infinite alternate;
+}
+
+.shop-title-effects .earth-atmosphere {
+    right: calc(11% - 10px);
+    top: calc(3% - 10px);
+    width: 152px;
+    height: 152px;
+}
+
+.earth-orbit {
+    right: -4%;
+    top: 22%;
+    width: 190px;
+    height: 64px;
+    border: 2px solid rgba(211, 255, 247, 0.62);
+    border-left-color: rgba(53, 208, 168, 0.16);
+    border-radius: 50%;
+    transform: rotate(-18deg);
+    will-change: transform;
+}
+
+.earth-orbit.orbit-a {
+    animation: earthOrbitA 5.8s linear infinite;
+}
+
+.earth-orbit.orbit-b {
+    top: 33%;
+    width: 160px;
+    height: 48px;
+    border-color: rgba(125, 211, 252, 0.46);
+    border-right-color: rgba(255, 255, 255, 0.84);
+    animation: earthOrbitB 7.2s linear infinite reverse;
+}
+
+.earth-cloud {
+    right: 18%;
+    height: 8px;
+    border-radius: 999px;
+    background: rgba(245, 255, 255, 0.74);
+    box-shadow: 0 0 12px rgba(255, 255, 255, 0.58);
+    will-change: transform;
+}
+
+.earth-cloud.cloud-a {
+    top: 29%;
+    width: 58px;
+    animation: earthCloudA 3.8s ease-in-out infinite alternate;
+}
+
+.earth-cloud.cloud-b {
+    right: 25%;
+    top: 44%;
+    width: 42px;
+    animation: earthCloudB 4.6s ease-in-out infinite alternate;
+}
+
+.earth-cloud.cloud-c {
+    right: 13%;
+    top: 58%;
+    width: 48px;
+    animation: earthCloudC 5.1s ease-in-out infinite alternate;
+}
+
+.earth-moon {
+    right: 4%;
+    top: 18%;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #fff, #b6c2d9);
+    box-shadow: 0 0 14px rgba(255, 255, 255, 0.74);
+    transform-origin: -70px 48px;
+    will-change: transform;
+    animation: earthMoonOrbit 6.4s linear infinite;
+}
+
+.earth-star,
+.solar-spark,
+.blackhole-star {
+    color: #fff;
+    line-height: 1;
+    text-shadow: 0 0 8px #fff, 0 0 18px currentColor;
+    will-change: transform;
+}
+
+.earth-star.star-a {
+    left: 18%;
+    top: 14%;
+    font-size: 11px;
+    animation: cosmicStarFloatA 3.8s ease-in-out infinite alternate;
+}
+
+.earth-star.star-b {
+    left: 37%;
+    bottom: 17%;
+    font-size: 9px;
+    animation: cosmicStarFloatB 4.4s ease-in-out infinite alternate;
+}
+
+.cosmic-sun-effects .effect-fill {
+    inset: -8%;
+    background:
+        radial-gradient(circle at 74% 42%, rgba(255, 249, 196, 0.46), transparent 22%),
+        repeating-conic-gradient(from 0deg at 75% 43%, rgba(255, 255, 255, 0.22) 0 5deg, rgba(255, 189, 62, 0.14) 5deg 14deg, transparent 14deg 25deg),
+        linear-gradient(112deg, rgba(66, 16, 0, 0.86), rgba(198, 64, 5, 0.58), rgba(72, 18, 0, 0.82));
+    background-size: 100% 100%, 100% 100%, 210% 100%;
+    animation: solarPlasmaShift 4.4s ease-in-out infinite alternate;
+}
+
+.solar-corona {
+    right: 4%;
+    top: -10%;
+    width: 166px;
+    height: 166px;
+    border-radius: 50%;
+    background: conic-gradient(from 0deg, #fff6b0, #ffbd3e, #ff4f1f, #ffd84f, #fff6b0, #ff7a1a, #fff6b0);
+    -webkit-mask: radial-gradient(circle, transparent 0 42%, #000 44% 70%, transparent 72%);
+    mask: radial-gradient(circle, transparent 0 42%, #000 44% 70%, transparent 72%);
+    box-shadow: 0 0 42px rgba(255, 189, 62, 0.62);
+    will-change: transform;
+    animation: solarCoronaSpin 4.2s linear infinite;
+}
+
+.shop-title-effects .solar-corona {
+    right: 9%;
+    top: -14%;
+    width: 198px;
+    height: 198px;
+}
+
+.solar-core {
+    right: 13%;
+    top: 8%;
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    background:
+        radial-gradient(circle at 38% 30%, #fffce1 0 18%, #fff176 28%, #ffbd3e 48%, #ff6f3c 72%, #b42900 100%);
+    box-shadow:
+        0 0 22px rgba(255, 249, 196, 0.96),
+        0 0 44px rgba(255, 189, 62, 0.78),
+        0 0 72px rgba(255, 75, 35, 0.44);
+    will-change: transform;
+    animation: solarCorePulse 2.2s ease-in-out infinite alternate;
+}
+
+.shop-title-effects .solar-core {
+    right: 15%;
+    top: 5%;
+    width: 128px;
+    height: 128px;
+}
+
+.solar-ring {
+    right: 6%;
+    top: 12%;
+    width: 150px;
+    height: 82px;
+    border: 2px solid rgba(255, 248, 180, 0.78);
+    border-left-color: rgba(255, 111, 60, 0.18);
+    border-radius: 50%;
+    will-change: transform;
+}
+
+.solar-ring.ring-a {
+    animation: solarRingA 3.6s linear infinite;
+}
+
+.solar-ring.ring-b {
+    top: 27%;
+    width: 132px;
+    height: 64px;
+    border-color: rgba(255, 139, 57, 0.7);
+    border-right-color: rgba(255, 255, 255, 0.92);
+    animation: solarRingB 4.8s linear infinite reverse;
+}
+
+.solar-flame {
+    width: 22px;
+    height: 86px;
+    border-radius: 999px 999px 18px 18px;
+    background: linear-gradient(180deg, #fff9be, #ffbd3e 42%, rgba(255, 75, 35, 0));
+    box-shadow: 0 0 22px rgba(255, 189, 62, 0.72);
+    transform-origin: 50% 100%;
+    will-change: transform;
+}
+
+.solar-flame.flame-a {
+    right: 16%;
+    top: -16%;
+    animation: solarFlameA 2.8s ease-in-out infinite alternate;
+}
+
+.solar-flame.flame-b {
+    right: 5%;
+    top: 21%;
+    height: 70px;
+    animation: solarFlameB 3.3s ease-in-out infinite alternate;
+}
+
+.solar-flame.flame-c {
+    right: 30%;
+    top: 9%;
+    height: 64px;
+    animation: solarFlameC 3.8s ease-in-out infinite alternate;
+}
+
+.solar-spark.spark-a {
+    left: 17%;
+    top: 16%;
+    color: #fff6b0;
+    font-size: 12px;
+    animation: solarSparkA 2.8s linear infinite;
+}
+
+.solar-spark.spark-b {
+    left: 36%;
+    bottom: 16%;
+    color: #ffbd3e;
+    font-size: 10px;
+    animation: solarSparkB 3.6s ease-in-out infinite alternate;
+}
+
+.solar-spark.spark-c {
+    right: 7%;
+    bottom: 10%;
+    color: #fff;
+    font-size: 11px;
+    animation: solarSparkA 4.2s linear infinite reverse;
+}
+
+.cosmic-black-hole-effects .effect-fill {
+    inset: -8%;
+    background:
+        radial-gradient(circle at 20% 25%, rgba(255, 255, 255, 0.24), transparent 1.2%, transparent 9%),
+        radial-gradient(circle at 36% 76%, rgba(191, 219, 254, 0.2), transparent 1%, transparent 8%),
+        radial-gradient(circle at 78% 44%, #000 0 16%, rgba(0, 0, 0, 0.94) 17% 24%, rgba(36, 25, 61, 0.5) 25% 37%, transparent 38%),
+        linear-gradient(112deg, rgba(0, 0, 0, 0.98), rgba(8, 7, 16, 0.86), rgba(0, 0, 0, 0.98));
+    background-size: 100% 100%, 100% 100%, 100% 100%, 220% 100%;
+    animation: blackholeSpaceDrift 6.4s ease-in-out infinite alternate;
+}
+
+.blackhole-lens {
+    right: -1%;
+    top: -12%;
+    width: 214px;
+    height: 214px;
+    border-radius: 50%;
+    background: conic-gradient(from 0deg, transparent, rgba(45, 212, 191, 0.54), rgba(139, 92, 246, 0.8), rgba(244, 114, 182, 0.48), transparent 74%);
+    -webkit-mask: radial-gradient(circle, transparent 0 43%, #000 45% 62%, transparent 64%);
+    mask: radial-gradient(circle, transparent 0 43%, #000 45% 62%, transparent 64%);
+    will-change: transform;
+    animation: blackholeLensSpin 5.4s linear infinite;
+}
+
+.shop-title-effects .blackhole-lens {
+    right: 5%;
+    top: -17%;
+    width: 250px;
+    height: 250px;
+}
+
+.blackhole-disc {
+    right: 3%;
+    top: 13%;
+    width: 184px;
+    height: 82px;
+    border-radius: 50%;
+    will-change: transform;
+}
+
+.blackhole-disc.disc-a {
+    background: conic-gradient(from 0deg, rgba(255, 255, 255, 0.92), rgba(45, 212, 191, 0.32), rgba(139, 92, 246, 0.82), rgba(244, 114, 182, 0.38), rgba(255, 255, 255, 0.92));
+    box-shadow:
+        0 0 24px rgba(221, 214, 254, 0.66),
+        0 0 52px rgba(139, 92, 246, 0.48);
+    transform: rotate(-13deg);
+    animation: blackholeDiscA 2.8s linear infinite;
+}
+
+.blackhole-disc.disc-b {
+    right: 9%;
+    top: 23%;
+    width: 150px;
+    height: 54px;
+    background: conic-gradient(from 90deg, rgba(45, 212, 191, 0.7), rgba(0, 0, 0, 0.04), rgba(255, 255, 255, 0.82), rgba(139, 92, 246, 0.58), rgba(45, 212, 191, 0.7));
+    transform: rotate(10deg);
+    animation: blackholeDiscB 3.4s linear infinite reverse;
+}
+
+.blackhole-core {
+    right: 18%;
+    top: 18%;
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #000 0 58%, #050507 59% 72%, rgba(0, 0, 0, 0.96) 73% 100%);
+    box-shadow:
+        0 0 0 2px rgba(255, 255, 255, 0.1) inset,
+        0 0 18px rgba(0, 0, 0, 0.96),
+        0 0 36px rgba(139, 92, 246, 0.54),
+        0 0 64px rgba(45, 212, 191, 0.22);
+    will-change: transform;
+    animation: blackholeCorePull 2.6s ease-in-out infinite alternate;
+}
+
+.shop-title-effects .blackhole-core {
+    right: 20%;
+    top: 16%;
+    width: 112px;
+    height: 112px;
+}
+
+.blackhole-shadow {
+    right: 21%;
+    top: 21%;
+    width: 74px;
+    height: 74px;
+    border-radius: 50%;
+    background: #000;
+    box-shadow: 0 0 24px #000, 0 0 42px rgba(0, 0, 0, 0.98);
+    will-change: transform;
+    animation: blackholeShadowHold 3.4s ease-in-out infinite alternate;
+}
+
+.shop-title-effects .blackhole-shadow {
+    right: 23%;
+    top: 20%;
+    width: 84px;
+    height: 84px;
+}
+
+.blackhole-ring {
+    right: 6%;
+    top: 9%;
+    width: 178px;
+    height: 178px;
+    border-radius: 50%;
+    border: 2px solid rgba(221, 214, 254, 0.72);
+    border-left-color: rgba(45, 212, 191, 0.18);
+    border-bottom-color: rgba(244, 114, 182, 0.28);
+    will-change: transform;
+}
+
+.blackhole-ring.ring-a {
+    animation: blackholeRingA 4.1s linear infinite;
+}
+
+.blackhole-ring.ring-b {
+    right: 13%;
+    top: 16%;
+    width: 124px;
+    height: 124px;
+    border-color: rgba(45, 212, 191, 0.58);
+    border-right-color: rgba(255, 255, 255, 0.92);
+    animation: blackholeRingB 2.7s linear infinite reverse;
+}
+
+.blackhole-jet {
+    right: 30%;
+    top: -45%;
+    width: 7px;
+    height: 210%;
+    border-radius: 999px;
+    background: linear-gradient(180deg, transparent, rgba(125, 249, 255, 0.66), rgba(255, 255, 255, 0.88), rgba(139, 92, 246, 0.52), transparent);
+    box-shadow: 0 0 18px rgba(125, 249, 255, 0.54);
+    transform-origin: center;
+    will-change: transform;
+}
+
+.blackhole-jet.jet-a {
+    animation: blackholeJetA 4.8s ease-in-out infinite alternate;
+}
+
+.blackhole-jet.jet-b {
+    right: 38%;
+    width: 4px;
+    background: linear-gradient(180deg, transparent, rgba(139, 92, 246, 0.56), rgba(255, 255, 255, 0.72), transparent);
+    animation: blackholeJetB 5.6s ease-in-out infinite alternate;
+}
+
+.blackhole-star.star-a {
+    left: 14%;
+    top: 13%;
+    font-size: 12px;
+    animation: blackholeStarA 3.6s ease-in-out infinite alternate;
+}
+
+.blackhole-star.star-b {
+    left: 32%;
+    top: 62%;
+    font-size: 9px;
+    animation: blackholeStarB 4.4s ease-in-out infinite alternate;
+}
+
+.blackhole-star.star-c {
+    right: 8%;
+    bottom: 11%;
+    font-size: 10px;
+    animation: blackholeStarC 3.9s linear infinite;
+}
+
+.blackhole-star.star-d {
+    left: 48%;
+    top: 21%;
+    font-size: 22px;
+    animation: blackholeStarD 5s ease-in-out infinite alternate;
+}
+
+@keyframes cosmicEarthIconTurn {
+    from { transform: rotate(0deg) scale(1); }
+    to { transform: rotate(360deg) scale(1); }
+}
+
+@keyframes cosmicSunIconPulse {
+    from { transform: scale(0.96) rotate(-2deg); }
+    to { transform: scale(1.06) rotate(2deg); }
+}
+
+@keyframes cosmicBlackHoleIconPull {
+    from { transform: rotate(0deg) scale(0.98); }
+    to { transform: rotate(360deg) scale(0.98); }
+}
+
+@keyframes cosmicEarthSkyShift {
+    from { background-position: 0 0, 0 0, 0% 50%; }
+    to { background-position: 0 0, 0 0, 100% 50%; }
+}
+
+@keyframes earthPlanetTurn {
+    from { transform: rotate(0deg) scale(0.98); }
+    to { transform: rotate(360deg) scale(0.98); }
+}
+
+@keyframes earthAtmosphereBreathe {
+    from { transform: scale(0.96); }
+    to { transform: scale(1.04); }
+}
+
+@keyframes earthOrbitA {
+    from { transform: rotate(-18deg); }
+    to { transform: rotate(342deg); }
+}
+
+@keyframes earthOrbitB {
+    from { transform: rotate(15deg); }
+    to { transform: rotate(375deg); }
+}
+
+@keyframes earthCloudA {
+    from { transform: translate3d(-10px, -2px, 0); }
+    to { transform: translate3d(12px, 3px, 0); }
+}
+
+@keyframes earthCloudB {
+    from { transform: translate3d(8px, 2px, 0); }
+    to { transform: translate3d(-11px, -3px, 0); }
+}
+
+@keyframes earthCloudC {
+    from { transform: translate3d(-7px, 3px, 0); }
+    to { transform: translate3d(10px, -4px, 0); }
+}
+
+@keyframes earthMoonOrbit {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes cosmicStarFloatA {
+    from { transform: translate3d(0, -3px, 0) rotate(-8deg); }
+    to { transform: translate3d(4px, 5px, 0) rotate(8deg); }
+}
+
+@keyframes cosmicStarFloatB {
+    from { transform: translate3d(3px, 4px, 0) rotate(8deg); }
+    to { transform: translate3d(-4px, -5px, 0) rotate(-8deg); }
+}
+
+@keyframes solarPlasmaShift {
+    from { background-position: 0 0, 0 0, 0% 50%; }
+    to { background-position: 0 0, 0 0, 100% 50%; }
+}
+
+@keyframes solarCoronaSpin {
+    from { transform: rotate(0deg) scale(0.98); }
+    to { transform: rotate(360deg) scale(0.98); }
+}
+
+@keyframes solarCorePulse {
+    from { transform: scale(0.96); }
+    to { transform: scale(1.06); }
+}
+
+@keyframes solarRingA {
+    from { transform: rotate(-16deg); }
+    to { transform: rotate(344deg); }
+}
+
+@keyframes solarRingB {
+    from { transform: rotate(12deg); }
+    to { transform: rotate(372deg); }
+}
+
+@keyframes solarFlameA {
+    from { transform: rotate(-20deg) translate3d(-4px, 0, 0) scaleY(0.9); }
+    to { transform: rotate(-7deg) translate3d(6px, 7px, 0) scaleY(1.1); }
+}
+
+@keyframes solarFlameB {
+    from { transform: rotate(58deg) translate3d(0, 0, 0) scaleY(0.92); }
+    to { transform: rotate(72deg) translate3d(5px, -4px, 0) scaleY(1.12); }
+}
+
+@keyframes solarFlameC {
+    from { transform: rotate(18deg) translate3d(2px, 3px, 0) scaleY(0.9); }
+    to { transform: rotate(5deg) translate3d(-5px, -5px, 0) scaleY(1.08); }
+}
+
+@keyframes solarSparkA {
+    from { transform: rotate(0deg) scale(1); }
+    to { transform: rotate(360deg) scale(1); }
+}
+
+@keyframes solarSparkB {
+    from { transform: translate3d(0, 5px, 0) rotate(8deg); }
+    to { transform: translate3d(5px, -6px, 0) rotate(-8deg); }
+}
+
+@keyframes blackholeSpaceDrift {
+    from { background-position: 0 0, 0 0, 0 0, 0% 50%; }
+    to { background-position: 0 0, 0 0, 0 0, 100% 50%; }
+}
+
+@keyframes blackholeLensSpin {
+    from { transform: rotate(0deg) scale(0.98); }
+    to { transform: rotate(360deg) scale(0.98); }
+}
+
+@keyframes blackholeDiscA {
+    from { transform: rotate(-13deg); }
+    to { transform: rotate(347deg); }
+}
+
+@keyframes blackholeDiscB {
+    from { transform: rotate(10deg); }
+    to { transform: rotate(370deg); }
+}
+
+@keyframes blackholeCorePull {
+    from { transform: scale(0.96); }
+    to { transform: scale(1.04); }
+}
+
+@keyframes blackholeShadowHold {
+    from { transform: scale(0.98); }
+    to { transform: scale(1.05); }
+}
+
+@keyframes blackholeRingA {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes blackholeRingB {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes blackholeJetA {
+    from { transform: rotate(-24deg) translate3d(-8px, 0, 0); }
+    to { transform: rotate(-12deg) translate3d(8px, 0, 0); }
+}
+
+@keyframes blackholeJetB {
+    from { transform: rotate(21deg) translate3d(7px, 0, 0); }
+    to { transform: rotate(9deg) translate3d(-8px, 0, 0); }
+}
+
+@keyframes blackholeStarA {
+    from { transform: translate3d(0, -4px, 0) rotate(-8deg); }
+    to { transform: translate3d(6px, 5px, 0) rotate(9deg); }
+}
+
+@keyframes blackholeStarB {
+    from { transform: translate3d(4px, 5px, 0) rotate(9deg); }
+    to { transform: translate3d(-6px, -5px, 0) rotate(-9deg); }
+}
+
+@keyframes blackholeStarC {
+    from { transform: rotate(0deg) scale(1); }
+    to { transform: rotate(360deg) scale(1); }
+}
+
+@keyframes blackholeStarD {
+    from { transform: translate3d(-4px, 4px, 0) scale(0.92); }
+    to { transform: translate3d(5px, -5px, 0) scale(1.08); }
 }
 
 @media (prefers-reduced-motion: reduce) {
